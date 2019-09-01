@@ -57,7 +57,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 7de6a2afb172f4e41b73cc72014fee40, type: 2}
+  - {fileID: 2100000, guid: 3ff4aa5e76a34b64db3ca5cf879cc621, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -125,12 +125,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   myMapMng: {fileID: 0}
-  NextTile:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   bOpen: 1
+  tileMesh: {fileID: 1809056219987016443}
   enableEffect: {fileID: 1563143898590194053}
 --- !u!65 &3096075267843227427
 BoxCollider:

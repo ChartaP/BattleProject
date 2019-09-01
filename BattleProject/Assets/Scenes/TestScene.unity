@@ -408,6 +408,9 @@ MonoBehaviour:
     type: 3}
   xSize: 100
   ySize: 100
+  TileMaterials:
+  - {fileID: 2100000, guid: 75f55e2b56d397849b926266237bdd48, type: 2}
+  - {fileID: 2100000, guid: 7de6a2afb172f4e41b73cc72014fee40, type: 2}
 --- !u!1 &719238057
 GameObject:
   m_ObjectHideFlags: 0

@@ -104,7 +104,7 @@ public class InputMng : MonoBehaviour
         scroll = Input.GetAxis("Mouse ScrollWheel") * scrSpeed;
 
         mPos = gameMng.interfaceMng.MainCamera.transform.localPosition;
-        if(mPos.z - scroll <= -1 && mPos.z - scroll >= -8)
+        if(mPos.z - scroll <= -1 && mPos.z - scroll >= -50)
         {
             mPos.z -= scroll;
             switch (mPos.z)
@@ -154,6 +154,10 @@ public class InputMng : MonoBehaviour
             mPos = gameMng.interfaceMng.MainCameraCarrier.localPosition;
             mPos.x += 2.0f * zoom * Time.deltaTime;
             gameMng.interfaceMng.MainCameraCarrier.localPosition = mPos;
+        }
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            gameMng.mapMng.SetMap();
         }
     }
 }
