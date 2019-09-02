@@ -104,18 +104,18 @@ public class InputMng : MonoBehaviour
         scroll = Input.GetAxis("Mouse ScrollWheel") * scrSpeed;
 
         mPos = gameMng.interfaceMng.MainCamera.transform.localPosition;
-        if(mPos.z - scroll <= -1 && mPos.z - scroll >= -50)
+        if(mPos.z - scroll <= 1 && mPos.z - scroll >= -50)
         {
             mPos.z -= scroll;
             switch (mPos.z)
             {
-                case -1:
+                case 1:
                     gameMng.interfaceMng.MainCameraCarrier.localRotation = Quaternion.AngleAxis(55, Vector3.right);
                     break;
-                case -2:
+                case 0:
                     gameMng.interfaceMng.MainCameraCarrier.localRotation = Quaternion.AngleAxis(60, Vector3.right);
                     break;
-                case -3:
+                case -1:
                     gameMng.interfaceMng.MainCameraCarrier.localRotation = Quaternion.AngleAxis(65, Vector3.right);
                     break;
                 default:
@@ -130,7 +130,7 @@ public class InputMng : MonoBehaviour
 
     private void KeyboardInput()
     {
-        float zoom = -1*gameMng.interfaceMng.MainCamera.transform.localPosition.z;
+        float zoom = -1*gameMng.interfaceMng.MainCamera.transform.localPosition.z+2;
         if (Input.GetKey(KeyCode.UpArrow))
         {
             mPos = gameMng.interfaceMng.MainCameraCarrier.localPosition;
