@@ -55,6 +55,7 @@ public class MapMng : MonoBehaviour
             for (int y = 0; y < ySize; y++)
             {
                 gTileList[x, y].tileMesh.material = TileMaterials[mapTable.GetTile(x, y).GetType()];
+                gTileList[x, y].SetHeight(mapTable.GetTile(x, y).GetHeight());
             }
         }
     }
