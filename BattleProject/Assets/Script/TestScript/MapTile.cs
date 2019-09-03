@@ -35,6 +35,6 @@ public class MapTile : MonoBehaviour
 
     public void SetHeight(float height)
     {
-        transform.localScale = new Vector3(1,height+0.0001f, 1);
+        transform.localScale = new Vector3(1,(height/4)+0.0001f, 1);
     }
 }

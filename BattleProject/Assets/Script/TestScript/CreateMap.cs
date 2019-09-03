@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 using GameSys;
 using GameSys.Lib;
 
@@ -7,17 +8,7 @@ namespace GameSys
 {
     namespace Map
     {
-        public class Point
-        {
-            public int nX;
-            public int nY;
-
-            public Point(int nX,int nY)
-            {
-                this.nX = nX;
-                this.nY = nY;
-            }
-        }
+        
 
         /// <summary>
         /// 타일 데이터 클래스
@@ -95,7 +86,7 @@ namespace GameSys
             private static int rate = 40; // 높으면 땅 비율 높음
             private static int mergePoint = 25; // 낮으면 땅 비율 높음
             private static int mergeRange = 4; // 높으면 땅이 뭉침
-            private static int mergeRepeat = 2; // 반복 횟수
+            private static int mergeRepeat = 3; // 반복 횟수
             //황금비 40:25:4
             private static System.Random rand;
 
@@ -217,13 +208,13 @@ namespace GameSys
             
             private static bool HeigherGeometry()
             {
-                int Height = 10;
-                int Weight = 10;
-                int nX = 50;
-                int nY = 50;
+                float Height ;
+                float Weight ;
+                float nX ;
+                float nY ;
 
                 int[,] workMap = new int[mapTable.nXSize, mapTable.nYSize];
-                List<Point> top = new List<Point>();
+                List<Vector2> top = new List<Vector2>();
 
                 for(int x = 0; x < mapTable.nXSize; x++)
                 {
@@ -237,12 +228,57 @@ namespace GameSys
                 {
                     for (int y = 0; y < mapTable.nYSize; y++)
                     {
-                        if (Aproach(x, y, 64, 4, false, eTileType.Grass))
+                        if (Aproach(x, y, 64,4, false, eTileType.Grass))
                         {
-                            top.Add(new Point(x, y));//정상 지정 다음에 할일은 확률적으로 정상 선별하고 ㅡㄱ것을 바탕으로 산맥 생성
-                            mapTable.GetTile(x, y).SetHeight(10);
+                            if (rand.Next(1, 101) < 8)
+                            {
+                                top.Add(new Vector2(x, y));//정상 지정 다음에 할일은 확률적으로 정상 선별하고 ㅡㄱ것을 바탕으로 산맥 생성
+                            }
                         }
                     }
+                }
+
+                
+                //산 생성
+                foreach(Vector2 topPoint in top)
+                {
+                    Height = rand.Next(1, 8);//정상지점 높이
+                    Weight = rand.Next(4, 14);//산의 반지름
+                    nX = topPoint.x;//정상의 x좌표
+                    nY = topPoint.y;//정상의 y좌표
+                    float gradent = -Height / Weight;
+                    float dis;//선택된 점과 정상의 거리
+                    for (int x = (int)(nX-Weight);x < nX + Weight; x++)
+                    {
+                        if (x < 0 || x >= mapTable.nXSize)
+                            continue;
+                        for (int y = (int)(nY - Weight); y < nY + Weight; y++)
+                        {
+                            if (y < 0 || y >= mapTable.nYSize)
+                                continue;
+                            if (mapTable.GetTile(x, y).GetType()== (int)eTileType.Water)
+                                continue;
+                            Vector2 temp = new Vector2(x, y);
+                            dis = Vector2.Distance(temp, topPoint);
+                            int thisHeight = (int)(dis * gradent+Height);
+
+                            
+
+                            if (thisHeight < 0)
+                                thisHeight = 0;
+
+                            if (mapTable.GetTile(x, y).GetHeight()!=0)
+                            {
+                                mapTable.GetTile(x, y).SetHeight(mapTable.GetTile(x, y).GetHeight()>thisHeight? mapTable.GetTile(x, y).GetHeight():thisHeight);
+                            }
+                            else
+                            {
+                                mapTable.GetTile(x, y).SetHeight(thisHeight);
+                            }
+                            
+                        }
+                    }
+                    
                 }
 
                 return true;
