@@ -9,7 +9,6 @@ public class GameMng : MonoBehaviour
     public MapMng mapMng;
     public InterfaceMng interfaceMng;
 
-
     // Start is called before the first frame update
     void Start()
     {

@@ -8,7 +8,9 @@ namespace GameSys
         public enum eTileType
         {
             Water = 0,
-            Grass = 1
+            Ground = 1,
+            Stone = 2,
+            GroundOrStone = 3
         }
 
         public enum eResource
@@ -16,11 +18,9 @@ namespace GameSys
             Stone
         }
 
-        public enum eObjType
+        public enum ePlants
         {
-            Unit,
-            Build,
-            Plant
+
         }
     }
 }

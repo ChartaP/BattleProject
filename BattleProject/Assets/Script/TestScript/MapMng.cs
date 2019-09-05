@@ -9,10 +9,13 @@ public class MapMng : MonoBehaviour
     // Start is called before the first frame update
     public bool CreateEnabled = true;
     public GameObject gTilePre = null;
+    public List<GameObject> gPlantsPre = null;
+    public GameObject gBuildPre = null;
     public int xSize =10;
     public int ySize =10;
     public MapTile[,] gTileList;
     public List<Material> TileMaterials;
+    public AnimationCurve curveX = AnimationCurve.Linear(0, 1, 1, 0);
 
     private void Awake()
     {
@@ -54,7 +57,19 @@ public class MapMng : MonoBehaviour
         {
             for (int y = 0; y < ySize; y++)
             {
-                gTileList[x, y].tileMesh.material = TileMaterials[mapTable.GetTile(x, y).GetType()];
+                int curType = mapTable.GetTile(x, y).GetTileType();
+                gTileList[x, y].tileMesh.material = TileMaterials[curType];
+                switch (curType)
+                {
+                    case 0:
+                        gTileList[x, y].enableEffect.material.color = new Color(255, 255, 255);
+                        break;
+                    case 1:
+                    case 2:
+                        gTileList[x, y].enableEffect.material.color = new Color(0, 0, 0);
+                        break;
+                        
+                }
                 gTileList[x, y].SetHeight(mapTable.GetTile(x, y).GetHeight());
             }
         }

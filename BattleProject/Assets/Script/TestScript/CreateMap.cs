@@ -14,7 +14,7 @@ namespace GameSys
         /// 타일 데이터 클래스
         /// 타일의 타입과 높이 등 정보를 보유
         /// </summary>
-        public class TileData
+        public class TileData 
         {
             public eTileType eType;
             public eResource eUnderRes;
@@ -26,12 +26,12 @@ namespace GameSys
                 this.nHeight = nHeight;
             }
 
-            public int GetType()
+            public int GetTileType()
             {
                 return (int)eType;
             }
 
-            public void SetType(eTileType eType)
+            public void SetTileType(eTileType eType)
             {
                 this.eType = eType;
             }
@@ -131,7 +131,7 @@ namespace GameSys
                         TileData tempTile;
                         if (rand.Next(1, 101) < rate)
                         {
-                             tempTile = new TileData(eTileType.Grass, 0);
+                             tempTile = new TileData(eTileType.Ground, 0);
                         }
                         else
                         {
@@ -149,7 +149,7 @@ namespace GameSys
                         for (int y = 0; y < mapTable.nYSize; y++)
                         {
                             
-                            tempMap[x, y] = Aproach(x,y,mergePoint,mergeRange,bOut,eTileType.Grass);
+                            tempMap[x, y] = Aproach(x,y,mergePoint,mergeRange,bOut,eTileType.Ground|eTileType.Stone);
                         }
                     }
 
@@ -159,11 +159,11 @@ namespace GameSys
                         {
                             if(tempMap[x, y])
                             {
-                                mapTable.GetTile(x, y).SetType(eTileType.Grass);
+                                mapTable.GetTile(x, y).SetTileType(eTileType.Ground);
                             }
                             else
                             {
-                                mapTable.GetTile(x, y).SetType(eTileType.Water);
+                                mapTable.GetTile(x, y).SetTileType(eTileType.Water);
                             }
                         }
                     }
@@ -171,6 +171,16 @@ namespace GameSys
                 return true;
             }
 
+            /// <summary>
+            /// 인접 특정 타일 분포율 검사 메서드
+            /// </summary>
+            /// <param name="x">검사 원점x</param>
+            /// <param name="y">검사 원점y</param>
+            /// <param name="point">기준 분포율</param>
+            /// <param name="range">검사 범위</param>
+            /// <param name="bOut">맵 외각 처리 결정 변수</param>
+            /// <param name="type">검사 타일 타입</param>
+            /// <returns>인접 특정 타일 분포율이 기준 분포율 초과시 true</returns>
             private static bool Aproach( int x,int y ,int point,int range,bool bOut,eTileType type)
             {
                 int cnt = 0;
@@ -195,10 +205,21 @@ namespace GameSys
                             }
                             continue;
                         }
-                        if (mapTable.GetTile(xFind, yFind).GetType()==(int)type)
+                        if (type == eTileType.GroundOrStone)
                         {
-                            cnt++;
-                            if (cnt >= point) break;
+                            if (mapTable.GetTile(xFind, yFind).GetTileType() == (int)eTileType.Ground || mapTable.GetTile(xFind, yFind).GetTileType() == (int)eTileType.Stone)
+                            {
+                                cnt++;
+                                if (cnt >= point) break;
+                            }
+                        }
+                        else
+                        {
+                            if (mapTable.GetTile(xFind, yFind).GetTileType() == (int)type)
+                            {
+                                cnt++;
+                                if (cnt >= point) break;
+                            }
                         }
                     }
                     if (cnt >= point) break;
@@ -206,6 +227,10 @@ namespace GameSys
                 return point <= cnt;
             }
             
+            /// <summary>
+            /// 지형 높낮이 조정 메서드
+            /// </summary>
+            /// <returns>문제 없으면 true</returns>
             private static bool HeigherGeometry()
             {
                 float Height ;
@@ -228,7 +253,7 @@ namespace GameSys
                 {
                     for (int y = 0; y < mapTable.nYSize; y++)
                     {
-                        if (Aproach(x, y, 64,4, false, eTileType.Grass))
+                        if (Aproach(x, y, 64,4, false, eTileType.Ground | eTileType.Stone))
                         {
                             if (rand.Next(1, 101) < 8)
                             {
@@ -256,7 +281,8 @@ namespace GameSys
                         {
                             if (y < 0 || y >= mapTable.nYSize)
                                 continue;
-                            if (mapTable.GetTile(x, y).GetType()== (int)eTileType.Water)
+                            TileData curTile = mapTable.GetTile(x, y);
+                            if (curTile.GetTileType()== (int)eTileType.Water)
                                 continue;
                             Vector2 temp = new Vector2(x, y);
                             dis = Vector2.Distance(temp, topPoint);
@@ -267,19 +293,41 @@ namespace GameSys
                             if (thisHeight < 0)
                                 thisHeight = 0;
 
-                            if (mapTable.GetTile(x, y).GetHeight()!=0)
+                            if (curTile.GetHeight()!=0)
                             {
-                                mapTable.GetTile(x, y).SetHeight(mapTable.GetTile(x, y).GetHeight()>thisHeight? mapTable.GetTile(x, y).GetHeight():thisHeight);
+                                if(curTile.GetHeight() > thisHeight)
+                                {
+                                    curTile.SetHeight(curTile.GetHeight());
+                                }
+                                else
+                                {
+                                    curTile.SetHeight(thisHeight);
+                                    if (thisHeight > 4 && thisHeight >= Height - 1)
+                                    {
+                                        curTile.SetTileType(eTileType.Stone);
+                                    }
+                                }
                             }
                             else
                             {
-                                mapTable.GetTile(x, y).SetHeight(thisHeight);
+                                curTile.SetHeight(thisHeight);
+                                if( thisHeight>1 && thisHeight >= Height - 1)
+                                {
+                                    curTile.SetTileType(eTileType.Stone);
+                                }
                             }
+
                             
                         }
                     }
                     
                 }
+
+                return true;
+            }
+
+            private static bool PlantsPlant()
+            {
 
                 return true;
             }
