@@ -20,7 +20,9 @@ namespace GameSys
 
         public enum ePlants
         {
-
+            Null=-1,
+            Grass = 0,
+            Tree = 1
         }
     }
 }

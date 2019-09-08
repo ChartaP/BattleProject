@@ -10,12 +10,12 @@ public class MapTile : MonoBehaviour
     public MeshRenderer buttomMesh = null;
     public MeshRenderer enableEffect = null;
     public Material buttom;
+    public int nHeight=0;
 
     // Start is called before the first frame update
     void Start()
     {
         myMapMng = transform.parent.GetComponent<MapMng>();
-        int cnt = myMapMng.transform.childCount;
     }
 
     // Update is called once per frame
@@ -37,6 +37,7 @@ public class MapTile : MonoBehaviour
 
     public void SetHeight(float height)
     {
+        nHeight = (int)height;
         transform.localScale = new Vector3(1,(height/4)+0.0001f, 1);
         if(height == 0)
         {

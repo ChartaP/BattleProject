@@ -40,7 +40,7 @@ public class MapMng : MonoBehaviour
             {
                 for (int y = 0; y < ySize; y++)
                 {
-                    GameObject Temp = Instantiate(gTilePre, transform);
+                    GameObject Temp = Instantiate(gTilePre, transform.Find("TileTrans"));
                     Temp.transform.localPosition = new Vector3(x, 0, y);
                     Temp.name = "(" + x + "," + y + ")" + "Tile";
                     gTileList[x, y] = Temp.GetComponent<MapTile>();
@@ -57,8 +57,15 @@ public class MapMng : MonoBehaviour
         {
             for (int y = 0; y < ySize; y++)
             {
-                int curType = mapTable.GetTile(x, y).GetTileType();
+                TileData curTile = mapTable.GetTile(x, y);
+                int curType = curTile.GetTileType();
+                int curPlant = curTile.GetPlants();
+                if (curType > 0)
+                    gTileList[x, y].buttomMesh.enabled = false;
+                else
+                    gTileList[x, y].buttomMesh.enabled = true;
                 gTileList[x, y].tileMesh.material = TileMaterials[curType];
+                
                 switch (curType)
                 {
                     case 0:
@@ -70,10 +77,21 @@ public class MapMng : MonoBehaviour
                         break;
                         
                 }
-                gTileList[x, y].SetHeight(mapTable.GetTile(x, y).GetHeight());
+                gTileList[x, y].SetHeight(curTile.GetHeight());
+                if (curPlant != -1)
+                {
+                    GameObject Temp = Instantiate(gPlantsPre[curPlant], transform.Find("PlantsTrans"));
+                    Temp.transform.position = gTileList[x, y].transform.Find("Quad").transform.position;
+                    Temp.name = "(" + x + "," + y + ")" + "Plants";
+                }
+                
             }
         }
     }
     
+    public int GetHeight(int x,int y)
+   {
+       return gTileList[x, y].nHeight;
+    }
 
 }

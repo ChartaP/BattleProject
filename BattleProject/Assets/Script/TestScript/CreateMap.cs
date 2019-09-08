@@ -18,6 +18,7 @@ namespace GameSys
         {
             public eTileType eType;
             public eResource eUnderRes;
+            public ePlants ePlant;
             public int nHeight;
 
             public TileData(eTileType eType,int nHeight)
@@ -44,6 +45,16 @@ namespace GameSys
             public void SetHeight(int nHeight)
             {
                 this.nHeight = nHeight;
+            }
+
+            public int GetPlants()
+            {
+                return (int)ePlant;
+            }
+
+            public void SetPlants(ePlants ePlant)
+            {
+                this.ePlant = ePlant;
             }
         }
 
@@ -114,7 +125,7 @@ namespace GameSys
                 CreateGeometry(mergeRepeat);
                 HeigherGeometry();
                 CreateRiver(40);
-
+                PlantsPlant();
 
                 return mapTable;
             }
@@ -323,18 +334,22 @@ namespace GameSys
                 return true;
             }
 
+            /// <summary>
+            /// 강생성 메서드
+            /// </summary>
+            /// <param name="nAmount">강의 최대 갯수</param>
+            /// <returns></returns>
             private static bool CreateRiver(int nAmount)
             {
                 List<Vector2> top = new List<Vector2>();
 
-                for (int x = 1; x < mapTable.nXSize-1 ; x++)
+                for (int x = 10; x < mapTable.nXSize-10 ; x++)
                 {
-                    for (int y = 1; y < mapTable.nYSize-1; y++)
+                    for (int y = 10; y < mapTable.nYSize-10; y++)
                     {
-                        if(mapTable.GetTile(x,y).GetTileType() ==(int) eTileType.Water)
+                        if(mapTable.GetTile(x,y).GetTileType() ==(int) eTileType.Stone)
                         {
-                            if(Aproach(x,y,3,1,false,eTileType.GroundOrStone))
-                                top.Add(new Vector2(x, y));
+                            top.Add(new Vector2(x, y));
                         }
                     }
                 }
@@ -378,8 +393,9 @@ namespace GameSys
                             break;
                         }
                         nHeight = mapTable.GetTile((int)curP.x, (int)curP.y).GetHeight();
-                        if (nHeight >= 7 )
+                        if (nHeight == 0 && mapTable.GetTile((int)curP.x, (int)curP.y).GetTileType()==(int)eTileType.Water)
                         {
+
                             break;
                         }
                         for(int i = 0; i < 4; i++)
@@ -404,37 +420,33 @@ namespace GameSys
                                     nY = 1;
                                     break;
                             }
+                           
                             if (curP.x + nX < 0 || curP.x + nX >= mapTable.nXSize || curP.y + nY < 0 || curP.y + nY >= mapTable.nYSize)
                             {
-                                bDir[i] = -100;
+                                bDir[i] = 1000;
                                 continue;
                             }
+                             int tempH = mapTable.GetTile((int)curP.x + nX, (int)curP.y + nY).GetHeight();
                             if (curP.x + nX == preP.x && curP.y +nY == preP.y)
                             {
-                                bDir[i] = -10;
-                                continue;
-                            }
-                            if (Aproach((int)curP.x + nX, (int)curP.y + nY, 1, 1, false, eTileType.Water))
-                            {
-                                bDir[i] = -5;
+                                bDir[i] = 500;
                                 continue;
                             }
                             if (mapTable.GetTile((int)curP.x + nX, (int)curP.y + nY).GetTileType() == (int)eTileType.Water)
                             {
-                                bDir[i] = -1;
+                                bDir[i] = 100;
                                 continue;
                             }
-                            int tempH = mapTable.GetTile((int)curP.x + nX, (int)curP.y + nY).GetHeight();
                             bDir[i] = tempH;
                         }
 
-                        if (bDir[0] < 0 && bDir[1] < 0 && bDir[2] < 0 && bDir[3] < 0)
+                        if (bDir[0] > 90 && bDir[1] > 90 && bDir[2] > 90 && bDir[3] > 90)
                             break;
-                        if (bDir[0] < nHeight && bDir[1] < nHeight && bDir[2] < nHeight && bDir[3] < nHeight)
+                        if (bDir[0] > nHeight && bDir[1] > nHeight && bDir[2] > nHeight && bDir[3] > nHeight)
                             break;
-                        for (int i = 1; i < 4; i++)
+                        for (int i = 0; i < 4; i++)
                         {
-                            if (bDir[nFind] < bDir[i])
+                            if (bDir[nFind] > bDir[i])
                             {
                                 nFind = i;
                             }
@@ -477,9 +489,30 @@ namespace GameSys
                 return true;
             }
 
+            /// <summary>
+            /// 식물 심기 메서드
+            /// </summary>
+            /// <returns></returns>
             private static bool PlantsPlant()
             {
-
+                for (int x = 0; x < mapTable.nXSize; x++)
+                {
+                    for (int y = 0; y < mapTable.nYSize; y++)
+                    {
+                        mapTable.GetTile(x, y).SetPlants(ePlants.Null);
+                        if (mapTable.GetTile(x, y).GetTileType() == (int)eTileType.Ground)
+                        {
+                            if (Aproach(x, y, 12,8, false, eTileType.Water))
+                            {
+                                if (rand.Next(1, 101) < 80)
+                                {
+                                    mapTable.GetTile(x, y).SetPlants(ePlants.Grass);
+                                }
+                                
+                            }
+                        }
+                    }
+                }
                 return true;
             }
         }
