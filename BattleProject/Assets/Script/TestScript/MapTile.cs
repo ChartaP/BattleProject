@@ -7,7 +7,9 @@ public class MapTile : MonoBehaviour
     public MapMng myMapMng = null;
     public bool bOpen = true;
     public MeshRenderer tileMesh = null;
+    public MeshRenderer buttomMesh = null;
     public MeshRenderer enableEffect = null;
+    public Material buttom;
 
     // Start is called before the first frame update
     void Start()
@@ -36,5 +38,9 @@ public class MapTile : MonoBehaviour
     public void SetHeight(float height)
     {
         transform.localScale = new Vector3(1,(height/4)+0.0001f, 1);
+        if(height == 0)
+        {
+            buttomMesh.material = buttom;
+        }
     }
 }

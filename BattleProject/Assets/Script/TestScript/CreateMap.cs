@@ -71,6 +71,10 @@ namespace GameSys
 
             public TileData GetTile(int nX, int nY)
             {
+                if (nX < 0 || nX >= nXSize)
+                    return null;
+                if (nY < 0 || nY >= nYSize)
+                    return null;
                 return table[nX, nY];
             }
         }
@@ -109,7 +113,9 @@ namespace GameSys
 
                 CreateGeometry(mergeRepeat);
                 HeigherGeometry();
-                
+                CreateRiver(40);
+
+
                 return mapTable;
             }
 
@@ -237,18 +243,9 @@ namespace GameSys
                 float Weight ;
                 float nX ;
                 float nY ;
-
-                int[,] workMap = new int[mapTable.nXSize, mapTable.nYSize];
+                
                 List<Vector2> top = new List<Vector2>();
-
-                for(int x = 0; x < mapTable.nXSize; x++)
-                {
-                    for (int y = 0; y < mapTable.nYSize; y++)
-                    {
-                        workMap[x, y] = 0;
-                    }
-                }
-
+                
                 for (int x = 0; x < mapTable.nXSize; x++)
                 {
                     for (int y = 0; y < mapTable.nYSize; y++)
@@ -321,6 +318,160 @@ namespace GameSys
                         }
                     }
                     
+                }
+
+                return true;
+            }
+
+            private static bool CreateRiver(int nAmount)
+            {
+                List<Vector2> top = new List<Vector2>();
+
+                for (int x = 1; x < mapTable.nXSize-1 ; x++)
+                {
+                    for (int y = 1; y < mapTable.nYSize-1; y++)
+                    {
+                        if(mapTable.GetTile(x,y).GetTileType() ==(int) eTileType.Water)
+                        {
+                            if(Aproach(x,y,3,1,false,eTileType.GroundOrStone))
+                                top.Add(new Vector2(x, y));
+                        }
+                    }
+                }
+                
+                for(int i = 0; i < top.Count; i++)
+                {
+                    int r1 = rand.Next(0, top.Count);
+                    int r2 = rand.Next(0, top.Count);
+
+                    Vector2 temp = top[r1];
+                    top[r1] = top[r2];
+                    top[r2] = temp;
+                }
+
+                while(top.Count > nAmount)
+                {
+                    top.RemoveAt(0);
+                }
+
+                foreach(Vector2 orgP in top)
+                {
+                    Vector2 curP = new Vector2(orgP.x,orgP.y);
+                    Vector2 preP = new Vector2(-1,-1);
+                    int nX;
+                    int nY;
+                    int[] bDir = { 0, 0, 0, 0 };
+
+
+                    int nHeight;
+                    int nFind;
+
+                    int nCnt = 0;
+                    while (true)
+                    {
+                        nCnt++;
+                        nX = -1;
+                        nY = -1;
+                        nFind = 0;
+                        if (nCnt > 400)
+                        {
+                            break;
+                        }
+                        nHeight = mapTable.GetTile((int)curP.x, (int)curP.y).GetHeight();
+                        if (nHeight >= 7 )
+                        {
+                            break;
+                        }
+                        for(int i = 0; i < 4; i++)
+                        {
+                            bDir[i] = 0;
+                            switch (i)
+                            {
+                                case 0:
+                                    nX = -1;
+                                    nY = 0;
+                                    break;
+                                case 1:
+                                    nX = 0;
+                                    nY = -1;
+                                    break;
+                                case 2:
+                                    nX = 1;
+                                    nY = 0;
+                                    break;
+                                case 3:
+                                    nX = 0;
+                                    nY = 1;
+                                    break;
+                            }
+                            if (curP.x + nX < 0 || curP.x + nX >= mapTable.nXSize || curP.y + nY < 0 || curP.y + nY >= mapTable.nYSize)
+                            {
+                                bDir[i] = -100;
+                                continue;
+                            }
+                            if (curP.x + nX == preP.x && curP.y +nY == preP.y)
+                            {
+                                bDir[i] = -10;
+                                continue;
+                            }
+                            if (Aproach((int)curP.x + nX, (int)curP.y + nY, 1, 1, false, eTileType.Water))
+                            {
+                                bDir[i] = -5;
+                                continue;
+                            }
+                            if (mapTable.GetTile((int)curP.x + nX, (int)curP.y + nY).GetTileType() == (int)eTileType.Water)
+                            {
+                                bDir[i] = -1;
+                                continue;
+                            }
+                            int tempH = mapTable.GetTile((int)curP.x + nX, (int)curP.y + nY).GetHeight();
+                            bDir[i] = tempH;
+                        }
+
+                        if (bDir[0] < 0 && bDir[1] < 0 && bDir[2] < 0 && bDir[3] < 0)
+                            break;
+                        if (bDir[0] < nHeight && bDir[1] < nHeight && bDir[2] < nHeight && bDir[3] < nHeight)
+                            break;
+                        for (int i = 1; i < 4; i++)
+                        {
+                            if (bDir[nFind] < bDir[i])
+                            {
+                                nFind = i;
+                            }
+                            else if (bDir[nFind] == bDir[i])
+                            {
+                                if (rand.Next(1, 101) < 33)
+                                {
+                                    nFind = i;
+                                }
+                            }
+                        }
+                        switch (nFind)
+                        {
+                            case 0:
+                                nX = -1;
+                                nY = 0;
+                                break;
+                            case 1:
+                                nX = 0;
+                                nY = -1;
+                                break;
+                            case 2:
+                                nX = 1;
+                                nY = 0;
+                                break;
+                            case 3:
+                                nX = 0;
+                                nY = 1;
+                                break;
+                        }
+                        mapTable.GetTile((int)curP.x, (int)curP.y).SetTileType(eTileType.Water);
+                        mapTable.GetTile((int)curP.x, (int)curP.y).SetHeight(mapTable.GetTile((int)curP.x, (int)curP.y).GetHeight()!=0? mapTable.GetTile((int)curP.x, (int)curP.y).GetHeight()-1:0);
+                        preP = new Vector2(curP.x,curP.y);
+                        curP = new Vector2(curP.x + nX, curP.y + nY);
+
+                    }
+
                 }
 
                 return true;
