@@ -42,7 +42,6 @@ public class InputMng : MonoBehaviour
         mPos = Vector3.zero ;
         if (Input.GetMouseButtonDown(0)) {//왼쪽 마우스 누르기
             isMove = false;
-            gameMng.unitMng.ClearSelectableUnit();
             mPos = Input.mousePosition;
             mPosStart = Camera.main.ScreenToViewportPoint(mPos);
             Debug.Log("(" + mPos.x + "," + mPos.y + ") The Left Mouse");
@@ -54,10 +53,10 @@ public class InputMng : MonoBehaviour
                 switch (hit.transform.tag)
                 {
                     case "Tile":
-                        gameMng.unitMng.FocusCurUnit(null);
+                        gameMng.playerMng.GetControlPlayer().SelectUnit(null);
                         break;
                     case "Unit":
-                        gameMng.unitMng.FocusCurUnit(hit.transform.GetComponent<UnitCtrl>());
+                        gameMng.playerMng.GetControlPlayer().SelectUnit(hit.transform.GetComponent<UnitCtrl>());
                         break;
                 }
             }
@@ -76,7 +75,7 @@ public class InputMng : MonoBehaviour
             mPosEnd = Camera.main.ScreenToViewportPoint(mPos);
             if (mPosStart != mPosEnd)
             {
-                gameMng.unitMng.SelectUnits(mPosStart, mPosEnd);
+                gameMng.playerMng.GetControlPlayer().SelectUnits(mPosStart, mPosEnd);
             }
         }
 
@@ -95,7 +94,7 @@ public class InputMng : MonoBehaviour
                 switch (hit.transform.tag)
                 {
                     case "Tile":
-                        gameMng.unitMng.IssueMoveOrder(hit.transform.localPosition);
+                        //gameMng.unitMng.IssueMoveOrder(hit.transform.localPosition);
                         break;
                     case "Unit":
                         break;
@@ -134,49 +133,65 @@ public class InputMng : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// 키보드 입력 처리 메서드
+    /// </summary>
     private void KeyboardInput()
     {
         float zoom = -1*gameMng.interfaceMng.MainCamera.transform.localPosition.z+2;
+        int nXSize = gameMng.mapMng.xSize-1;
+        int nYSize = gameMng.mapMng.ySize-1;
         if (isMove)
         {
             if (Input.GetKey(KeyCode.UpArrow))
             {
-                if (CameraPos.z < 99)
+                if (CameraPos.z + 4.0f * zoom * Time.deltaTime > nYSize)
+                    CameraPos.z = nYSize;
+                else if (CameraPos.z < nYSize)
                     CameraPos.z += 4.0f * zoom * Time.deltaTime;
                 else
-                    CameraPos.z = 99;
+                    CameraPos.z = nYSize;
                 CameraPos.y = gameMng.mapMng.GetHeight((int)CameraPos.x, (int)CameraPos.z);
                 
             }
             if (Input.GetKey(KeyCode.DownArrow))
             {
-                if (CameraPos.z> 0)
+                if (CameraPos.z - 4.0f * zoom * Time.deltaTime < 1)
+                    CameraPos.z = 1;
+                else if (CameraPos.z> 1)
                     CameraPos.z -= 4.0f * zoom * Time.deltaTime;
                 else
-                    CameraPos.z = 0;
+                    CameraPos.z = 1;
                 CameraPos.y = gameMng.mapMng.GetHeight((int)CameraPos.x, (int)CameraPos.z);
             }
             if (Input.GetKey(KeyCode.LeftArrow))
             {
-                if(CameraPos.x >0)
+                if (CameraPos.x - 4.0f * zoom * Time.deltaTime < 1)
+                    CameraPos.x = 1;
+                else if (CameraPos.x >1)
                     CameraPos.x -= 4.0f * zoom * Time.deltaTime;
                 else
-                    CameraPos.x = 0;
+                    CameraPos.x = 1;
                 CameraPos.y = gameMng.mapMng.GetHeight((int)CameraPos.x, (int)CameraPos.z);
             }
             if (Input.GetKey(KeyCode.RightArrow))
             {
-                if (CameraPos.x < 99)
+                if(CameraPos.x + 4.0f * zoom * Time.deltaTime > nXSize)
+                    CameraPos.x = nXSize;
+                else if (CameraPos.x < nXSize)
                     CameraPos.x += 4.0f * zoom * Time.deltaTime;
                 else
-                    CameraPos.x = 99;
+                    CameraPos.x = nXSize;
                 CameraPos.y = gameMng.mapMng.GetHeight((int)CameraPos.x, (int)CameraPos.z);
             }
             CameraPos.y = CameraPos.y <3 ? 3 : CameraPos.y;
         }
         if (Input.GetKeyDown(KeyCode.R))
         {
-            gameMng.mapMng.SetMap();
+            gameMng.mapMng.ResetMap();
         }
     }
+
+
+
 }

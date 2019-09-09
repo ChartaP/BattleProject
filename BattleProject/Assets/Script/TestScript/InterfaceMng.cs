@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using GameSys.Lib;
 
-public enum numFace{
-    NullUnit=-1,
-    TestUnit=0
-}
 public class InterfaceMng : MonoBehaviour
 {
+    public GameMng gameMng;
+    public PlayerCtrl CtrlPlayer;
     public Camera MainCamera;
     public Camera UICamera;
     public Transform MainCameraCarrier;
@@ -20,23 +19,30 @@ public class InterfaceMng : MonoBehaviour
     void Start()
     {
         DefFace = FaceSprite.sprite;
+        CtrlPlayer = gameMng.playerMng.GetControlPlayer();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (gameMng.bGameStart)
+        {
+            if(CtrlPlayer.selectableUnit.Count > 0)
+            {
+                ChangeFaceInterface(CtrlPlayer.selectableUnit[0].unitID);
+            }
+        }
     }
 
-    public void ChangeFaceInterface(numFace faceNum)
+    public void ChangeFaceInterface(eUnits unitID)
     {
-        if((int)faceNum <= -1)
+        if((int)unitID <= -1)
         {
             FaceSprite.sprite = DefFace;
         }
         else
         {
-            FaceSprite.sprite = UnitFace[(int)faceNum];
+            FaceSprite.sprite = UnitFace[(int)unitID];
         }
     }
 

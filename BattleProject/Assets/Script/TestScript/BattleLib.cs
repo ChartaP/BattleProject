@@ -5,6 +5,22 @@ using GameSys;
 namespace GameSys
 {
     namespace Lib {
+        public enum eDifficulty
+        {
+            GodBless = 0,
+            Lucky = 1,
+            Commonness = 2,
+            Adventure = 3,
+            Apocalypse = 4,
+        }
+
+        public enum ePlayerType
+        {
+            Player = 0,
+            Computer = 1,
+            Observer = 2
+        }
+
         public enum eTileType
         {
             Water = 0,
@@ -23,6 +39,13 @@ namespace GameSys
             Null=-1,
             Grass = 0,
             Tree = 1
+        }
+
+        public enum eUnits
+        {
+            Null = -1,
+            People = 0,
+
         }
     }
 }

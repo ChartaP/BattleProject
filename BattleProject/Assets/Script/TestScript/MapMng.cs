@@ -7,19 +7,19 @@ public class MapMng : MonoBehaviour
 {
     public GameMng gameMng;
     // Start is called before the first frame update
-    public bool CreateEnabled = true;
     public GameObject gTilePre = null;
     public List<GameObject> gPlantsPre = null;
     public GameObject gBuildPre = null;
     public int xSize =10;
     public int ySize =10;
     public MapTile[,] gTileList;
+    public List<PlantsCtrl> gPlantsList;
     public List<Material> TileMaterials;
     public AnimationCurve curveX = AnimationCurve.Linear(0, 1, 1, 0);
 
     private void Awake()
     {
-        CreateMap();
+        
     }
     void Start()
     {
@@ -31,23 +31,21 @@ public class MapMng : MonoBehaviour
         
     }
 
-    private void CreateMap()
+    public void CreateMap()
     {
         gTileList = new MapTile[xSize, ySize];
-        if (CreateEnabled)
+        gPlantsList = new List<PlantsCtrl>();
+        for (int x = 0; x < xSize; x++)
         {
-            for (int x = 0; x < xSize; x++)
+            for (int y = 0; y < ySize; y++)
             {
-                for (int y = 0; y < ySize; y++)
-                {
-                    GameObject Temp = Instantiate(gTilePre, transform.Find("TileTrans"));
-                    Temp.transform.localPosition = new Vector3(x, 0, y);
-                    Temp.name = "(" + x + "," + y + ")" + "Tile";
-                    gTileList[x, y] = Temp.GetComponent<MapTile>();
-                }
+                GameObject Temp = Instantiate(gTilePre, transform.Find("TileTrans"));
+                Temp.transform.localPosition = new Vector3(x, 0, y);
+                Temp.name = "(" + x + "," + y + ")" + "Tile";
+                gTileList[x, y] = Temp.GetComponent<MapTile>();
             }
-            SetMap();
         }
+        SetMap();
     }
 
     public void SetMap()
@@ -83,10 +81,42 @@ public class MapMng : MonoBehaviour
                     GameObject Temp = Instantiate(gPlantsPre[curPlant], transform.Find("PlantsTrans"));
                     Temp.transform.position = gTileList[x, y].transform.Find("Quad").transform.position;
                     Temp.name = "(" + x + "," + y + ")" + "Plants";
+                    gPlantsList.Add(Temp.GetComponent<PlantsCtrl>());
                 }
                 
             }
         }
+    }
+
+    public void ResetMap()
+    {
+        if (gPlantsList.Count != 0)
+        {
+            foreach (PlantsCtrl temp in gPlantsList)
+            {
+                Destroy(temp.gameObject);
+            }
+            gPlantsList.Clear();
+        }
+        if (gTileList.Length != 0)
+        {
+            foreach (MapTile temp in gTileList)
+            {
+                Destroy(temp.gameObject);
+            }
+            gTileList = new MapTile[xSize, ySize];
+        }
+        for (int x = 0; x < xSize; x++)
+        {
+            for (int y = 0; y < ySize; y++)
+            {
+                GameObject Temp = Instantiate(gTilePre, transform.Find("TileTrans"));
+                Temp.transform.localPosition = new Vector3(x, 0, y);
+                Temp.name = "(" + x + "," + y + ")" + "Tile";
+                gTileList[x, y] = Temp.GetComponent<MapTile>();
+            }
+        }
+        SetMap();
     }
     
     public int GetHeight(int x,int y)

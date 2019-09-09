@@ -125,7 +125,7 @@ namespace GameSys
                 CreateGeometry(mergeRepeat);
                 HeigherGeometry();
                 CreateRiver(40);
-                PlantsPlant();
+                PlantsPlant(2);
 
                 return mapTable;
             }
@@ -166,7 +166,7 @@ namespace GameSys
                         for (int y = 0; y < mapTable.nYSize; y++)
                         {
                             
-                            tempMap[x, y] = Aproach(x,y,mergePoint,mergeRange,bOut,eTileType.Ground|eTileType.Stone);
+                            tempMap[x, y] = Aproach(eTileType.Ground | eTileType.Stone,x, y,mergePoint,mergeRange,bOut);
                         }
                     }
 
@@ -198,7 +198,7 @@ namespace GameSys
             /// <param name="bOut">맵 외각 처리 결정 변수</param>
             /// <param name="type">검사 타일 타입</param>
             /// <returns>인접 특정 타일 분포율이 기준 분포율 초과시 true</returns>
-            private static bool Aproach( int x,int y ,int point,int range,bool bOut,eTileType type)
+            private static bool Aproach(eTileType type, int x,int y ,int point,int range,bool bOut)
             {
                 int cnt = 0;
 
@@ -245,6 +245,37 @@ namespace GameSys
             }
             
             /// <summary>
+            /// 인접 특정 요소 분포율 검사 메서드
+            /// </summary>
+            /// <param name="map">검사 배열</param>
+            /// <param name="nType">검사 요소 값</param>
+            /// <param name="x">원점x</param>
+            /// <param name="y">원점y</param>
+            /// <param name="nXSize">x사이즈</param>
+            /// <param name="nYSize">y사이즈</param>
+            /// <param name="point">기준 분포율</param>
+            /// <param name="range">검사 범위</param>
+            /// <returns></returns>
+            private static bool Aproach(int[,] map, int nType,int x,int y,int nXSize,int nYSize,int point,int range)
+            {
+                int nCnt = 0;
+                for(int nX=(x-range<0?0:x-range);nX < (x + range >= nXSize ? nXSize : x + range); nX++)
+                {
+                    for (int nY = (y - range < 0 ? 0 : y - range); nY < (y + range >= nYSize ? nYSize : y + range); nY++)
+                    {
+                        if(map[nX,nY]== nType)
+                        {
+                            nCnt++;
+                        }
+                    }
+                }
+                if (nCnt > point)
+                    return true;
+                else
+                    return false;
+            }
+
+            /// <summary>
             /// 지형 높낮이 조정 메서드
             /// </summary>
             /// <returns>문제 없으면 true</returns>
@@ -261,7 +292,7 @@ namespace GameSys
                 {
                     for (int y = 0; y < mapTable.nYSize; y++)
                     {
-                        if (Aproach(x, y, 64,4, false, eTileType.Ground | eTileType.Stone))
+                        if (Aproach(eTileType.Ground | eTileType.Stone,x, y, 64,4, false))
                         {
                             if (rand.Next(1, 101) < 8)
                             {
@@ -493,26 +524,74 @@ namespace GameSys
             /// 식물 심기 메서드
             /// </summary>
             /// <returns></returns>
-            private static bool PlantsPlant()
+            private static bool PlantsPlant(int nRepeat)
             {
+                int[,] PlantsMap = new int[mapTable.nXSize, mapTable.nYSize];
                 for (int x = 0; x < mapTable.nXSize; x++)
                 {
                     for (int y = 0; y < mapTable.nYSize; y++)
                     {
+
                         mapTable.GetTile(x, y).SetPlants(ePlants.Null);
-                        if (mapTable.GetTile(x, y).GetTileType() == (int)eTileType.Ground)
+                        int nTType = mapTable.GetTile(x, y).GetTileType();
+                        if (nTType == (int)eTileType.Ground)
                         {
-                            if (Aproach(x, y, 12,8, false, eTileType.Water))
+                            if (Aproach(eTileType.Water,x, y, 12,8, false))
                             {
-                                if (rand.Next(1, 101) < 80)
+                                if (rand.Next(1, 101) < 50)
                                 {
-                                    mapTable.GetTile(x, y).SetPlants(ePlants.Grass);
+                                    PlantsMap[x, y] = 1;
                                 }
                                 
                             }
                         }
+                        else if (nTType == (int)eTileType.Water)
+                        {
+                            PlantsMap[x, y] = 1;
+                        }
                     }
                 }
+
+                int[,] tempMap = new int[mapTable.nXSize, mapTable.nYSize];
+
+                for (int c = 0; c < nRepeat; c++)
+                {
+                    for (int x = 0; x < mapTable.nXSize; x++)
+                    {
+                        for (int y = 0; y < mapTable.nYSize; y++)
+                        {
+                            if (mapTable.GetTile(x, y).GetTileType() == (int)eTileType.Ground)
+                            {
+                                if (Aproach(PlantsMap, 1, x, y, mapTable.nXSize, mapTable.nYSize, 8, 2))
+                                {
+                                    tempMap[x, y] = 1;
+                                }
+                            }
+                        }
+                    }
+
+                    for (int x = 0; x < mapTable.nXSize; x++)
+                    {
+                        for (int y = 0; y < mapTable.nYSize; y++)
+                        {
+                            PlantsMap[x, y] = tempMap[x, y];
+                        }
+                    }
+                }
+
+                for (int x = 0; x < mapTable.nXSize; x++)
+                {
+                    for (int y = 0; y < mapTable.nYSize; y++)
+                    {
+                        if (PlantsMap[x, y] == 1)
+                        {
+                            if(mapTable.GetTile(x, y).GetTileType()!=(int)eTileType.Water)
+                                mapTable.GetTile(x, y).SetPlants(ePlants.Grass);
+                        }
+                    }
+                }
+                
+
                 return true;
             }
         }
