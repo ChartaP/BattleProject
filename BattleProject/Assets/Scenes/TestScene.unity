@@ -829,6 +829,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameMng: {fileID: 719238060}
   unitList: []
+  gUnitList:
+  - {fileID: 4736894620230603202, guid: 0efcd66373d1e29449050608a14164ac, type: 3}
+  - {fileID: 6882653238798708763, guid: 10072cd7f3c671c44ac721352d6b0201, type: 3}
 --- !u!1 &1559274542
 GameObject:
   m_ObjectHideFlags: 0
@@ -1136,6 +1139,7 @@ MonoBehaviour:
   FaceSprite: {fileID: 1559274544}
   SelecteBox: {fileID: 1147930045}
   UnitFace:
+  - {fileID: 21300000, guid: bd2b52a1657c3b046ad6630ea7defd4a, type: 3}
   - {fileID: 21300000, guid: dcc54f79790c2b44783d084ddfd55c6d, type: 3}
 --- !u!114 &1807776237
 MonoBehaviour:

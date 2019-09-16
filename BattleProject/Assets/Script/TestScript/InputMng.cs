@@ -65,7 +65,10 @@ public class InputMng : MonoBehaviour
         {
             isMove = true;
             gameMng.interfaceMng.SelecteBox.gameObject.SetActive(false);
-            mPos = Input.mousePosition;
+            if (mPosStart != mPosEnd)
+            {
+                gameMng.playerMng.GetControlPlayer().SelectUnits(mPosStart, mPosEnd);
+            }
         }
         else if (Input.GetMouseButton(0))//왼쪽 마우스 드래그
         {
@@ -73,10 +76,6 @@ public class InputMng : MonoBehaviour
             EndPoint = mPos;
             gameMng.interfaceMng.DragRectInterface(StartPoint, EndPoint);
             mPosEnd = Camera.main.ScreenToViewportPoint(mPos);
-            if (mPosStart != mPosEnd)
-            {
-                gameMng.playerMng.GetControlPlayer().SelectUnits(mPosStart, mPosEnd);
-            }
         }
 
         if (Input.GetMouseButtonDown(1))//오른쪽 마우스 누르기

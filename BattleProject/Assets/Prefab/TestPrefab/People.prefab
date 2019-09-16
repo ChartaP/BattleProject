@@ -143,11 +143,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitMng: {fileID: 0}
-  unitPos: {x: 0, y: 0, z: 0}
-  tgtPos: {x: 0, y: 0, z: 0}
-  unitNum: 0
-  unitID: 0
-  playerID: 0
+  unitType: 1
+  unitJob: 100
+  Owner: {fileID: 0}
   SelectMesh: {fileID: 6822350607978873063}
 --- !u!1 &6882653239257937200
 GameObject:

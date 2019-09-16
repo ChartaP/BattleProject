@@ -29,20 +29,20 @@ public class InterfaceMng : MonoBehaviour
         {
             if(CtrlPlayer.selectableUnit.Count > 0)
             {
-                ChangeFaceInterface(CtrlPlayer.selectableUnit[0].unitID);
+                ChangeFaceInterface(CtrlPlayer.selectableUnit[0].unitJob);
             }
         }
     }
 
-    public void ChangeFaceInterface(eUnits unitID)
+    public void ChangeFaceInterface(eUnitJob unitJob)
     {
-        if((int)unitID <= -1)
+        if((int)unitJob <= -1)
         {
             FaceSprite.sprite = DefFace;
         }
         else
         {
-            FaceSprite.sprite = UnitFace[(int)unitID];
+            FaceSprite.sprite = UnitFace[gameMng.unitMng.UnitjobToUnitID(unitJob)];
         }
     }
 

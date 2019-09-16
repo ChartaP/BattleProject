@@ -41,10 +41,33 @@ namespace GameSys
             Tree = 1
         }
 
-        public enum eUnits
+        /// <summary>
+        /// 유닛 타입
+        /// </summary>
+        public enum eUnitType
         {
-            Null = -1,
-            People = 0,
+            Null    = -1,
+            Leader  = 0,//리더 유닛
+            People  = 1,
+            Army    = 2,
+            Animal  = 3
+        }
+        /// <summary>
+        /// 유닛 직업
+        /// </summary>
+        public enum eUnitJob
+        {
+            Null        = -1,
+            Leader      = 0,//지도자
+            Jobless     = 100,//백수
+            Farmer      = 101,//농부
+            Miner       = 102,//광부
+            Laborer     = 104,//인부
+            Stoneman    = 200,//돌도끼병
+            Spearman    = 201,//창병
+            Bowman      = 202,//궁병
+            Swordman    = 203,//검사
+            Cavalry     = 204,//기병
 
         }
     }
