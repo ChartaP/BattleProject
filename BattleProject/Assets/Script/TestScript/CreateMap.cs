@@ -8,8 +8,6 @@ namespace GameSys
 {
     namespace Map
     {
-        
-
         /// <summary>
         /// 타일 데이터 클래스
         /// 타일의 타입과 높이 등 정보를 보유

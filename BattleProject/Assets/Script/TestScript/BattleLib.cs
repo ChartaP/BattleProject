@@ -29,6 +29,12 @@ namespace GameSys
             GroundOrStone = 3
         }
 
+        public enum eItemType
+        {
+            Block = 0,
+            Item = 1
+        }
+
         public enum eResource
         {
             Stone

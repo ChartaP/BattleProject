@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ItemInfo>
+
+	<Item>
+		<ID="0"name="Dirt"icon="icon_Dirt"type="Block"color="Brown"/>
+		<ID="1"name="Stone"icon="icon_Stone"type="Block"color="Gray"/>
+		<ID="2"name="Water"icon="icon_Water"type="Block"color="Blue"/>
+	</Item>
+
+</ItemInfo>
