@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using GameSys;
 using GameSys.Lib;
+using GameSys.Item;
 
 namespace GameSys
 {
@@ -14,45 +15,34 @@ namespace GameSys
         /// </summary>
         public class TileData 
         {
-            public eTileType eType;
-            public eResource eUnderRes;
-            public ePlants ePlant;
-            public int nHeight;
+            private int nHeight;
+            private byte[] b_Stratum = new byte[64];
+            //0~7심층 8~15지하(바다) 16~23평지 24~63산
 
-            public TileData(eTileType eType,int nHeight)
+            public TileData()
             {
-                this.eType = eType;
-                this.nHeight = nHeight;
+                this.nHeight = 16;
+               for(int i = 0;i < 64; i++)
+                {
+                    b_Stratum[i] = 0;
+                }
             }
-
-            public int GetTileType()
+            
+            public int Height
             {
-                return (int)eType;
+                get { return nHeight; }
+                set { nHeight = value; }
             }
+        }
 
-            public void SetTileType(eTileType eType)
-            {
-                this.eType = eType;
-            }
+        public class Chunk
+        {
+            private eGeoType eGeo;
+            private TileData[,] tiles = new TileData[8, 8];
 
-            public int GetHeight()
+            public Chunk()
             {
-                return nHeight;
-            }
 
-            public void SetHeight(int nHeight)
-            {
-                this.nHeight = nHeight;
-            }
-
-            public int GetPlants()
-            {
-                return (int)ePlant;
-            }
-
-            public void SetPlants(ePlants ePlant)
-            {
-                this.ePlant = ePlant;
             }
         }
 
@@ -64,28 +54,16 @@ namespace GameSys
         {
             public int nXSize;
             public int nYSize;
-            public TileData[,] table;
+            public Chunk[,] table;
 
             public MapTable(int nXSize, int nYSize)
             {
                 this.nXSize = nXSize;
                 this.nYSize = nYSize;
-                table = new TileData[nXSize, nYSize];
+                table = new Chunk[nXSize/8, nYSize/8];
             }
 
-            public void SetTile(TileData tile, int nX, int nY)
-            {
-                table[nX, nY] = tile;
-            }
-
-            public TileData GetTile(int nX, int nY)
-            {
-                if (nX < 0 || nX >= nXSize)
-                    return null;
-                if (nY < 0 || nY >= nYSize)
-                    return null;
-                return table[nX, nY];
-            }
+            
         }
 
         /// <summary>
@@ -119,15 +97,13 @@ namespace GameSys
                 rand = new System.Random(uiSeed);
 
                 mapTable = new MapTable(nXSize, nYSize);
-
-                CreateGeometry(mergeRepeat);
-                HeigherGeometry();
-                CreateRiver(40);
-                PlantsPlant(2);
-
+                
                 return mapTable;
             }
 
+
+
+            /*
             /// <summary>
             /// 대륙 모양 생성 메서드
             /// </summary>
@@ -592,6 +568,8 @@ namespace GameSys
 
                 return true;
             }
+
+            */
         }
     }
 }

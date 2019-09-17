@@ -449,38 +449,7 @@ MonoBehaviour:
     type: 3}
   gPlantsPre:
   - {fileID: 6814501387665756462, guid: a157b76920129584db3fbadbf43a262a, type: 3}
-  gBuildPre: {fileID: 0}
-  xSize: 10
-  ySize: 10
-  gPlantsList: []
-  TileMaterials:
-  - {fileID: 2100000, guid: 75f55e2b56d397849b926266237bdd48, type: 2}
-  - {fileID: 2100000, guid: d8265638b63eef9478b948d0bcbc3a32, type: 2}
-  - {fileID: 2100000, guid: 3f9d28d37a47bd44085b538a38558d99, type: 2}
-  curveX:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 0.9995272
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.18676119
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
+  gBuildPre: []
 --- !u!1 &719238057
 GameObject:
   m_ObjectHideFlags: 0
@@ -490,6 +459,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 719238058}
+  - component: {fileID: 719238059}
   - component: {fileID: 719238060}
   m_Layer: 0
   m_Name: GameOrigin
@@ -517,6 +487,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &719238059
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 719238057}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ee6b1b29e7e5014580b5b01e6d9f2ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sXmlFileName: ItemInfo
 --- !u!114 &719238060
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -21,23 +21,18 @@ namespace GameSys
             Observer = 2
         }
 
-        public enum eTileType
+        public enum eGeoType
         {
-            Water = 0,
-            Ground = 1,
-            Stone = 2,
-            GroundOrStone = 3
+            Flat = 0,
+            Water = 1,
+            Sea = 2,
+            Hill = 3
         }
 
         public enum eItemType
         {
             Block = 0,
             Item = 1
-        }
-
-        public enum eResource
-        {
-            Stone
         }
 
         public enum ePlants

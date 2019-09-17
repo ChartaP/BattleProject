@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ItemInfo>
+	<Item>
+    <Field id="0" name="Air" icon="icon_Air" type="Block" size="1"/>
+    <Field id="1" name="Dirt" icon="icon_Dirt" type="Block" size="1"/>
+    <Field id="2" name="Stone" icon="icon_Stone" type="Block" size="1"/>
+    <Field id="3" name="Water" icon="icon_Water" type="Block" size="1"/>
+	</Item>
+  <Block>
+    <Field id="0" name="Air" gameobject="null" color="Clear" strength="9999"/>
+    <Field id="1" name="Dirt" gameobject="Dirt" color="Brown" strength="10"/>
+    <Field id="2" name="Stone" gameobject="Stone" color="Gray" strength="100"/>
+    <Field id="3" name="Water" gameobject="Water" color="Blue" strength="9999"/>
+  </Block>
+</ItemInfo>

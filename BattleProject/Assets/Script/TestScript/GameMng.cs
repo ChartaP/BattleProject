@@ -15,8 +15,6 @@ public class GameMng : MonoBehaviour
 
     private void Awake()
     {
-        mapMng.xSize = GameInfo.nXSize;
-        mapMng.ySize = GameInfo.nYSize;
         mapMng.CreateMap();
         GameInfo.nCtrlPlayerID = 0;
         GameInfo.playerList.Add(new PlayerInfo(0,"Test",ePlayerType.Player,eDifficulty.Commonness));

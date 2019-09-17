@@ -138,8 +138,8 @@ public class InputMng : MonoBehaviour
     private void KeyboardInput()
     {
         float zoom = -1*gameMng.interfaceMng.MainCamera.transform.localPosition.z+2;
-        int nXSize = gameMng.mapMng.xSize-1;
-        int nYSize = gameMng.mapMng.ySize-1;
+        int nXSize = GameInfo.nXSize-1;
+        int nYSize = GameInfo.nYSize-1;
         if (isMove)
         {
             if (Input.GetKey(KeyCode.UpArrow))
@@ -188,6 +188,12 @@ public class InputMng : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R))
         {
             gameMng.mapMng.ResetMap();
+        }
+
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            //Debug.Log(GameSys.Item.ItemMng.Instance.Item(0).ID+ GameSys.Item.ItemMng.Instance.Item(0).Name+ GameSys.Item.ItemMng.Instance.Item(0).Icon+ GameSys.Item.ItemMng.Instance.Item(0).Size);
         }
     }
 
