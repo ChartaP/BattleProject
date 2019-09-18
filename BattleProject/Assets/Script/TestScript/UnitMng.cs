@@ -21,20 +21,17 @@ public class UnitMng : MonoBehaviour
         
     }
 
-    public void CreateUnit(Vector3 unitPos, PlayerCtrl Owner, eUnitType unitType = eUnitType.People)
+    public UnitCtrl CreateUnit(Vector3 unitPos, PlayerCtrl Owner, eUnitType unitType = eUnitType.People)
     {
-        UnitCtrl unitTemp;
+        UnitCtrl unitTemp = null;
         switch (unitType)
         {
-            case eUnitType.Leader:
-                unitTemp = Instantiate(gUnitList[0], this.transform).GetComponent<UnitCtrl>();
-                unitTemp.SetUnit(this,unitType,Owner,unitPos);
-                break;
             case eUnitType.People:
-                unitTemp = Instantiate(gUnitList[1], this.transform).GetComponent<UnitCtrl>();
+                unitTemp = Instantiate(gUnitList[0], this.transform).GetComponent<UnitCtrl>();
                 unitTemp.SetUnit(this, unitType, Owner, unitPos);
                 break;
         }
+        return unitTemp;
     }
     
     public int UnitjobToUnitID(eUnitJob job)

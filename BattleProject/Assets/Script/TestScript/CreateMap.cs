@@ -15,34 +15,131 @@ namespace GameSys
         /// </summary>
         public class TileData 
         {
+            private int nX;
+            private int nY;
             private int nHeight;
             private byte[] b_Stratum = new byte[64];
             //0~7심층 8~15지하(바다) 16~23평지 24~63산
 
-            public TileData()
+            public TileData(int nX,int nY)
             {
-                this.nHeight = 16;
-               for(int i = 0;i < 64; i++)
+                this.nX = nX;
+                this.nY = nY;
+               this.nHeight = 16;
+               for(int z = 0;z < 64; z++)
                 {
-                    b_Stratum[i] = 0;
+                    b_Stratum[z] = 0;
                 }
             }
             
             public int Height
             {
                 get { return nHeight; }
-                set { nHeight = value; }
+                set
+                {
+                    if (value > 64)
+                        nHeight = 64;
+                    else
+                        nHeight = value;
+                    for (int z = 0; z < nHeight; z++)
+                    {
+                        b_Stratum[z] = 2;
+                    }
+                }
+            }
+
+            public void CoverDirt()
+            {
+                for (int z = nHeight-4; z < nHeight; z++)
+                {
+                    b_Stratum[z] = 1;
+                }
+            }
+
+            public int X
+            {
+                get { return nX; }
+            }
+            public int Y
+            {
+                get { return nY; }
+            }
+
+            public List<byte> Stratum
+            {
+                get
+                {
+                    List<byte> stratum = new List<byte>();
+                    for(int z = 0; z < Height; z++)
+                    {
+                        stratum.Add(b_Stratum[z]);
+                    }
+                    return stratum;
+                }
             }
         }
 
         public class Chunk
         {
+            private int nX;
+            private int nY;
             private eGeoType eGeo;
-            private TileData[,] tiles = new TileData[8, 8];
+            private TileData[,] tiles;
 
-            public Chunk()
+            public Chunk(int nX,int nY)
             {
+                this.nX = nX;
+                this.nY = nY;
+                tiles = new TileData[8, 8];
+                for (int x = 0; x < 8; x++)
+                {
+                    for (int y = 0; y < 8; y++)
+                    {
+                        tiles[x, y] = new TileData(nX * 8 + x, nY * 8 + y);
+                    }
+                }
+                eGeo = eGeoType.Flat;
+            }
 
+            public void GenerateTile()
+            {
+                switch (eGeo)
+                {
+                    case eGeoType.Flat:
+                        for(int x = 0; x < 8; x++)
+                        {
+                            for(int y = 0; y < 8; y++)
+                            {
+                                tiles[x, y].Height=16;
+                                tiles[x, y].CoverDirt();
+                            }
+                        }
+                        break;
+                    case eGeoType.Hill:
+                        break;
+                    case eGeoType.Sea:
+                        break;
+                    case eGeoType.Water:
+                        break;
+                }
+            }
+
+            public List<TileData> TileList
+            {
+                get
+                {
+                    List<TileData> tiles = new List<TileData>();
+
+                    for (int x = 0; x < 8; x++)
+                    {
+                        for (int y = 0; y < 8; y++)
+                        {
+                            tiles.Add(this.tiles[x, y]);
+                        }
+                    }
+
+                    return tiles;
+                }
             }
         }
 
@@ -52,18 +149,60 @@ namespace GameSys
         /// </summary>
         public class MapTable
         {
-            public int nXSize;
-            public int nYSize;
-            public Chunk[,] table;
+            private int nXSize;
+            private int nYSize;
+
+            private Chunk[,] Chunks;
 
             public MapTable(int nXSize, int nYSize)
             {
-                this.nXSize = nXSize;
-                this.nYSize = nYSize;
-                table = new Chunk[nXSize/8, nYSize/8];
+                this.nXSize = nXSize / 8;
+                this.nYSize = nYSize / 8;
+                Chunks = new Chunk[this.nXSize, this.nYSize];
+                for (int x = 0; x < this.nXSize; x++)
+                {
+                    for (int y = 0; y < this.nYSize; y++)
+                    {
+                        Chunks[x, y] = new Chunk(x,y);
+                    }
+                }
             }
 
+            public int XSize
+            {
+                get { return nXSize; }
+            }
+
+            public int YSize
+            {
+                get { return nYSize; }
+            }
             
+            public List<TileData> TileList
+            {
+                get
+                {
+                    List<TileData> tiles = new List<TileData>();
+
+                    for (int x = 0; x < this.nXSize; x++)
+                    {
+                        for (int y = 0; y < this.nYSize; y++)
+                        {
+                            tiles.AddRange(this.Chunks[x, y].TileList);
+                        }
+                    }
+
+                    return tiles;
+                }
+            }
+
+            public void GenerateChunk()
+            {
+                foreach(Chunk chunk in Chunks)
+                {
+                    chunk.GenerateTile();
+                }
+            }
         }
 
         /// <summary>
@@ -97,6 +236,8 @@ namespace GameSys
                 rand = new System.Random(uiSeed);
 
                 mapTable = new MapTable(nXSize, nYSize);
+
+                mapTable.GenerateChunk();
                 
                 return mapTable;
             }

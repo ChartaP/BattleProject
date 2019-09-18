@@ -42,12 +42,15 @@ public class PlayerMng : MonoBehaviour
             //플레이어 스폰
             if (player.playerInfo.eType == ePlayerType.Player)
             {
-                gameMng.unitMng.CreateUnit(Vector3.zero, player, eUnitType.Leader);
+                UnitCtrl unitTemp = null;
+                gameMng.interfaceMng.MainCameraCarrier.localPosition = new Vector3(0,16,0);
+                unitTemp = gameMng.unitMng.CreateUnit(Vector3.zero, player, eUnitType.People);
+                
             }
             //컴퓨터 스폰
             else if (player.playerInfo.eType == ePlayerType.Computer)
             {
-                gameMng.unitMng.CreateUnit(Vector3.zero, player, eUnitType.Leader);
+                gameMng.unitMng.CreateUnit(Vector3.zero, player, eUnitType.People);
             }
             //관전자 스폰
             else

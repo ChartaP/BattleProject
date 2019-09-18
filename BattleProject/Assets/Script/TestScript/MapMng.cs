@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using GameSys.Map;
+using GameSys.Lib;
 using GameSys.Item;
 
 public class MapMng : MonoBehaviour
@@ -11,7 +12,7 @@ public class MapMng : MonoBehaviour
     public GameObject gTilePre = null;
     public List<GameObject> gPlantsPre = null;
     public List<GameObject> gBuildPre = null;
-    public MapTable mapTable;
+    public Dictionary<int,MapTile> MapTiles;
 
     private void Awake()
     {
@@ -29,22 +30,44 @@ public class MapMng : MonoBehaviour
 
     public void CreateMap()
     {
-        
+        MapTiles = new Dictionary<int, MapTile>();
+        SetMap();
     }
-
     public void SetMap()
     {
+        MapTable mapTable = GameSys.Map.CreateMap.Create(GameInfo.nXSize, GameInfo.nYSize, 0);
 
+        foreach (TileData tile in mapTable.TileList)
+        {
+            GameObject gTile = Instantiate(gTilePre, transform.Find("TileTrans"));
+            gTile.transform.localPosition = new Vector3(tile.X, 0, tile.Y);
+            MapTile cTile = gTile.GetComponent<MapTile>();
+            cTile.SetPos(tile.X,tile.Y);
+            cTile.myMapMng = this;
+            cTile.Height = tile.Height;
+            cTile.StackBlock(tile.Stratum);
+            MapTiles.Add((tile.X  << 8)|tile.Y, cTile);
+        }
+
+        foreach(int key in MapTiles.Keys)
+        {
+            MapTiles[key].optimizeBlock();
+        }
     }
-
     public void ResetMap()
     {
-        
+        MapTiles.Clear();
+
+        SetMap();
     }
     
     public int GetHeight(int x,int y)
     {
-        return 0;
+        if (x < 0 || y < 0 || x >= GameInfo.nXSize || y >= GameInfo.nYSize)
+        {
+            return 256;
+        }
+        return MapTiles[(x << 8) | y].Height;
     }
 
 }

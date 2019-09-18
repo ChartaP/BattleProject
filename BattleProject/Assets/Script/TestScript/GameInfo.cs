@@ -11,6 +11,6 @@ public static class GameInfo
 {
     public static List<PlayerInfo> playerList= new List<PlayerInfo>();
     public static int nCtrlPlayerID;
-    public static int nXSize=100;
-    public static int nYSize=100;
+    public static int nXSize=32;
+    public static int nYSize=32;
 }

@@ -48,10 +48,8 @@ namespace GameSys
         public enum eUnitType
         {
             Null    = -1,
-            Leader  = 0,//리더 유닛
-            People  = 1,
-            Army    = 2,
-            Animal  = 3
+            People  = 0,//인간
+            Animal  = 1//동물
         }
         /// <summary>
         /// 유닛 직업
@@ -70,6 +68,42 @@ namespace GameSys
             Swordman    = 203,//검사
             Cavalry     = 204,//기병
 
+        }
+
+        public class Pos
+        {
+            private static int cnt=0;
+            private int id;
+            private int nX;
+            private int nY;
+            public Pos(int nX,int nY)
+            {
+                this.nX = nX;
+                this.nY = nY;
+                id = cnt++;
+            }
+            public int X { get { return nX; } }
+            public int Y { get { return nY; } }
+
+            public static bool operator ==(Pos a,Pos b)
+            {
+                return (a.X == b.X && a.Y == b.Y) ;
+            }
+
+            public static bool operator !=(Pos a, Pos b)
+            {
+                return (a.X != b.X || a.Y != b.Y);
+            }
+
+            public override bool Equals(object a)
+            {
+                return ((Pos)a).X == X && ((Pos)a).Y == Y;
+            }
+            
+            public override int GetHashCode()
+            {
+                return cnt;
+            }
         }
     }
 }

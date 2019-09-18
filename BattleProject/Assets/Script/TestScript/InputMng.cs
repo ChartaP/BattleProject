@@ -155,22 +155,22 @@ public class InputMng : MonoBehaviour
             }
             if (Input.GetKey(KeyCode.DownArrow))
             {
-                if (CameraPos.z - 4.0f * zoom * Time.deltaTime < 1)
-                    CameraPos.z = 1;
+                if (CameraPos.z - 4.0f * zoom * Time.deltaTime < 0)
+                    CameraPos.z = 0;
                 else if (CameraPos.z> 1)
                     CameraPos.z -= 4.0f * zoom * Time.deltaTime;
                 else
-                    CameraPos.z = 1;
+                    CameraPos.z = 0;
                 CameraPos.y = gameMng.mapMng.GetHeight((int)CameraPos.x, (int)CameraPos.z);
             }
             if (Input.GetKey(KeyCode.LeftArrow))
             {
-                if (CameraPos.x - 4.0f * zoom * Time.deltaTime < 1)
-                    CameraPos.x = 1;
+                if (CameraPos.x - 4.0f * zoom * Time.deltaTime < 0)
+                    CameraPos.x = 0;
                 else if (CameraPos.x >1)
                     CameraPos.x -= 4.0f * zoom * Time.deltaTime;
                 else
-                    CameraPos.x = 1;
+                    CameraPos.x = 0;
                 CameraPos.y = gameMng.mapMng.GetHeight((int)CameraPos.x, (int)CameraPos.z);
             }
             if (Input.GetKey(KeyCode.RightArrow))
@@ -196,6 +196,7 @@ public class InputMng : MonoBehaviour
             //Debug.Log(GameSys.Item.ItemMng.Instance.Item(0).ID+ GameSys.Item.ItemMng.Instance.Item(0).Name+ GameSys.Item.ItemMng.Instance.Item(0).Icon+ GameSys.Item.ItemMng.Instance.Item(0).Size);
         }
     }
+
 
 
 

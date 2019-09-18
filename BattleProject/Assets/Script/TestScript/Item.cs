@@ -215,13 +215,22 @@ namespace GameSys
         {
 
         }
-
-        /// <summary>
-        /// 블록 클래스
-        /// </summary>
+        
         public class Block
         {
+            public BlockInfo blockInfo;
+            private GameObject model;
 
+            public Block(BlockInfo blockInfo, GameObject model)
+            {
+                this.blockInfo = blockInfo;
+                this.model = model;
+            }
+
+            public void MeshEnabled(bool val)
+            {
+                model.transform.Find("Cube").GetComponent<MeshRenderer>().enabled = val;
+            }
         }
     }
 }
