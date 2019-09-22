@@ -7,8 +7,11 @@ public class PlayerMng : MonoBehaviour
 {
     public GameMng gameMng;
     public List<PlayerCtrl> PlayerList;
+    //public PlayerCtrl AnimalCtrl;
+    //public PlayerCtrl BarbarianVtrl;
     public PlayerCtrl CtrlPlayer;
     public GameObject gPlayerCtrl;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -27,9 +30,10 @@ public class PlayerMng : MonoBehaviour
         {
             PlayerCtrl player = Instantiate(gPlayerCtrl, transform).GetComponent<PlayerCtrl>();
             player.playerInfo = info;
+            player.name = info.Name;
             player.playerMng = this;
             PlayerList.Add(player );
-            if (GameInfo.nCtrlPlayerID == info.nID)
+            if (GameInfo.nCtrlPlayerID == info.ID)
                 CtrlPlayer = player;
         }
     }
@@ -40,17 +44,25 @@ public class PlayerMng : MonoBehaviour
         {
 
             //플레이어 스폰
-            if (player.playerInfo.eType == ePlayerType.Player)
+            if (player.playerInfo.Type == ePlayerType.Player)
             {
+                Vector3 spawnPos = new Vector3(Random.Range(2,GameInfo.nXSize-2),0,Random.Range(2,GameInfo.nYSize-2));
                 UnitCtrl unitTemp = null;
-                gameMng.interfaceMng.MainCameraCarrier.localPosition = new Vector3(0,16,0);
-                unitTemp = gameMng.unitMng.CreateUnit(Vector3.zero, player, eUnitType.People);
-                
+                if (player == CtrlPlayer)
+                {
+                    gameMng.interfaceMng.MainCameraCarrier.localPosition = new Vector3(spawnPos.x, 16, spawnPos.z);
+                }
+                unitTemp = gameMng.unitMng.CreateUnit(spawnPos, player, eUnitType.People);
+                gameMng.unitMng.ChangeJob(unitTemp, eUnitJob.Leader);
+
             }
-            //컴퓨터 스폰
-            else if (player.playerInfo.eType == ePlayerType.Computer)
+            //컴퓨터 플레이어 스폰
+            else if (player.playerInfo.Type == ePlayerType.Computer)
             {
-                gameMng.unitMng.CreateUnit(Vector3.zero, player, eUnitType.People);
+                Vector3 spawnPos = new Vector3(Random.Range(2, GameInfo.nXSize - 2), 0, Random.Range(2, GameInfo.nYSize - 2));
+                UnitCtrl unitTemp = null;
+                unitTemp = gameMng.unitMng.CreateUnit(spawnPos, player, eUnitType.People);
+                gameMng.unitMng.ChangeJob(unitTemp, eUnitJob.Leader);
             }
             //관전자 스폰
             else

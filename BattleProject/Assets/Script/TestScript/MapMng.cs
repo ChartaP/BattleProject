@@ -13,6 +13,7 @@ public class MapMng : MonoBehaviour
     public List<GameObject> gPlantsPre = null;
     public List<GameObject> gBuildPre = null;
     public Dictionary<int,MapTile> MapTiles;
+    public bool[,] bOpen;
 
     private void Awake()
     {
@@ -36,7 +37,14 @@ public class MapMng : MonoBehaviour
     public void SetMap()
     {
         MapTable mapTable = GameSys.Map.CreateMap.Create(GameInfo.nXSize, GameInfo.nYSize, 0);
-
+        bOpen = new bool[GameInfo.nXSize, GameInfo.nYSize];
+        for(int x = 0; x < GameInfo.nXSize; x++)
+        {
+            for (int y = 0; y < GameInfo.nYSize; y++)
+            {
+                bOpen[x,y] = true;
+            }
+        }
         foreach (TileData tile in mapTable.TileList)
         {
             GameObject gTile = Instantiate(gTilePre, transform.Find("TileTrans"));

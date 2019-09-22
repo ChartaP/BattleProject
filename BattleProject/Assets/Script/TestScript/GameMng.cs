@@ -17,7 +17,8 @@ public class GameMng : MonoBehaviour
     {
         mapMng.CreateMap();
         GameInfo.nCtrlPlayerID = 0;
-        GameInfo.playerList.Add(new PlayerInfo(0,"Test",ePlayerType.Player,eDifficulty.Commonness));
+        GameInfo.playerList.Add(new PlayerInfo("Test",ePlayerType.Player,eDifficulty.Commonness));
+        GameInfo.playerList.Add(new PlayerInfo("AI", ePlayerType.Computer, eDifficulty.Commonness));
         playerMng.GetPlayerInfo();
         playerMng.SpawnPlayer();
         bGameStart = true;

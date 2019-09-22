@@ -9,7 +9,6 @@ public class MapTile : MonoBehaviour
     public GameObject gBlock;
    
     private List<Block> blockList = new List<Block>();
-    private bool bOpen = true;
     [SerializeField]
     private int nHeight = 0;
     private int nX;
@@ -63,13 +62,6 @@ public class MapTile : MonoBehaviour
             blockList[z].MeshEnabled(true);
         }
     }
-
-    public bool Open
-    {
-        get { return bOpen; }
-        set { bOpen = value; }
-    }
-
     public int Height
     {
         get { return nHeight; }

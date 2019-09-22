@@ -46,6 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   myMapMng: {fileID: 0}
   gBlock: {fileID: 7384750752599889965, guid: 0e65ff5ce1cb9fc479e6b94cb7f45485, type: 3}
+  nHeight: 0
 --- !u!1 &7350410981951119814
 GameObject:
   m_ObjectHideFlags: 0
@@ -59,7 +60,7 @@ GameObject:
   - component: {fileID: 3830532535065028707}
   m_Layer: 10
   m_Name: Quad
-  m_TagString: Untagged
+  m_TagString: Tile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

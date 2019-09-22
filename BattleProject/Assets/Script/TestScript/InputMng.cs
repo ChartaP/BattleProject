@@ -94,6 +94,7 @@ public class InputMng : MonoBehaviour
                 {
                     case "Tile":
                         //gameMng.unitMng.IssueMoveOrder(hit.transform.localPosition);
+                        gameMng.playerMng.CtrlPlayer.OrderUnits(hit.transform.parent.parent.localPosition);
                         break;
                     case "Unit":
                         break;

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using GameSys.Lib;
+using GameSys.Order;
 using UnityEngine;
 
 namespace GameSys
@@ -9,17 +10,35 @@ namespace GameSys
     {
         public class PlayerInfo
         {
-            public int nID;
-            public string sName;
-            public ePlayerType eType;
-            public eDifficulty nDifficulty;
+            private static int PlayerCnt = 0;
+            private int nID;
+            private string sName;
+            private ePlayerType eType;
+            private eDifficulty eDifficulty;
 
-            public PlayerInfo(int nID,string sName,ePlayerType eType,eDifficulty nDifficulty)
+            public PlayerInfo(string sName,ePlayerType eType,eDifficulty eDifficulty)
             {
-                this.nID = nID;
+                nID = PlayerCnt++;
                 this.sName = sName;
                 this.eType = eType;
-                this.nDifficulty = nDifficulty;
+                this.eDifficulty = eDifficulty;
+            }
+
+            public int ID
+            {
+                get { return nID; }
+            }
+            public string Name
+            {
+                get { return sName; }
+            }
+            public ePlayerType Type
+            {
+                get { return eType; }
+            }
+            public eDifficulty Difficulty
+            {
+                get { return eDifficulty; }
             }
         }
     }
@@ -131,6 +150,14 @@ public class PlayerCtrl : MonoBehaviour
     public void UnregisterPlayerUnit(UnitCtrl unit)
     {
         UnitList.Remove(unit);
+    }
+
+    public void OrderUnits(Vector3 target)
+    {
+        foreach(UnitCtrl unit in selectableUnit)
+        {
+            unit.receiptOrder(new Move(new Vector2(target.x,target.z)));
+        }
     }
 
 }

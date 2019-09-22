@@ -33,8 +33,13 @@ public class UnitMng : MonoBehaviour
         }
         return unitTemp;
     }
+
+    public void ChangeJob(UnitCtrl unit,eUnitJob job)
+    {
+        unit.SetJob(job);
+    }
     
-    public int UnitjobToUnitID(eUnitJob job)
+    public int UnitjobToID(eUnitJob job)
     {
         switch (job)
         {

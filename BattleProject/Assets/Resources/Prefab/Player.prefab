@@ -43,8 +43,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be01251358953df4095da05dd62ad8ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerMng: {fileID: 0}
   UnitList: []
   BuildingList: []
+  selectableUnit: []
+  LeaderUnit: {fileID: 0}
   nPeople: 0
   nFood: 0
   nResource: 0

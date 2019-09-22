@@ -29,7 +29,7 @@ public class InterfaceMng : MonoBehaviour
         {
             if(CtrlPlayer.selectableUnit.Count > 0)
             {
-                ChangeFaceInterface(CtrlPlayer.selectableUnit[0].unitJob);
+                ChangeFaceInterface(CtrlPlayer.selectableUnit[0].Job);
             }
         }
     }
@@ -42,7 +42,7 @@ public class InterfaceMng : MonoBehaviour
         }
         else
         {
-            FaceSprite.sprite = UnitFace[gameMng.unitMng.UnitjobToUnitID(unitJob)];
+            FaceSprite.sprite = UnitFace[gameMng.unitMng.UnitjobToID(unitJob)];
         }
     }
 

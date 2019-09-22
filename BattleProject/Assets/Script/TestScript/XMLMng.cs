@@ -16,7 +16,7 @@ public class XMLMng : MonoBehaviour
     private void LoadXML(string sFileName)
     {
         //XML파일을 텍스트에셋으로 불러오기
-        TextAsset textAsset = (TextAsset)Resources.Load( sFileName);
+        TextAsset textAsset = (TextAsset)Resources.Load("XML/" + sFileName);
         //불러온 텍스트에셋을 XmlDocument 형식으로 불러오는 작업
         XmlDocument xmlDoc = new XmlDocument();
         xmlDoc.LoadXml(textAsset.text);
@@ -30,22 +30,29 @@ public class XMLMng : MonoBehaviour
             byte.TryParse( node.Attributes.GetNamedItem("id").InnerText, out id );
             string name = node.Attributes.GetNamedItem("name").InnerText;
             string icon = node.Attributes.GetNamedItem("icon").InnerText;
+            string gameobject = node.Attributes.GetNamedItem("gameobject").InnerText;
 
-            eItemType type = eItemType.Item;
+            eItemType type = eItemType.Block;
 
             switch (node.Attributes.GetNamedItem("type").InnerText)
             {
                 case "Block":
                     type = eItemType.Block;
                     break;
-                case "Item":
-                    type = eItemType.Item;
+                case "Resource":
+                    type = eItemType.Resource;
+                    break;
+                case "Tool":
+                    type = eItemType.Tool;
+                    break;
+                case "Equip":
+                    type = eItemType.Equip;
                     break;
             }
 
             int size=int.Parse(node.Attributes.GetNamedItem("size").InnerText);
 
-            ItemInfo info = new ItemInfo(id,name,icon,type,size);
+            ItemInfo info = new ItemInfo(id,name,icon,type,gameobject,size);
             ItemMng.Instance.AddItem(info);
         }
 

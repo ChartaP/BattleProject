@@ -18,7 +18,9 @@ namespace GameSys
         {
             Player = 0,
             Computer = 1,
-            Observer = 2
+            Observer = 2,
+            Animal = 3,
+            barbarian = 4
         }
 
         public enum eGeoType
@@ -32,7 +34,9 @@ namespace GameSys
         public enum eItemType
         {
             Block = 0,
-            Item = 1
+            Resource = 1,
+            Tool = 2,
+            Equip =3
         }
 
         public enum ePlants
@@ -70,40 +74,12 @@ namespace GameSys
 
         }
 
-        public class Pos
+        public enum eOrder
         {
-            private static int cnt=0;
-            private int id;
-            private int nX;
-            private int nY;
-            public Pos(int nX,int nY)
-            {
-                this.nX = nX;
-                this.nY = nY;
-                id = cnt++;
-            }
-            public int X { get { return nX; } }
-            public int Y { get { return nY; } }
-
-            public static bool operator ==(Pos a,Pos b)
-            {
-                return (a.X == b.X && a.Y == b.Y) ;
-            }
-
-            public static bool operator !=(Pos a, Pos b)
-            {
-                return (a.X != b.X || a.Y != b.Y);
-            }
-
-            public override bool Equals(object a)
-            {
-                return ((Pos)a).X == X && ((Pos)a).Y == Y;
-            }
-            
-            public override int GetHashCode()
-            {
-                return cnt;
-            }
+            Null = -1,
+            Move = 0,
+            ATK = 1,
+            PTR = 2
         }
     }
 }

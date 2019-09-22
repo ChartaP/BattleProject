@@ -17,14 +17,16 @@ namespace GameSys
             private string sName;
             private string sIcon;
             private eItemType eType;
+            private string sGameobject;
             private int nSize;
 
-            public ItemInfo(byte b_ID, string sName,string sIcon,eItemType eType,int nSize)
+            public ItemInfo(byte b_ID, string sName,string sIcon,eItemType eType,string sGameobject, int nSize)
             {
                 this.b_ID = b_ID;
                 this.sName = sName;
                 this.sIcon = sIcon;
                 this.eType = eType;
+                this.sGameobject = sGameobject;
                 this.nSize = nSize;
             }
 
@@ -46,6 +48,11 @@ namespace GameSys
             public eItemType Type
             {
                 get { return eType; }
+            }
+
+            public string Gameobject
+            {
+                get { return sGameobject; }
             }
 
             public int Size
@@ -207,21 +214,31 @@ namespace GameSys
             }
             
         }
-
+        
         /// <summary>
-        /// 아이템 클래스
+        /// 아이템 인벤토리 칸에서 작동할 아이템 객체
         /// </summary>
         public class Item
         {
+            private ItemInfo itemInfo;
 
+
+
+            public ItemInfo Info
+            {
+                get { return itemInfo; }
+            }
         }
-        
+
+        /// <summary>
+        /// 타일의 소유물로서 작동할 블록 객체
+        /// </summary>
         public class Block
         {
-            public BlockInfo blockInfo;
+            private BlockInfo blockInfo;
             private GameObject model;
 
-            public Block(BlockInfo blockInfo, GameObject model)
+            public Block(BlockInfo blockInfo,GameObject model)
             {
                 this.blockInfo = blockInfo;
                 this.model = model;
@@ -230,6 +247,11 @@ namespace GameSys
             public void MeshEnabled(bool val)
             {
                 model.transform.Find("Cube").GetComponent<MeshRenderer>().enabled = val;
+            }
+
+            public BlockInfo Info
+            {
+                get { return blockInfo; }
             }
         }
     }
