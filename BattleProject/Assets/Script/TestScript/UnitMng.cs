@@ -8,6 +8,7 @@ public class UnitMng : MonoBehaviour
     public GameMng gameMng;
     public List<UnitCtrl> unitList=new List<UnitCtrl>();
     public List<GameObject> gUnitList;
+    public Material[] metes;
 
     // Start is called before the first frame update
     void Start()
@@ -29,6 +30,21 @@ public class UnitMng : MonoBehaviour
             case eUnitType.People:
                 unitTemp = Instantiate(gUnitList[0], this.transform).GetComponent<UnitCtrl>();
                 unitTemp.SetUnit(this, unitType, Owner, unitPos);
+                unitList.Add(unitTemp);
+
+                foreach(MeshRenderer mesh in unitTemp.transform.GetComponentsInChildren<MeshRenderer>())
+                {
+                    if (mesh.transform.tag != "Unit")
+                        continue;
+                    if(Owner.Type == ePlayerType.Player)
+                    {
+                        mesh.material = metes[0];
+                    }
+                    if (Owner.Type == ePlayerType.Computer)
+                    {
+                        mesh.material = metes[1];
+                    }
+                }
                 break;
         }
         return unitTemp;

@@ -74,12 +74,21 @@ namespace GameSys
 
         }
 
+        public enum eUnitState
+        {
+            Standby     =0,//대기중
+            Move      =1,//이동중
+            Atk       =2,//공격중
+            Dead        =3
+        }
+
         public enum eOrder
         {
             Null = -1,
             Move = 0,
             ATK = 1,
-            PTR = 2
+            PTR = 2,
+            Hold = 3
         }
     }
 }

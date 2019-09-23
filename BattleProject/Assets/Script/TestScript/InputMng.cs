@@ -16,6 +16,7 @@ public class InputMng : MonoBehaviour
     public float scrSpeed = 10.0f;
     private Vector3 mPos;
     private Vector3 CameraPos;
+    public Transform peek;
     private float scroll;
     private bool isMove;
     // Start is called before the first frame update
@@ -94,9 +95,14 @@ public class InputMng : MonoBehaviour
                 {
                     case "Tile":
                         //gameMng.unitMng.IssueMoveOrder(hit.transform.localPosition);
-                        gameMng.playerMng.CtrlPlayer.OrderUnits(hit.transform.parent.parent.localPosition);
+                        peek.position = hit.point;
+                        Vector3 point = peek.localPosition;
+
+                        gameMng.playerMng.CtrlPlayer.OrderUnits(point);
+                        Debug.Log(hit.point);
                         break;
                     case "Unit":
+                        gameMng.playerMng.CtrlPlayer.OrderUnits(hit.transform);
                         break;
                 }
             }

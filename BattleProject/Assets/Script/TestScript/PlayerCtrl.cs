@@ -72,7 +72,17 @@ public class PlayerCtrl : MonoBehaviour
     {
         
     }
+
     
+    
+    public void UnselectUnits()
+    {
+        foreach (UnitCtrl unit in selectableUnit)
+        {
+            unit.SelectMesh.enabled = false;
+        }
+        selectableUnit.Clear();
+    }
 
     /// <summary>
     /// 지정 범위의 유닛 다중 선택 메서드
@@ -82,34 +92,38 @@ public class PlayerCtrl : MonoBehaviour
     /// <param name="mPosEnd">드래그 도착점</param>
     public void SelectUnits(Vector3 mPosStart, Vector3 mPosEnd)
     {
+        List<UnitCtrl> findUnits = new List<UnitCtrl>();
         Rect selectRect = new Rect(mPosStart.x, mPosStart.y, mPosEnd.x - mPosStart.x, mPosEnd.y - mPosStart.y);
-
         foreach (UnitCtrl unit in UnitList)
         {
             if (selectRect.Contains(Camera.main.WorldToViewportPoint(unit.transform.position), true))
             {
+                findUnits.Add(unit);
+                
+            }
+        }
+        if (findUnits.Count > 0)
+        {
+            UnselectUnits();
+            foreach (UnitCtrl unit in findUnits)
+            {
                 unit.SelectMesh.enabled = true;
-                if (!selectableUnit.Contains(unit))
-                {
-                    selectableUnit.Add(unit);
-                }
+                selectableUnit.Add(unit);
             }
         }
     }
 
     /// <summary>
-    /// 넘겨받은 유닛리스트를 선택유닛리스트에 추가
+    /// 넘겨받은 유닛리스트를 선택
     /// </summary>
     /// <param name="unitList">유닛리스트</param>
     public void SelectUnits(List<UnitCtrl> unitList)
     {
         if (unitList.Count == 0)
         {
-            selectableUnit.Clear();
         }
         else
         {
-            selectableUnit.Clear();
             foreach (UnitCtrl unit in unitList)
             {
                 unit.SelectMesh.enabled = false;
@@ -130,8 +144,12 @@ public class PlayerCtrl : MonoBehaviour
     {
         if (unit != null)
         {
-            selectableUnit.Add(unit);
-            unit.SelectMesh.enabled = true;
+            if (UnitList.Contains(unit))
+            {
+                UnselectUnits();
+                selectableUnit.Add(unit);
+                unit.SelectMesh.enabled = true;
+            }
         }
     }
 
@@ -144,7 +162,7 @@ public class PlayerCtrl : MonoBehaviour
         UnitList.Add(unit);
     }
     /// <summary>
-    /// 플레이어 유닛 해제 메서드
+    /// 플레이어 유닛 해지 메서드
     /// </summary>
     /// <param name="unit"></param>
     public void UnregisterPlayerUnit(UnitCtrl unit)
@@ -152,12 +170,55 @@ public class PlayerCtrl : MonoBehaviour
         UnitList.Remove(unit);
     }
 
+    /// <summary>
+    /// 선택된 유닛에 명령 메서드
+    /// </summary>
+    /// <param name="target"></param>
     public void OrderUnits(Vector3 target)
     {
-        foreach(UnitCtrl unit in selectableUnit)
+        Vector2 center = UnitsCenterPos();
+
+        foreach (UnitCtrl unit in selectableUnit)
         {
-            unit.receiptOrder(new Move(new Vector2(target.x,target.z)));
+
+            unit.receiptOrder(new Move(new Vector2(target.x + unit.X- center.x, target.z + unit.Y - center.y)));
         }
     }
 
+    /// <summary>
+    /// 선택된 유닛에 명령 메서드
+    /// </summary>
+    /// <param name="target"></param>
+    public void OrderUnits(Transform target)
+    {
+        Vector2 center = UnitsCenterPos();
+
+        foreach (UnitCtrl unit in selectableUnit)
+        {
+            if (target.GetComponent<UnitCtrl>().Onwer == this)
+                unit.receiptOrder(new Move(target));
+            else
+                unit.receiptOrder(new ATK(target));
+        }
+    }
+
+    public Vector2 UnitsCenterPos()
+    {
+        float X=0;
+        float Y=0;
+        foreach(UnitCtrl unit in selectableUnit)
+        {
+            X += unit.X;
+            Y += unit.Y;
+        }
+        X /= selectableUnit.Count;
+        Y /= selectableUnit.Count;
+
+        return new Vector2(X, Y);
+    }
+
+    public ePlayerType Type
+    {
+        get { return playerInfo.Type; }
+    }
 }

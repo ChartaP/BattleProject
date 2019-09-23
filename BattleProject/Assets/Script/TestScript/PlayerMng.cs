@@ -55,6 +55,10 @@ public class PlayerMng : MonoBehaviour
                 unitTemp = gameMng.unitMng.CreateUnit(spawnPos, player, eUnitType.People);
                 gameMng.unitMng.ChangeJob(unitTemp, eUnitJob.Leader);
 
+                unitTemp = gameMng.unitMng.CreateUnit(spawnPos, player, eUnitType.People);
+                unitTemp = gameMng.unitMng.CreateUnit(spawnPos, player, eUnitType.People);
+                unitTemp = gameMng.unitMng.CreateUnit(spawnPos, player, eUnitType.People);
+
             }
             //컴퓨터 플레이어 스폰
             else if (player.playerInfo.Type == ePlayerType.Computer)
