@@ -68,7 +68,7 @@ public class InputMng : MonoBehaviour
             gameMng.interfaceMng.SelecteBox.gameObject.SetActive(false);
             if (mPosStart != mPosEnd)
             {
-                gameMng.playerMng.GetControlPlayer().SelectUnits(mPosStart, mPosEnd);
+                gameMng.playerMng.GetControlPlayer().SelectObject(mPosStart, mPosEnd);
             }
         }
         else if (Input.GetMouseButton(0))//왼쪽 마우스 드래그
@@ -86,11 +86,9 @@ public class InputMng : MonoBehaviour
         else if (Input.GetMouseButtonUp(1))//오른쪽 마우스 떼기
         {
             mPos = Input.mousePosition;
-            Debug.Log("(" + mPos.x + "," + mPos.y + ") The Right Mouse");
             ray = Camera.main.ScreenPointToRay(mPos);
             if (Physics.Raycast(ray, out hit))
             {
-                Debug.Log("HitObject : " + hit.transform.name);
                 switch (hit.transform.tag)
                 {
                     case "Tile":
@@ -99,7 +97,6 @@ public class InputMng : MonoBehaviour
                         Vector3 point = peek.localPosition;
 
                         gameMng.playerMng.CtrlPlayer.OrderUnits(point);
-                        Debug.Log(hit.point);
                         break;
                     case "Unit":
                         gameMng.playerMng.CtrlPlayer.OrderUnits(hit.transform);

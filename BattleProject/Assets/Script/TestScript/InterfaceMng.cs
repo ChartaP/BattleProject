@@ -60,10 +60,10 @@ public class InterfaceMng : MonoBehaviour
         }
         Vector3 squareStart = Camera.main.WorldToScreenPoint(startPoint);
         squareStart.z = 0;
-        Vector3 center = (squareStart + endPoint) / 2f;
+        Vector3 center = (squareStart + endPoint) / 2f ;
         SelecteBox.position = center;
-        float sizeX = Mathf.Abs(squareStart.x - endPoint.x);
-        float sizeY = Mathf.Abs(squareStart.y - endPoint.y);
-        SelecteBox.sizeDelta = new Vector2(sizeX*2 , sizeY*2);
+        float sizeX = Mathf.Abs(squareStart.x - endPoint.x) ;
+        float sizeY = Mathf.Abs(squareStart.y - endPoint.y) ;
+        SelecteBox.sizeDelta = new Vector2(sizeX   , sizeY );
     }
 }

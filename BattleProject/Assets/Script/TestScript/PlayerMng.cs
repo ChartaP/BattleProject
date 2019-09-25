@@ -26,11 +26,13 @@ public class PlayerMng : MonoBehaviour
 
     public void GetPlayerInfo()
     {
+        int cnt = 0;
         foreach(PlayerInfo info in GameInfo.playerList)
         {
             PlayerCtrl player = Instantiate(gPlayerCtrl, transform).GetComponent<PlayerCtrl>();
             player.playerInfo = info;
             player.name = info.Name;
+            player.PlayerID = cnt++;
             player.playerMng = this;
             PlayerList.Add(player );
             if (GameInfo.nCtrlPlayerID == info.ID)

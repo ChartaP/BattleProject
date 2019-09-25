@@ -46,6 +46,7 @@ namespace GameSys
 
 public class PlayerCtrl : MonoBehaviour
 {
+    public int PlayerID;
     public PlayerMng playerMng;
     public PlayerInfo playerInfo;
 
@@ -90,16 +91,49 @@ public class PlayerCtrl : MonoBehaviour
     /// </summary>
     /// <param name="mPosStart">드래그 시작점</param>
     /// <param name="mPosEnd">드래그 도착점</param>
-    public void SelectUnits(Vector3 mPosStart, Vector3 mPosEnd)
+    public void SelectObject(Vector3 mPosStart, Vector3 mPosEnd)
     {
+        //찾은 유닛 리스트
         List<UnitCtrl> findUnits = new List<UnitCtrl>();
+        //찾은 건물 리스트
         Rect selectRect = new Rect(mPosStart.x, mPosStart.y, mPosEnd.x - mPosStart.x, mPosEnd.y - mPosStart.y);
         foreach (UnitCtrl unit in UnitList)
         {
             if (selectRect.Contains(Camera.main.WorldToViewportPoint(unit.transform.position), true))
             {
                 findUnits.Add(unit);
-                
+            }
+        }
+
+        if(findUnits.Count == 0 )//찾은 내 유닛 목록수0
+        {
+            //내 건물 목록 찾기
+
+
+            if (true)//찾은 내 건물 목록수 0
+            {
+                foreach(PlayerCtrl player in playerMng.PlayerList)
+                {
+                    if (player == this)//만약 검색한 플레이어가 나일 경우 무시
+                        continue;
+                    
+                    foreach (UnitCtrl unit in player.UnitList)
+                    {
+                        if (selectRect.Contains(Camera.main.WorldToViewportPoint(unit.transform.position), true))
+                        {
+                            findUnits.Add(unit);
+                            break;//현재 플레이어가 아닌 플레이어의 유닛은 여럿 찾을 필요 없으므로 반복문 탈출
+                        }
+                    }
+                    if(findUnits.Count > 0)//이 플레이어의 유닛 존재
+                    {
+                        break;
+                    }
+                    else//유닛이 존재하지 않음
+                    {
+                        //내 건물 목록 찾기
+                    }
+                }
             }
         }
         if (findUnits.Count > 0)
@@ -176,6 +210,11 @@ public class PlayerCtrl : MonoBehaviour
     /// <param name="target"></param>
     public void OrderUnits(Vector3 target)
     {
+        if (selectableUnit.Count == 0)
+            return;
+        if (selectableUnit[0].Onwer != this)
+            return;
+
         Vector2 center = UnitsCenterPos();
 
         foreach (UnitCtrl unit in selectableUnit)
@@ -191,6 +230,11 @@ public class PlayerCtrl : MonoBehaviour
     /// <param name="target"></param>
     public void OrderUnits(Transform target)
     {
+        if (selectableUnit.Count == 0)
+            return;
+        if (selectableUnit[0].Onwer != this)
+            return;
+
         Vector2 center = UnitsCenterPos();
 
         foreach (UnitCtrl unit in selectableUnit)
