@@ -36,7 +36,7 @@ public class MapTile : MonoBehaviour
         {
             GameObject gBlock = Instantiate(this.gBlock, transform);
             gBlock.transform.localPosition = new Vector3(0, z, 0);
-            Block block = new Block(BlockMng.Instance.Block((int)Stratum[z]),gBlock);
+            Block block = new Block(BlockInfoMng.Instance.Block((int)Stratum[z]),gBlock);
             blockList.Add(block);
         }
     }

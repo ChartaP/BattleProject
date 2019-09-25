@@ -8,7 +8,8 @@ public class UnitMng : MonoBehaviour
     public GameMng gameMng;
     public List<UnitCtrl> unitList=new List<UnitCtrl>();
     public List<GameObject> gUnitList;
-    public Material[] metes;
+    public Material[] playerMater;
+    public Material[] RangeMater;
 
     // Start is called before the first frame update
     void Start()
@@ -34,15 +35,27 @@ public class UnitMng : MonoBehaviour
 
                 foreach(MeshRenderer mesh in unitTemp.transform.GetComponentsInChildren<MeshRenderer>())
                 {
-                    if (mesh.transform.tag != "Unit")
-                        continue;
-                    if(Owner.Type == ePlayerType.Player)
+                    if (mesh.transform.tag == "Unit")
                     {
-                        mesh.material = metes[0];
+                        if (Owner == gameMng.playerMng.CtrlPlayer)
+                        {
+                            mesh.material = playerMater[0];
+                        }
+                        if (Owner != gameMng.playerMng.CtrlPlayer)
+                        {
+                            mesh.material = playerMater[1];
+                        }
                     }
-                    if (Owner.Type == ePlayerType.Computer)
+                    if(mesh.transform.tag == "Interface")
                     {
-                        mesh.material = metes[1];
+                        if (Owner == gameMng.playerMng.CtrlPlayer)
+                        {
+                            mesh.material = RangeMater[0];
+                        }
+                        if (Owner != gameMng.playerMng.CtrlPlayer)
+                        {
+                            mesh.material = RangeMater[1];
+                        }
                     }
                 }
                 break;

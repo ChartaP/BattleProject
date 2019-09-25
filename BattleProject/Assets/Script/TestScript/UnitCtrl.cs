@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using GameSys.Lib;
 using GameSys.Order;
+using GameSys.Unit;
 using UnityEngine;
 
 public class UnitCtrl : MonoBehaviour
 {
     private static int nUintCnt = 0;
     public UnitMng unitMng;
+    private JobInfo myJobInfo = null;
     [SerializeField]
     private eUnitType unitType;//유닛 종류
     [SerializeField]
@@ -28,26 +30,13 @@ public class UnitCtrl : MonoBehaviour
     private Transform tHead;
     [SerializeField]
     private Transform tChest;
+    [SerializeField]
+    private Transform tUnit;
     
-    [SerializeField]//이동속도 
-    private float fMoveSpeed=1f;
-    [SerializeField]//회전속도 
-    private float fRotateSpeed = 1f;
-    [SerializeField]//체력 
-    private int nHealth = 100;
-    [SerializeField]//공격력 
-    private int nAtkPower = 1;
-    [SerializeField]//공격속도
-    private float fAtkSpeed = 1f;
-    [SerializeField]//방어력 
-    private int nDefValue = 0;
-    [SerializeField]//시야범위 
-    private float fViewRange = 10;
-    [SerializeField]//공격범위
-    private float fAtkRange = 1;
+    public Transform tViewRange;
+    public Transform tAtkRange;
 
-    public Transform viewRange;
-    public Transform atkRange;
+    public float curHealth=1;
 
     private Order curOrder = null;
 
@@ -58,7 +47,7 @@ public class UnitCtrl : MonoBehaviour
         this.unitMng = unitMng;
         this.unitType = unitType;
         this.Owner = Owner;
-        unitJob = eUnitJob.Jobless;
+        SetJob(eUnitJob.Jobless);
         transform.localPosition = unitPos;
         transform.name = (nUintCnt++) +"-"+ Owner.name+ "-Unit";
         OnGround();
@@ -68,6 +57,14 @@ public class UnitCtrl : MonoBehaviour
     public void SetJob(eUnitJob job)
     {
         unitJob = job;
+        myJobInfo = JobInfoMng.Instance.Job((int)job);
+        CapsuleCollider collider;
+        tUnit.localScale = new Vector3(myJobInfo.Size, myJobInfo.Size, myJobInfo.Size);
+        collider = transform.GetComponent<CapsuleCollider>();
+        collider.radius = myJobInfo.ColRadius;
+        collider.height = myJobInfo.ColHeight;
+        collider.center = new Vector3(0, myJobInfo.ColHeight / 2, 0);
+        curHealth = Health;
     }
     
     void Start()
@@ -78,6 +75,8 @@ public class UnitCtrl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (myJobInfo == null)
+            return;
         if(unitState == eUnitState.Standby)
         {
             View();
@@ -110,8 +109,8 @@ public class UnitCtrl : MonoBehaviour
 
     public void RangeUpdate()
     {
-        viewRange.localScale = new Vector3(fViewRange*2.0f, 0.1f, fViewRange * 2.0f);
-        atkRange.localScale = new Vector3(fAtkRange * 2.0f, 0.1f, fAtkRange * 2.0f);
+        tViewRange.localScale = new Vector3(ViewRange*2.0f, 0.1f, ViewRange * 2.0f);
+        tAtkRange.localScale = new Vector3(AtkRange * 2.0f, 0.1f, AtkRange * 2.0f);
     }
 
     public void receiptOrder(Order order)
@@ -128,14 +127,19 @@ public class UnitCtrl : MonoBehaviour
         if (curOrder.Achievement(this))
         {
             curOrder = null;
+            StateChange(eUnitState.Standby);
         }
     }
 
+    /// <summary>
+    /// 목표 지점 이동 메서드
+    /// </summary>
+    /// <param name="target"></param>
     public void Move(Vector2 target)
     {
         StateChange(eUnitState.Move);
         Vector2 temp = Pos;
-        temp = Vector2.MoveTowards(temp, target, 5.0f * Time.deltaTime);
+        temp = Vector2.MoveTowards(temp, target, MoveSpeed * Time.deltaTime);
         transform.localPosition = new Vector3(temp.x,Height,temp.y);
         Rotate(target);
     }
@@ -148,7 +152,7 @@ public class UnitCtrl : MonoBehaviour
         if (viewList.Count > 0)
         {
             float distance = Vector2.Distance(Pos, viewList[0].Pos);
-            if(distance < fAtkRange)
+            if(distance < AtkRange)
             {//공격범위 안
                 AtkUnit(viewList[0]);
             }
@@ -174,7 +178,7 @@ public class UnitCtrl : MonoBehaviour
                 continue;
             }
             float distance = Vector2.Distance(Pos, unit.Pos);
-            if (distance < fViewRange)
+            if (distance < ViewRange)
             {
                 if (!viewList.Contains(unit))
                 {
@@ -223,11 +227,6 @@ public class UnitCtrl : MonoBehaviour
         get { return unitJob; }
     }
 
-    public float AtkRange
-    {
-        get { return fAtkRange; }
-    }
-
     /// <summary>
     /// 유닛의 X좌표 반환
     /// </summary>
@@ -260,6 +259,63 @@ public class UnitCtrl : MonoBehaviour
     public PlayerCtrl Onwer
     {
         get { return Owner; }
+    }
+
+    public float MoveSpeed
+    {
+        get
+        {
+            return myJobInfo.MoveSpeed;
+        }
+    }
+    public float RotateSpeed
+    {
+        get
+        {
+            return myJobInfo.RoateSpeed;
+        }
+    }
+    public int Health
+    {
+        get
+        {
+            return myJobInfo.Health;
+        }
+    }
+    public int AtkPower
+    {
+        get
+        {
+            return myJobInfo.AtkPower;
+        }
+    }
+    public float AtkSpeed
+    {
+        get
+        {
+            return myJobInfo.AtkSpeed;
+        }
+    }
+    public int DefValue
+    {
+        get
+        {
+            return myJobInfo.DefValue;
+        }
+    }
+    public float ViewRange
+    {
+        get
+        {
+            return myJobInfo.ViewRange;
+        }
+    }
+    public float AtkRange
+    {
+        get
+        {
+            return myJobInfo.AtkRange;
+        }
     }
 
     public void StateChange(eUnitState state)

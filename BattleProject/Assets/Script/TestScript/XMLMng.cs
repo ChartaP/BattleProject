@@ -2,18 +2,21 @@
 using System.Collections.Generic;
 using System.Xml;
 using GameSys.Item;
+using GameSys.Unit;
 using GameSys.Lib;
 using UnityEngine;
 
 public class XMLMng : MonoBehaviour
 {
-    public string sXmlFileName = "ItemInfo";
+    public string sItemXmlFileName = "ItemInfo";
+    public string sUnitXmlFileName = "UnitInfo";
     void Awake()
     {
-        LoadXML(sXmlFileName);
+        LoadItemXML(sItemXmlFileName);
+        LoadUnitXML(sUnitXmlFileName);
     }
     
-    private void LoadXML(string sFileName)
+    private void LoadItemXML(string sFileName)
     {
         //XML파일을 텍스트에셋으로 불러오기
         TextAsset textAsset = (TextAsset)Resources.Load("XML/" + sFileName);
@@ -53,7 +56,7 @@ public class XMLMng : MonoBehaviour
             int size=int.Parse(node.Attributes.GetNamedItem("size").InnerText);
 
             ItemInfo info = new ItemInfo(id,name,icon,type,gameobject,size);
-            ItemMng.Instance.AddItem(info);
+            ItemInfoMng.Instance.AddItem(info);
         }
 
         //블록 노드 리스트 불러오기
@@ -70,11 +73,61 @@ public class XMLMng : MonoBehaviour
             int strength= int.Parse(node.Attributes.GetNamedItem("strength").InnerText);
 
             BlockInfo info = new BlockInfo(id, name, gameobject, color, strength);
-            BlockMng.Instance.AddBlock(info);
+            BlockInfoMng.Instance.AddBlock(info);
+        }
+    }
+
+    private void LoadUnitXML(string sFileName)
+    {
+        //XML파일을 텍스트에셋으로 불러오기
+        TextAsset textAsset = (TextAsset)Resources.Load("XML/" + sFileName);
+        //불러온 텍스트에셋을 XmlDocument 형식으로 불러오는 작업
+        XmlDocument xmlDoc = new XmlDocument();
+        xmlDoc.LoadXml(textAsset.text);
+
+        //인간 노드 리스트 불러오기
+        XmlNodeList JobNodes = xmlDoc.SelectNodes("UnitInfo/Job/Field");
+        foreach (XmlNode node in JobNodes)
+        {
+            //노드의 내용물 불러와서 아이템 정보에 저장 후 아이템 매니져에 추가하는 작업
+            byte id; //= byte.Parse(node.Attributes.GetNamedItem("id").Value);
+            byte.TryParse(node.Attributes.GetNamedItem("id").InnerText, out id);
+            string name = node.Attributes.GetNamedItem("name").InnerText;
+            string face = node.Attributes.GetNamedItem("face").InnerText;
+
+            float Size = float.Parse(node.Attributes.GetNamedItem("size").InnerText);
+            float ColRadius = float.Parse(node.Attributes.GetNamedItem("colradius").InnerText);
+            float ColHeight = float.Parse(node.Attributes.GetNamedItem("colheight").InnerText);
+            float MoveSpeed = float.Parse(node.Attributes.GetNamedItem("movespeed").InnerText);
+            float RotateSpeed = float.Parse(node.Attributes.GetNamedItem("rotatespeed").InnerText);
+            float AtkSpeed = float.Parse(node.Attributes.GetNamedItem("atkspeed").InnerText);
+            float ViewRange = float.Parse(node.Attributes.GetNamedItem("viewrange").InnerText);
+            float AtkRange = float.Parse(node.Attributes.GetNamedItem("atkrange").InnerText);
+
+            int Health = int.Parse(node.Attributes.GetNamedItem("health").InnerText);
+            int AtkPower = int.Parse(node.Attributes.GetNamedItem("atkpower").InnerText);
+            int DefValue = int.Parse(node.Attributes.GetNamedItem("defvalue").InnerText);
+            Debug.Log(id+","+ name + "," + face + "," + Size + "," + ColRadius + "," + ColHeight + "," + MoveSpeed + "," + RotateSpeed + "," + Health + "," + AtkPower + "," + AtkSpeed + "," + DefValue + "," + ViewRange + "," + AtkRange);
+            JobInfo info = new JobInfo(id,name,face,Size,ColRadius,ColHeight,MoveSpeed,RotateSpeed,Health,AtkPower,AtkSpeed,DefValue,ViewRange,AtkRange);
+            JobInfoMng.Instance.AddJob(info);
         }
 
+        //직업장비 노드 리스트 불러오기
+        XmlNodeList JobEquipNodes = xmlDoc.SelectNodes("UnitInfo/JobEquip/Field");
+        foreach (XmlNode node in JobEquipNodes)
+        {
+            //노드의 내용물 불러와서 블록 정보에 저장 후 블록 매니져에 추가하는 작업
+            byte id = byte.Parse(node.Attributes.GetNamedItem("id").InnerText);
 
+            string head = node.Attributes.GetNamedItem("head").InnerText;
+            string rhand = node.Attributes.GetNamedItem("rhand").InnerText;
+            string lhand = node.Attributes.GetNamedItem("lhand").InnerText;
+            string chest = node.Attributes.GetNamedItem("chest").InnerText;
 
+            JobEquipInfo info = new JobEquipInfo(id, head,rhand,lhand,chest);
+            JobEquipInfoMng.Instance.AddJobEquip(info);
+        }
+        
     }
 
 }

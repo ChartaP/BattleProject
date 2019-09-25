@@ -89,16 +89,25 @@ public class InputMng : MonoBehaviour
             ray = Camera.main.ScreenPointToRay(mPos);
             if (Physics.Raycast(ray, out hit))
             {
+                Vector3 point;
                 switch (hit.transform.tag)
                 {
                     case "Tile":
                         //gameMng.unitMng.IssueMoveOrder(hit.transform.localPosition);
                         peek.position = hit.point;
-                        Vector3 point = peek.localPosition;
-
+                        point = peek.localPosition;
+                        peek.GetComponentInChildren<MeshRenderer>().material = gameMng.unitMng.RangeMater[0];
+                        peek.GetComponentInChildren<Animation>().Play();
                         gameMng.playerMng.CtrlPlayer.OrderUnits(point);
                         break;
                     case "Unit":
+                        peek.position = hit.transform.position;
+                        point = peek.localPosition;
+                        if(hit.transform.GetComponent<UnitCtrl>().Onwer == gameMng.playerMng.CtrlPlayer)
+                            peek.GetComponentInChildren<MeshRenderer>().material = gameMng.unitMng.RangeMater[0];
+                        else
+                            peek.GetComponentInChildren<MeshRenderer>().material = gameMng.unitMng.RangeMater[1];
+                        peek.GetComponentInChildren<Animation>().Play();
                         gameMng.playerMng.CtrlPlayer.OrderUnits(hit.transform);
                         break;
                 }

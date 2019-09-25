@@ -125,18 +125,18 @@ namespace GameSys
         /// 게임에 존재하는 아이템들의 정보 제공 클래스
         /// 참고 https://phiru.tistory.com/328
         /// </summary>
-        public class ItemMng
+        public class ItemInfoMng
         {
             //싱글톤 형식으로 제작
-            private static ItemMng instance = null;
+            private static ItemInfoMng instance = null;
 
-            public static ItemMng Instance
+            public static ItemInfoMng Instance
             {
                 get
                 {
                     if(instance == null)
                     {
-                        instance = new ItemMng();
+                        instance = new ItemInfoMng();
                     }
                     return instance;
                 }
@@ -172,18 +172,18 @@ namespace GameSys
         /// <summary>
         /// 게임에 존재하는 블록들의 정보 제공 클래스
         /// </summary>
-        public class BlockMng
+        public class BlockInfoMng
         {
             //싱글톤 형식으로 제작
-            private static BlockMng instance = null;
+            private static BlockInfoMng instance = null;
 
-            public static BlockMng Instance
+            public static BlockInfoMng Instance
             {
                 get
                 {
                     if (instance == null)
                     {
-                        instance = new BlockMng();
+                        instance = new BlockInfoMng();
                     }
                     return instance;
                 }

@@ -1406,7 +1406,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 65c5f9b7d6f13e647848cbeafd9dc999, type: 2}
+  - {fileID: 2100000, guid: b7b572f297566854ab971c201f3a8df9, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3079,9 +3079,12 @@ MonoBehaviour:
   unitList: []
   gUnitList:
   - {fileID: 4736894620230603202, guid: 0efcd66373d1e29449050608a14164ac, type: 3}
-  metes:
+  playerMater:
   - {fileID: 2100000, guid: b1a1c6e850eaa6c4088bc35237108d6f, type: 2}
   - {fileID: 2100000, guid: 50337c15a7478ad4e9011c8696901877, type: 2}
+  RangeMater:
+  - {fileID: 2100000, guid: b7b572f297566854ab971c201f3a8df9, type: 2}
+  - {fileID: 2100000, guid: bb3272385d847cd4f976db4c22b6b540, type: 2}
 --- !u!1 &1559274542
 GameObject:
   m_ObjectHideFlags: 0

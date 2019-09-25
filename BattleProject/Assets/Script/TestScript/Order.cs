@@ -108,7 +108,6 @@ namespace GameSys
                 {
                     targetPos = new Vector2(targetTrans.localPosition.x, targetTrans.localPosition.z);
                     float distance = Vector2.Distance(unit.Pos, targetPos);
-                    Debug.Log(distance + "+" + unit.AtkRange);
                     if (distance < unit.AtkRange)
                     {//공격범위 안
                         unit.AtkUnit(targetTrans.GetComponent<UnitCtrl>());
@@ -121,11 +120,29 @@ namespace GameSys
                 }
                 else
                 {
+
                     unit.AtkInView();
                 }
             }
             public override bool Achievement(UnitCtrl unit)
             {
+                if (targetTrans != null)
+                {
+                    targetPos = new Vector2(targetTrans.localPosition.x, targetTrans.localPosition.z);
+                    float distance = Vector2.Distance(unit.Pos, targetPos);
+                    if(distance > unit.ViewRange)
+                    {
+                        return true;
+                    }
+                }
+                else
+                {
+                    if (unit.transform.localPosition.x == targetPos.x && unit.transform.localPosition.z == targetPos.y)
+                    {
+                        unit.Stop();
+                        return true;
+                    }
+                }
                 return false;
             }
         }

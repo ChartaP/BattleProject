@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<UnitInfo>
+	<Job>
+    <Field id="0" name="Leader" face="face_Leader" size ="0.75" colradius="0.45" colheight="1.5" movespeed="4.0" rotatespeed="1.0" health="100" atkpower ="1" atkspeed="1.0" defvalue="0" viewrange="12.0" atkrange="1.5"/>
+    <Field id="100" name="Jobless" face="face_Jobless" size="0.5" colradius="0.3" colheight="1.0" movespeed="2.0" rotatespeed="1.0" health="10" atkpower ="1" atkspeed="1.0" defvalue="0" viewrange="6.0" atkrange="1.0"/>
+	</Job>
+  <JobEquip>
+    <Field id="0" head="Crown" rhand="null" lhand="null" chest="null" />
+    <Field id="100" head="null" rhand="null" lhand="null" chest="null" />
+  </JobEquip>
+  <Animal>
+    <Field />
+  </Animal>
+</UnitInfo>
