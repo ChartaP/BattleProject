@@ -7,6 +7,8 @@ public class PlayerMng : MonoBehaviour
 {
     public GameMng gameMng;
     public List<PlayerCtrl> PlayerList;
+    public List<PlayerCtrl> ObserberList;
+    public List<PlayerCtrl> NatureList;
     //public PlayerCtrl AnimalCtrl;
     //public PlayerCtrl BarbarianVtrl;
     public PlayerCtrl CtrlPlayer;
@@ -40,6 +42,21 @@ public class PlayerMng : MonoBehaviour
         }
     }
 
+    public void fallPlayer(PlayerCtrl player)
+    {
+        PlayerList.Remove(player);
+        if (player == CtrlPlayer)//현재 플레이어 탈락
+        {
+            Time.timeScale = 0;
+            gameMng.interfaceMng.DisplayText("패배");
+        }
+        else if(PlayerList.Count == 1)//현재 플레이어 승리
+        {
+            Time.timeScale = 0;
+            gameMng.interfaceMng.DisplayText("승리");
+        }
+    }
+
     public void SpawnPlayer()
     {
         foreach(PlayerCtrl player in PlayerList)
@@ -58,8 +75,11 @@ public class PlayerMng : MonoBehaviour
                 gameMng.unitMng.ChangeJob(unitTemp, eUnitJob.Leader);
 
                 unitTemp = gameMng.unitMng.CreateUnit(spawnPos, player, eUnitType.People);
+                gameMng.unitMng.ChangeJob(unitTemp, eUnitJob.Jobless);
                 unitTemp = gameMng.unitMng.CreateUnit(spawnPos, player, eUnitType.People);
+                gameMng.unitMng.ChangeJob(unitTemp, eUnitJob.Jobless);
                 unitTemp = gameMng.unitMng.CreateUnit(spawnPos, player, eUnitType.People);
+                gameMng.unitMng.ChangeJob(unitTemp, eUnitJob.Jobless);
 
             }
             //컴퓨터 플레이어 스폰

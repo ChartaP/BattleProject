@@ -14,6 +14,8 @@ public class InterfaceMng : MonoBehaviour
     public  Image FaceSprite;
     public RectTransform SelecteBox;
     public Sprite[] UnitFace;
+    public Transform CanvasTrans;
+    public Text WideText;
     private Sprite DefFace;
     // Start is called before the first frame update
     void Start()
@@ -65,5 +67,10 @@ public class InterfaceMng : MonoBehaviour
         float sizeX = Mathf.Abs(squareStart.x - endPoint.x) ;
         float sizeY = Mathf.Abs(squareStart.y - endPoint.y) ;
         SelecteBox.sizeDelta = new Vector2(sizeX   , sizeY );
+    }
+
+    public void DisplayText(string text)
+    {
+        WideText.text = text;
     }
 }

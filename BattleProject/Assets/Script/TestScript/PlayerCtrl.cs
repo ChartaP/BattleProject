@@ -202,6 +202,9 @@ public class PlayerCtrl : MonoBehaviour
     public void UnregisterPlayerUnit(UnitCtrl unit)
     {
         UnitList.Remove(unit);
+        selectableUnit.Remove(unit);
+        if (unit.Job == eUnitJob.Leader)
+            playerMng.fallPlayer(this);
     }
 
     /// <summary>
@@ -212,7 +215,7 @@ public class PlayerCtrl : MonoBehaviour
     {
         if (selectableUnit.Count == 0)
             return;
-        if (selectableUnit[0].Onwer != this)
+        if (selectableUnit[0].Owner != this)
             return;
 
         Vector2 center = UnitsCenterPos();
@@ -232,14 +235,14 @@ public class PlayerCtrl : MonoBehaviour
     {
         if (selectableUnit.Count == 0)
             return;
-        if (selectableUnit[0].Onwer != this)
+        if (selectableUnit[0].Owner != this)
             return;
 
         Vector2 center = UnitsCenterPos();
 
         foreach (UnitCtrl unit in selectableUnit)
         {
-            if (target.GetComponent<UnitCtrl>().Onwer == this)
+            if (target.GetComponent<UnitCtrl>().Owner == this)
                 unit.receiptOrder(new Move(target));
             else
                 unit.receiptOrder(new ATK(target));

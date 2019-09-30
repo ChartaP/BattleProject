@@ -47,7 +47,7 @@ namespace GameSys
                     }
                 }
             }
-
+            
             public void CoverDirt()
             {
                 for (int z = nHeight-4; z < nHeight; z++)
@@ -101,8 +101,9 @@ namespace GameSys
                 eGeo = eGeoType.Flat;
             }
 
-            public void GenerateTile()
+            public void GenerateTile(eGeoType eGeo)
             {
+                this.eGeo = eGeo;
                 switch (eGeo)
                 {
                     case eGeoType.Flat:
@@ -200,7 +201,7 @@ namespace GameSys
             {
                 foreach(Chunk chunk in Chunks)
                 {
-                    chunk.GenerateTile();
+                    chunk.GenerateTile(eGeoType.Flat);
                 }
             }
         }

@@ -17,7 +17,9 @@ public class UnitCtrl : MonoBehaviour
     [SerializeField]
     private eUnitState unitState = eUnitState.Standby;//유닛의 상태
     [SerializeField]
-    private PlayerCtrl Owner;
+    private PlayerCtrl owner;
+    [SerializeField]
+    private Target myTarget;
 
     public MeshRenderer SelectMesh;
     public Animation ani;
@@ -32,21 +34,33 @@ public class UnitCtrl : MonoBehaviour
     private Transform tChest;
     [SerializeField]
     private Transform tUnit;
-    
+    [SerializeField]
+    private Transform tLHandEquip;
+    [SerializeField]
+    private Transform tRHandEquip;
+    [SerializeField]
+    private Transform tHeadEquip;
+    [SerializeField]
+    private Transform tChestEquip;
+    [SerializeField]
+    private Transform tUnitEquip;
+
     public Transform tViewRange;
     public Transform tAtkRange;
 
     public float curHealth=1;
 
     private Order curOrder = null;
+    [SerializeField]
+    private Target curTarget = null;
 
-    public List<UnitCtrl> viewList = new List<UnitCtrl>();
+    public List<Target> viewList = new List<Target>();
 
-    public void SetUnit(UnitMng unitMng, eUnitType unitType,PlayerCtrl Owner,Vector3 unitPos)
+    public void SetUnit(UnitMng unitMng, eUnitType unitType,PlayerCtrl owner,Vector3 unitPos)
     {
         this.unitMng = unitMng;
         this.unitType = unitType;
-        this.Owner = Owner;
+        this.owner = owner;
         SetJob(eUnitJob.Jobless);
         transform.localPosition = unitPos;
         transform.name = (nUintCnt++) +"-"+ Owner.name+ "-Unit";
@@ -65,6 +79,30 @@ public class UnitCtrl : MonoBehaviour
         collider.height = myJobInfo.ColHeight;
         collider.center = new Vector3(0, myJobInfo.ColHeight / 2, 0);
         curHealth = Health;
+
+        string Head = JobEquipInfoMng.Instance.JobEquip(ID).Head;
+        string RHand = JobEquipInfoMng.Instance.JobEquip(ID).RHand;
+        if (tHeadEquip!= null)
+        {
+            Destroy( tHeadEquip.gameObject);
+            tHeadEquip = null;
+        }
+        if (tRHandEquip != null)
+        {
+            Destroy(tRHandEquip.gameObject);
+            tRHandEquip = null;
+        }
+        if ( Head != "null")
+        {
+            Debug.Log(Head);
+            tHeadEquip = Instantiate(Resources.Load("Prefab/" + Head) as GameObject, tHead).transform;
+
+        }
+        if (RHand != "null")
+        {
+            Debug.Log(RHand);
+            tRHandEquip = Instantiate(Resources.Load("Prefab/" + RHand) as GameObject, tRHand).transform;
+        }
     }
     
     void Start()
@@ -75,15 +113,15 @@ public class UnitCtrl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
         if (myJobInfo == null)
+            return;
+        if (unitState == eUnitState.Dead)
             return;
         if(unitState == eUnitState.Standby)
         {
             View();
-            if (viewList.Count > 0)
-            {
-                receiptOrder(new ATK(viewList[0].transform));
-            }
+            AtkInView();
             fulfilOrder();
             RangeUpdate();
 
@@ -100,10 +138,6 @@ public class UnitCtrl : MonoBehaviour
             View();
             fulfilOrder();
             RangeUpdate();
-        }
-        else if(unitState == eUnitState.Dead)
-        {
-
         }
     }
 
@@ -151,47 +185,116 @@ public class UnitCtrl : MonoBehaviour
     {
         if (viewList.Count > 0)
         {
-            float distance = Vector2.Distance(Pos, viewList[0].Pos);
-            if(distance < AtkRange)
-            {//공격범위 안
-                AtkUnit(viewList[0]);
-            }
-            else
-            {//공격범위 밖
-                Move(viewList[0].Pos);
+            foreach (Target target in viewList)
+            {
+                if (target.Owner == Owner)
+                    continue;
+                receiptOrder(new ATK(target.transform));
             }
         }
     }
 
-    public void AtkUnit(UnitCtrl unit)
+    /// <summary>
+    /// 공격 메서드
+    /// 공격중이면 유닛 회전
+    /// </summary>
+    /// <param name="unit"></param>
+    public void AtkTarget(Target target)
     {
+        curTarget = target;
         StateChange(eUnitState.Atk);
-        Rotate(unit.Pos);
+        Rotate(target.Pos);
     }
 
+    IEnumerator Attack()
+    {
+        while (unitState == eUnitState.Atk)
+        {
+            ani.Stop();
+            ani.Play(JobEquipInfoMng.Instance.JobEquip(myJobInfo.ID).AtkReadyAni);
+            while (ani.isPlaying == true)
+            {
+                yield return null;
+                if (curTarget == null)
+                {
+                    StopCoroutine("Attack");
+                    curOrder = null;
+                    StateChange(eUnitState.Standby);
+                }
+            }
+            ani.Play(JobEquipInfoMng.Instance.JobEquip(myJobInfo.ID).AtkingAni);
+            while (ani.isPlaying == true)
+            {
+                yield return null;
+                if (curTarget == null)
+                {
+                    StopCoroutine("Attack");
+                    curOrder = null;
+                    StateChange(eUnitState.Standby);
+                }
+            }
+            yield return null;
+        }
+        yield break;
+    }
+
+    IEnumerator Dead()
+    {
+        ani.Stop();
+        ani.Play("DeadAni");
+        while (ani.isPlaying == true)
+        {
+            yield return null;
+        }
+        Owner.UnregisterPlayerUnit(this);
+        unitMng.unitList.Remove(this);
+        Destroy(gameObject);
+        yield break;
+    }
+
+    /// <summary>
+    /// 가까운 타겟 포착 메서드
+    /// </summary>
     public void View()
     {
+
+        foreach(Target tgt in viewList)
+        {
+            if (tgt == null)
+                viewList.Remove(tgt);
+        }
         foreach(UnitCtrl unit in unitMng.unitList)
         {
-            if (unit.Onwer == Onwer)
-            {
-                continue;
-            }
             float distance = Vector2.Distance(Pos, unit.Pos);
             if (distance < ViewRange)
             {
-                if (!viewList.Contains(unit))
+                if (!viewList.Contains(unit.myTarget))
                 {
-                    viewList.Add(unit);
+                    viewList.Add(unit.myTarget);
                 }
             }
             else
             {
-                if (viewList.Contains(unit))
+                if (viewList.Contains(unit.myTarget))
                 {
-                    viewList.Remove(unit);
+                    viewList.Remove(unit.myTarget);
                 }
             }
+        }
+    }
+
+    public void TargetDamage()
+    {
+        Debug.Log(name + "가"+curTarget.transform.name+"에게"+AtkPower+"데미지");
+        curTarget.GetDamage(AtkPower);
+    }
+
+    public void GetDamage(float damage)
+    {
+        curHealth = (curHealth-damage<=0)? 0: (curHealth - damage);
+        if (curHealth==0)
+        {
+            StateChange(eUnitState.Dead);
         }
     }
 
@@ -200,6 +303,7 @@ public class UnitCtrl : MonoBehaviour
         StateChange(eUnitState.Standby);
     }
 
+    
     public void Rotate(Vector2 target)
     {
         if (target == Pos)
@@ -256,11 +360,21 @@ public class UnitCtrl : MonoBehaviour
         get { return new Vector2(X, Y); }
     }
 
-    public PlayerCtrl Onwer
+    public PlayerCtrl Owner
     {
-        get { return Owner; }
+        get { return owner; }
     }
-
+    public Target Target
+    {
+        get { return myTarget; }
+    }
+    public byte ID
+    {
+        get
+        {
+            return myJobInfo.ID;
+        }
+    }
     public float MoveSpeed
     {
         get
@@ -317,12 +431,17 @@ public class UnitCtrl : MonoBehaviour
             return myJobInfo.AtkRange;
         }
     }
+    public float Size
+    {
+        get { return myJobInfo.Size; }
+    }
 
     public void StateChange(eUnitState state)
     {
         if(unitState != state)
         {
             unitState = state;
+            StopAllCoroutines();
             switch (state)
             {
                 case eUnitState.Standby:
@@ -332,10 +451,11 @@ public class UnitCtrl : MonoBehaviour
                     ani.Play("WalkAni");
                     break;
                 case eUnitState.Atk:
-                    ani.Play("AtkAni");
+                    Debug.Log("changeAtk");
+                    StartCoroutine("Attack");
                     break;
                 case eUnitState.Dead:
-                    ani.Play("DeadAni");
+                    StartCoroutine("Dead");
                     break;
             }
         }

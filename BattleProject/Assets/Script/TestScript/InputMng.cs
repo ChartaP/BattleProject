@@ -103,7 +103,7 @@ public class InputMng : MonoBehaviour
                     case "Unit":
                         peek.position = hit.transform.position;
                         point = peek.localPosition;
-                        if(hit.transform.GetComponent<UnitCtrl>().Onwer == gameMng.playerMng.CtrlPlayer)
+                        if(hit.transform.GetComponent<UnitCtrl>().Owner == gameMng.playerMng.CtrlPlayer)
                             peek.GetComponentInChildren<MeshRenderer>().material = gameMng.unitMng.RangeMater[0];
                         else
                             peek.GetComponentInChildren<MeshRenderer>().material = gameMng.unitMng.RangeMater[1];
@@ -121,23 +121,24 @@ public class InputMng : MonoBehaviour
         scroll = Input.GetAxis("Mouse ScrollWheel") * scrSpeed;
 
         mPos = gameMng.interfaceMng.MainCamera.transform.localPosition;
-        if(mPos.z - scroll <= 0 && mPos.z - scroll >= -50)
+        if(mPos.z - scroll <= -8 && mPos.z - scroll >= -50)
         {
             mPos.z -= scroll;
-            switch (mPos.z)
+            if (mPos.z > -10)
             {
-                case 0:
-                    gameMng.interfaceMng.MainCameraCarrier.localRotation = Quaternion.AngleAxis(55, Vector3.right);
-                    break;
-                case -1:
-                    gameMng.interfaceMng.MainCameraCarrier.localRotation = Quaternion.AngleAxis(60, Vector3.right);
-                    break;
-                case -2:
-                    gameMng.interfaceMng.MainCameraCarrier.localRotation = Quaternion.AngleAxis(65, Vector3.right);
-                    break;
-                default:
-                    gameMng.interfaceMng.MainCameraCarrier.localRotation = Quaternion.AngleAxis(70, Vector3.right);
-                    break;
+                gameMng.interfaceMng.MainCameraCarrier.localRotation = Quaternion.AngleAxis(45, Vector3.right);
+            }
+            else if (mPos.z > -13)
+            {
+                gameMng.interfaceMng.MainCameraCarrier.localRotation = Quaternion.AngleAxis(55, Vector3.right);
+            }
+            else if (mPos.z > -16)
+            {
+                gameMng.interfaceMng.MainCameraCarrier.localRotation = Quaternion.AngleAxis(65, Vector3.right);
+            }
+            else
+            {
+                gameMng.interfaceMng.MainCameraCarrier.localRotation = Quaternion.AngleAxis(75, Vector3.right);
             }
         }
         gameMng.interfaceMng.MainCamera.transform.localPosition = mPos;

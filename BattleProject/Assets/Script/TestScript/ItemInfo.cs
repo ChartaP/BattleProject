@@ -68,15 +68,15 @@ namespace GameSys
         {
             private byte b_ID;
             private string sName;
-            private string sObject;
+            private string sTexture;
             private Color32 color;
             private int nStrength;
 
-            public BlockInfo(byte b_ID, string sName,string sObject,string Color,int nStrength)
+            public BlockInfo(byte b_ID, string sName,string sTexture, string Color,int nStrength)
             {
                 this.b_ID = b_ID;
                 this.sName = sName;
-                this.sObject = sObject;
+                this.sTexture = sTexture;
                 switch (Color)
                 {
                     case "Clear":
@@ -105,9 +105,9 @@ namespace GameSys
                 get { return sName; }
             }
 
-            public string Object
+            public string Texture
             {
-                get { return sObject; }
+                get { return sTexture; }
             }
 
             public Color32 Color
@@ -242,11 +242,12 @@ namespace GameSys
             {
                 this.blockInfo = blockInfo;
                 this.model = model;
+                model.transform.GetComponent<MeshRenderer>().material = Resources.Load("Texture/Materials/" + blockInfo.Texture) as Material;
             }
 
             public void MeshEnabled(bool val)
             {
-                model.transform.Find("Cube").GetComponent<MeshRenderer>().enabled = val;
+                model.transform.GetComponent<MeshRenderer>().enabled = val;
             }
 
             public BlockInfo Info

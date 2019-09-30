@@ -8,9 +8,9 @@
     <Field id="100" name="Crown" icon="icon_Crown" gameobject="Crown" type="Equip" size="1"/>
 	</Item>
   <Block>
-    <Field id="0" name="Air" gameobject="null" color="Clear" strength="9999"/>
-    <Field id="1" name="Dirt" gameobject="Dirt" color="Brown" strength="10"/>
-    <Field id="2" name="Stone" gameobject="Stone" color="Gray" strength="100"/>
-    <Field id="3" name="Water" gameobject="Water" color="Blue" strength="9999"/>
+    <Field id="0" name="Air" texture="null" color="Clear" strength="9999"/>
+    <Field id="1" name="Dirt" texture="Texture_Dirt" color="Brown" strength="10"/>
+    <Field id="2" name="Stone" texture="Texture_Stone" color="Gray" strength="100"/>
+    <Field id="3" name="Water" texture="Texture_Water" color="Blue" strength="9999"/>
   </Block>
 </ItemInfo>

@@ -120,14 +120,17 @@ namespace GameSys
         public class JobEquipInfo
         {
             private byte b_ID;
-            private string sHead,sRHand,sLHand,sChest;
-            public JobEquipInfo(byte b_ID,string sHead,string sRHand,string sLHand,string sChest)
+            private string sHead,sRHand,sLHand,sChest, sProjectile , sAtkReadyAni , sAtkingAni;
+            public JobEquipInfo(byte b_ID,string sHead,string sRHand,string sLHand,string sChest,string sProjectile, string sAtkReadyAni, string sAtkingAni)
             {
                 this.b_ID = b_ID;
                 this.sHead = sHead;
                 this.sRHand = sRHand;
                 this.sLHand = sLHand;
                 this.sChest = sChest;
+                this.sProjectile = sProjectile;
+                this.sAtkReadyAni = sAtkReadyAni;
+                this.sAtkingAni = sAtkingAni;
             }
             public byte ID
             {
@@ -148,6 +151,18 @@ namespace GameSys
             public string Chest
             {
                 get { return sChest; }
+            }
+            public string Projectile
+            {
+                get { return sProjectile; }
+            }
+            public string AtkReadyAni
+            {
+                get { return sAtkReadyAni; }
+            }
+            public string AtkingAni
+            {
+                get { return sAtkingAni; }
             }
         }
 

@@ -16,11 +16,12 @@ namespace GameSys
 
         public enum ePlayerType
         {
-            Player = 0,
-            Computer = 1,
-            Observer = 2,
-            Animal = 3,
-            barbarian = 4
+            Player = 0,//인간 플레이어
+            Computer = 1,//컴퓨터 플레이어
+            barbarian = 2,//야만인
+            Animal = 3,//동물
+            Plants = 4,//식물
+            Observer = 5//관전자
         }
 
         public enum eGeoType
@@ -54,6 +55,14 @@ namespace GameSys
             Null    = -1,
             People  = 0,//인간
             Animal  = 1//동물
+        }
+
+        public enum eTargetType
+        {
+            Unit    =1,
+            Building=2,
+            Animal  =3,
+            Plants  =4
         }
         /// <summary>
         /// 유닛 직업

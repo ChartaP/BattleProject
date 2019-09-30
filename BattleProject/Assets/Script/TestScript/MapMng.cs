@@ -13,6 +13,7 @@ public class MapMng : MonoBehaviour
     public List<GameObject> gPlantsPre = null;
     public List<GameObject> gBuildPre = null;
     public Dictionary<int,MapTile> MapTiles;
+    public List<Material> BlockMaterials;
     public bool[,] bOpen;
 
     private void Awake()

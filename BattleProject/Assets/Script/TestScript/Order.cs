@@ -59,7 +59,7 @@ namespace GameSys
                 if (targetTrans != null)
                 {
                     targetPos = new Vector2(targetTrans.localPosition.x, targetTrans.localPosition.z);
-                    if (Vector2.Distance(unit.Pos, targetPos) > 1.0f)
+                    if (Vector2.Distance(unit.Pos, targetPos) > unit.Size*1.5)
                     {
                         unit.Move(targetPos);
                     }
@@ -110,17 +110,16 @@ namespace GameSys
                     float distance = Vector2.Distance(unit.Pos, targetPos);
                     if (distance < unit.AtkRange)
                     {//공격범위 안
-                        unit.AtkUnit(targetTrans.GetComponent<UnitCtrl>());
+                        unit.AtkTarget(targetTrans.GetComponent<Target>());
                     }
                     else
                     {//공격범위 밖
-                        Debug.Log(targetPos);
+                        //Debug.Log(targetPos);
                         unit.Move(targetPos);
                     }
                 }
                 else
                 {
-
                     unit.AtkInView();
                 }
             }

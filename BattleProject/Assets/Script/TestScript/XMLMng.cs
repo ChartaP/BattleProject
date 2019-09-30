@@ -66,13 +66,13 @@ public class XMLMng : MonoBehaviour
             //노드의 내용물 불러와서 블록 정보에 저장 후 블록 매니져에 추가하는 작업
             byte id = byte.Parse(node.Attributes.GetNamedItem("id").InnerText);
             string name = node.Attributes.GetNamedItem("name").InnerText;
-            string gameobject = node.Attributes.GetNamedItem("gameobject").InnerText;
+            string texture = node.Attributes.GetNamedItem("texture").InnerText;
 
             string color = node.Attributes.GetNamedItem("color").InnerText;
 
             int strength= int.Parse(node.Attributes.GetNamedItem("strength").InnerText);
 
-            BlockInfo info = new BlockInfo(id, name, gameobject, color, strength);
+            BlockInfo info = new BlockInfo(id, name, texture, color, strength);
             BlockInfoMng.Instance.AddBlock(info);
         }
     }
@@ -123,8 +123,11 @@ public class XMLMng : MonoBehaviour
             string rhand = node.Attributes.GetNamedItem("rhand").InnerText;
             string lhand = node.Attributes.GetNamedItem("lhand").InnerText;
             string chest = node.Attributes.GetNamedItem("chest").InnerText;
+            string projectile = node.Attributes.GetNamedItem("projectile").InnerText;
+            string atkreadyani = node.Attributes.GetNamedItem("atkreadyani").InnerText;
+            string atkingani = node.Attributes.GetNamedItem("atkingani").InnerText;
 
-            JobEquipInfo info = new JobEquipInfo(id, head,rhand,lhand,chest);
+            JobEquipInfo info = new JobEquipInfo(id, head,rhand,lhand,chest,projectile,atkreadyani,atkingani);
             JobEquipInfoMng.Instance.AddJobEquip(info);
         }
         
