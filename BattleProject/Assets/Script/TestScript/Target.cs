@@ -13,6 +13,9 @@ public class Target : MonoBehaviour
     private UnitCtrl unitCtrl = null;
     [SerializeField]
     private Bar myBar = null;
+    [SerializeField]
+    private Transform hpTrans = null;
+
 
 
     // Start is called before the first frame update
@@ -25,13 +28,14 @@ public class Target : MonoBehaviour
                 break;
         }
         myBar = Instantiate(Resources.Load("Prefab/Bar") as GameObject, unitMng.gameMng.interfaceMng.CanvasTrans).GetComponent<Bar>();
+        myBar.name = name + "Bar";
         myBar.Set(Health, new Color32(255, 0, 0,255));
     }
 
     // Update is called once per frame
     void Update()
     {
-        myBar.Cur(Health,CurHealth, transform.position);
+        myBar.Cur(Health,CurHealth, hpTrans.position);
     }
 
     public void OnDestroy()
@@ -128,5 +132,10 @@ public class Target : MonoBehaviour
                 unitCtrl.GetDamage(damage);
                 return;
         }
+    }
+
+    public eUnitState State
+    {
+        get { return unitCtrl.State; }
     }
 }

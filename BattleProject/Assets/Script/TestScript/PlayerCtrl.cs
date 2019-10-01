@@ -206,12 +206,12 @@ public class PlayerCtrl : MonoBehaviour
         if (unit.Job == eUnitJob.Leader)
             playerMng.fallPlayer(this);
     }
-
+    
     /// <summary>
     /// 선택된 유닛에 명령 메서드
     /// </summary>
     /// <param name="target"></param>
-    public void OrderUnits(Vector3 target)
+    public void OrderUnits(eOrder type, Transform target)
     {
         if (selectableUnit.Count == 0)
             return;
@@ -222,30 +222,21 @@ public class PlayerCtrl : MonoBehaviour
 
         foreach (UnitCtrl unit in selectableUnit)
         {
-
-            unit.receiptOrder(new Move(new Vector2(target.x + unit.X- center.x, target.z + unit.Y - center.y)));
-        }
-    }
-
-    /// <summary>
-    /// 선택된 유닛에 명령 메서드
-    /// </summary>
-    /// <param name="target"></param>
-    public void OrderUnits(Transform target)
-    {
-        if (selectableUnit.Count == 0)
-            return;
-        if (selectableUnit[0].Owner != this)
-            return;
-
-        Vector2 center = UnitsCenterPos();
-
-        foreach (UnitCtrl unit in selectableUnit)
-        {
-            if (target.GetComponent<UnitCtrl>().Owner == this)
-                unit.receiptOrder(new Move(target));
-            else
-                unit.receiptOrder(new ATK(target));
+            switch (type)
+            {
+                case eOrder.MoveTarget:
+                    unit.receiptOrder(new MoveTarget(target.GetComponent<Target>()));
+                    break;
+                case eOrder.MovePos:
+                    unit.receiptOrder(new MovePos( new Vector2(unit.X-UnitsCenterPos().x + target.localPosition.x, unit.Y- UnitsCenterPos().y+ target.localPosition.z )));
+                    break;
+                case eOrder.AtkTarget:
+                    unit.receiptOrder(new AtkTarget(target.GetComponent<Target>()));
+                    break;
+                case eOrder.AtkPos:
+                    unit.receiptOrder(new AtkPos(new Vector2(unit.X-UnitsCenterPos().x+ target.localPosition.x, unit.Y-UnitsCenterPos().y + target.localPosition.z)));
+                    break;
+            }
         }
     }
 

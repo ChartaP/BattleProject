@@ -18,7 +18,7 @@ public class Bar : MonoBehaviour
     {
         this.Length = Max/2;
         BarTrans.sizeDelta = new Vector2(Length, 4);
-        BackTrans.sizeDelta = new Vector2(Length, 4);
+        BackTrans.sizeDelta = new Vector2(Length+8, 12);
         BarImage.color = BarColor;
     }
 

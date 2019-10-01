@@ -94,10 +94,12 @@ namespace GameSys
         public enum eOrder
         {
             Null = -1,
-            Move = 0,
-            ATK = 1,
-            PTR = 2,
-            Hold = 3
+            MoveTarget = 0,
+            MovePos = 1,
+            AtkTarget = 2,
+            AtkPos  =3,
+            PTR = 4,
+            Hold = 5
         }
     }
 }

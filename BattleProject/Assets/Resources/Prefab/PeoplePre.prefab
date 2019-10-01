@@ -659,6 +659,36 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!1 &3901530008225193710
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3427453232332023750}
+  m_Layer: 9
+  m_Name: HP
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3427453232332023750
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3901530008225193710}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 2.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 5307881830797853350}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4736894620230603202
 GameObject:
   m_ObjectHideFlags: 0
@@ -723,6 +753,11 @@ MonoBehaviour:
   tHead: {fileID: 1787972532799218343}
   tChest: {fileID: 8125632248346318808}
   tUnit: {fileID: 5307881830797853350}
+  tLHandEquip: {fileID: 0}
+  tRHandEquip: {fileID: 0}
+  tHeadEquip: {fileID: 0}
+  tChestEquip: {fileID: 0}
+  tUnitEquip: {fileID: 0}
   tViewRange: {fileID: 2854858120951032543}
   tAtkRange: {fileID: 4948598097988537076}
   curHealth: 1
@@ -744,6 +779,7 @@ MonoBehaviour:
   unitMng: {fileID: 0}
   unitCtrl: {fileID: 2442648131897745039}
   myBar: {fileID: 0}
+  hpTrans: {fileID: 3427453232332023750}
 --- !u!111 &2761182869865531110
 Animation:
   m_ObjectHideFlags: 0
@@ -1181,6 +1217,7 @@ Transform:
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children:
   - {fileID: 671510999153353177}
+  - {fileID: 3427453232332023750}
   m_Father: {fileID: 9009755910403983873}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

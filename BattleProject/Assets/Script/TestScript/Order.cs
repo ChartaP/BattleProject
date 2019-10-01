@@ -11,16 +11,24 @@ namespace GameSys
         {
             protected eOrder type;
             protected Vector2 targetPos;
+            protected Target target;
 
             public Vector2 TargetPos
             {
                 get { return targetPos; }
             }
 
+            public Target Target
+            {
+                get { return target; }
+            }
+
             public eOrder Type
             {
                 get { return type; }
             }
+
+            public abstract void Start(UnitCtrl unit);
 
             /// <summary>
             /// 명령 수행 메서드
@@ -37,46 +45,38 @@ namespace GameSys
         }
 
         /// <summary>
-        /// 무조건 이동 명령
+        /// 타겟 따라가기 명령
         /// </summary>
-        public class Move : Order
+        public class MoveTarget : Order
         {
-            private Transform targetTrans = null;
-            public Move(Vector2 targetPos)
+            public MoveTarget(Target target)
             {
-                this.targetPos = targetPos;
-                type = eOrder.Move;
+                this.target = target;
+                type = eOrder.MoveTarget;
             }
 
-            public Move(Transform target)
+            public override void Start(UnitCtrl unit)
             {
-                this.targetTrans = target;
-                type = eOrder.Move;
             }
 
             public override void Works(UnitCtrl unit)
             {
-                if (targetTrans != null)
+                if (target != null)
                 {
-                    targetPos = new Vector2(targetTrans.localPosition.x, targetTrans.localPosition.z);
-                    if (Vector2.Distance(unit.Pos, targetPos) > unit.Size*1.5)
+                    if (Vector2.Distance(unit.Pos, target.Pos) > unit.Size*1.5)
                     {
-                        unit.Move(targetPos);
+                        unit.MoveTarget(target);
                     }
                     else
                     {
                         unit.StateChange(eUnitState.Standby);
                     }
                 }
-                else
-                {
-                    unit.Move(targetPos);
-                }
             }
 
             public override bool Achievement(UnitCtrl unit)
             {
-                if(unit.transform.localPosition.x == targetPos.x && unit.transform.localPosition.z == targetPos.y)
+                if(target == null)
                 {
                     unit.Stop();
                     return true;
@@ -87,60 +87,109 @@ namespace GameSys
         }
 
         /// <summary>
-        /// 적 공격 명령
+        /// 목표 지점 이동 명령
         /// </summary>
-        public class ATK : Order
+        public class MovePos : Order
         {
-            private Transform targetTrans = null;
-            public ATK(Vector2 targetPos)
+            public MovePos(Vector2 targetPos)
             {
                 this.targetPos = targetPos;
-                type = eOrder.ATK;
+                type = eOrder.MovePos;
             }
-            public ATK(Transform target)
+            public override void Start(UnitCtrl unit)
             {
-                targetTrans = target;
-                type = eOrder.ATK;
+                unit.MovePos(targetPos);
             }
             public override void Works(UnitCtrl unit)
             {
-                if(targetTrans != null)
+                //None
+            }
+
+            public override bool Achievement(UnitCtrl unit)
+            {
+                if (unit.X == targetPos.x && unit.Y == targetPos.y)
                 {
-                    targetPos = new Vector2(targetTrans.localPosition.x, targetTrans.localPosition.z);
-                    float distance = Vector2.Distance(unit.Pos, targetPos);
-                    if (distance < unit.AtkRange)
-                    {//공격범위 안
-                        unit.AtkTarget(targetTrans.GetComponent<Target>());
+                    unit.Stop();
+                    return true;
+                }
+                return false;
+
+            }
+        }
+
+        /// <summary>
+        /// 타겟 공격 명령
+        /// </summary>
+        public class AtkTarget : Order
+        {
+            public AtkTarget(Target target)
+            {
+                this.target = target;
+                type = eOrder.MoveTarget;
+            }
+            public override void Start(UnitCtrl unit)
+            {
+            }
+            public override void Works(UnitCtrl unit)
+            {
+                if (target != null)
+                {
+                    if (Vector2.Distance(unit.Pos, target.Pos) < unit.AtkRange)
+                    {
+                        unit.AtkTarget(target);
                     }
                     else
-                    {//공격범위 밖
-                        //Debug.Log(targetPos);
-                        unit.Move(targetPos);
+                    {
+                        unit.MoveTarget(target);
                     }
-                }
-                else
-                {
-                    unit.AtkInView();
                 }
             }
             public override bool Achievement(UnitCtrl unit)
             {
-                if (targetTrans != null)
+                if (target == null)
                 {
-                    targetPos = new Vector2(targetTrans.localPosition.x, targetTrans.localPosition.z);
-                    float distance = Vector2.Distance(unit.Pos, targetPos);
-                    if(distance > unit.ViewRange)
+                    unit.Stop();
+                    return true;
+                }
+                return false;
+            }
+        }
+
+        public class AtkPos : Order
+        {
+            public AtkPos( Vector2 targetPos)
+            {
+                this.targetPos = targetPos;
+                type = eOrder.AtkPos;
+            }
+            public override void Start(UnitCtrl unit)
+            {
+                unit.MovePos(targetPos);
+            }
+            public override void Works(UnitCtrl unit)
+            {
+                if(target != null)
+                {
+                    if (Vector2.Distance(unit.Pos, target.Pos) < unit.AtkRange)
                     {
-                        return true;
+                        unit.AtkTarget(target);
+                    }
+                    else
+                    {
+                        unit.MoveTarget(target);
                     }
                 }
                 else
                 {
-                    if (unit.transform.localPosition.x == targetPos.x && unit.transform.localPosition.z == targetPos.y)
-                    {
-                        unit.Stop();
-                        return true;
-                    }
+                    target = unit.EnemyInView();
+                }
+            }
+            public override bool Achievement(UnitCtrl unit)
+            {
+                if (unit.X == targetPos.x && unit.Y == targetPos.y)
+                {
+                    unit.Stop();
+                    return true;
                 }
                 return false;
             }
@@ -151,6 +200,9 @@ namespace GameSys
         /// </summary>
         public class PTR : Order
         {
+            public override void Start(UnitCtrl unit)
+            {
+            }
             public override void Works(UnitCtrl unit)
             {
 
@@ -166,6 +218,9 @@ namespace GameSys
         /// </summary>
         public class Hold : Order
         {
+            public override void Start(UnitCtrl unit)
+            {
+            }
             public override void Works(UnitCtrl unit)
             {
 

@@ -67,6 +67,13 @@ public class UnitMng : MonoBehaviour
     {
         unit.SetJob(job);
     }
+
+    public void RemoveUnit(UnitCtrl unit)
+    {
+        unitList.Remove(unit);
+        unit.StopAllCoroutines();
+        Destroy(unit.gameObject);
+    }
     
     public int UnitjobToID(eUnitJob job)
     {

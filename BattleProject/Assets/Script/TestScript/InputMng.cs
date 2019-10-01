@@ -98,17 +98,23 @@ public class InputMng : MonoBehaviour
                         point = peek.localPosition;
                         peek.GetComponentInChildren<MeshRenderer>().material = gameMng.unitMng.RangeMater[0];
                         peek.GetComponentInChildren<Animation>().Play();
-                        gameMng.playerMng.CtrlPlayer.OrderUnits(point);
+                        gameMng.playerMng.CtrlPlayer.OrderUnits(GameSys.Lib.eOrder.MovePos, peek);
                         break;
                     case "Unit":
                         peek.position = hit.transform.position;
                         point = peek.localPosition;
-                        if(hit.transform.GetComponent<UnitCtrl>().Owner == gameMng.playerMng.CtrlPlayer)
+                        if (hit.transform.GetComponent<UnitCtrl>().Owner == gameMng.playerMng.CtrlPlayer)
+                        {
                             peek.GetComponentInChildren<MeshRenderer>().material = gameMng.unitMng.RangeMater[0];
+                            peek.GetComponentInChildren<Animation>().Play();
+                            gameMng.playerMng.CtrlPlayer.OrderUnits(GameSys.Lib.eOrder.MoveTarget,hit.transform);
+                        }
                         else
+                        {
                             peek.GetComponentInChildren<MeshRenderer>().material = gameMng.unitMng.RangeMater[1];
-                        peek.GetComponentInChildren<Animation>().Play();
-                        gameMng.playerMng.CtrlPlayer.OrderUnits(hit.transform);
+                            peek.GetComponentInChildren<Animation>().Play();
+                            gameMng.playerMng.CtrlPlayer.OrderUnits(GameSys.Lib.eOrder.AtkTarget,hit.transform);
+                        }
                         break;
                 }
             }
@@ -154,14 +160,15 @@ public class InputMng : MonoBehaviour
         float zoom = -1*gameMng.interfaceMng.MainCamera.transform.localPosition.z+2;
         int nXSize = GameInfo.nXSize-1;
         int nYSize = GameInfo.nYSize-1;
+        float fSpeed = 1.0f;
         if (isMove)
         {
             if (Input.GetKey(KeyCode.UpArrow))
             {
-                if (CameraPos.z + 4.0f * zoom * Time.deltaTime > nYSize)
+                if (CameraPos.z + fSpeed * zoom * Time.deltaTime > nYSize)
                     CameraPos.z = nYSize;
                 else if (CameraPos.z < nYSize)
-                    CameraPos.z += 4.0f * zoom * Time.deltaTime;
+                    CameraPos.z += fSpeed  * zoom * Time.deltaTime;
                 else
                     CameraPos.z = nYSize;
                 CameraPos.y = gameMng.mapMng.GetHeight((int)CameraPos.x, (int)CameraPos.z);
@@ -169,30 +176,30 @@ public class InputMng : MonoBehaviour
             }
             if (Input.GetKey(KeyCode.DownArrow))
             {
-                if (CameraPos.z - 4.0f * zoom * Time.deltaTime < 0)
+                if (CameraPos.z - fSpeed * zoom * Time.deltaTime < 0)
                     CameraPos.z = 0;
                 else if (CameraPos.z> 1)
-                    CameraPos.z -= 4.0f * zoom * Time.deltaTime;
+                    CameraPos.z -= fSpeed * zoom * Time.deltaTime;
                 else
                     CameraPos.z = 0;
                 CameraPos.y = gameMng.mapMng.GetHeight((int)CameraPos.x, (int)CameraPos.z);
             }
             if (Input.GetKey(KeyCode.LeftArrow))
             {
-                if (CameraPos.x - 4.0f * zoom * Time.deltaTime < 0)
+                if (CameraPos.x - fSpeed * zoom * Time.deltaTime < 0)
                     CameraPos.x = 0;
                 else if (CameraPos.x >1)
-                    CameraPos.x -= 4.0f * zoom * Time.deltaTime;
+                    CameraPos.x -= fSpeed * zoom * Time.deltaTime;
                 else
                     CameraPos.x = 0;
                 CameraPos.y = gameMng.mapMng.GetHeight((int)CameraPos.x, (int)CameraPos.z);
             }
             if (Input.GetKey(KeyCode.RightArrow))
             {
-                if(CameraPos.x + 4.0f * zoom * Time.deltaTime > nXSize)
+                if(CameraPos.x + fSpeed * zoom * Time.deltaTime > nXSize)
                     CameraPos.x = nXSize;
                 else if (CameraPos.x < nXSize)
-                    CameraPos.x += 4.0f * zoom * Time.deltaTime;
+                    CameraPos.x += fSpeed * zoom * Time.deltaTime;
                 else
                     CameraPos.x = nXSize;
                 CameraPos.y = gameMng.mapMng.GetHeight((int)CameraPos.x, (int)CameraPos.z);

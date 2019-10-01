@@ -108,37 +108,46 @@ public class UnitCtrl : MonoBehaviour
     void Start()
     {
         ani.Play();
+        StartCoroutine("Decide");
     }
 
     // Update is called once per frame
     void Update()
     {
-        
-        if (myJobInfo == null)
-            return;
-        if (unitState == eUnitState.Dead)
-            return;
-        if(unitState == eUnitState.Standby)
-        {
-            View();
-            AtkInView();
-            fulfilOrder();
-            RangeUpdate();
+    }
 
-        }
-        else if(unitState == eUnitState.Move)
+    IEnumerator Decide()
+    {
+        while (true)
         {
-            View();
-            OnGround();
-            fulfilOrder();
-            RangeUpdate();
+            if (myJobInfo == null)
+                continue;
+            if (unitState == eUnitState.Dead)
+                yield break ;
+            if (unitState == eUnitState.Standby)
+            {
+                View();
+                AtkInView();
+                fulfilOrder();
+                RangeUpdate();
+
+            }
+            else if (unitState == eUnitState.Move)
+            {
+                View();
+                OnGround();
+                fulfilOrder();
+                RangeUpdate();
+            }
+            else if (unitState == eUnitState.Atk)
+            {
+                View();
+                fulfilOrder();
+                RangeUpdate();
+            }
+            yield return new WaitForSecondsRealtime(0.4f);
         }
-        else if(unitState == eUnitState.Atk)
-        {
-            View();
-            fulfilOrder();
-            RangeUpdate();
-        }
+        yield break;
     }
 
     public void RangeUpdate()
@@ -147,41 +156,45 @@ public class UnitCtrl : MonoBehaviour
         tAtkRange.localScale = new Vector3(AtkRange * 2.0f, 0.1f, AtkRange * 2.0f);
     }
 
+    /// <summary>
+    /// 명령 접수
+    /// </summary>
+    /// <param name="order"></param>
     public void receiptOrder(Order order)
     {
         curOrder = order;
+        curOrder.Start(this);
         Debug.Log("Receipt");
     }
 
+    /// <summary>
+    /// 명령 수행
+    /// </summary>
     private void fulfilOrder()
     {
         if (curOrder == null)
             return;
         curOrder.Works(this);
-        if (curOrder.Achievement(this))
+        if (curOrder.Achievement(this))//명령 달성 여부 확인
         {
             curOrder = null;
-            StateChange(eUnitState.Standby);
         }
     }
 
     /// <summary>
-    /// 목표 지점 이동 메서드
-    /// </summary>
-    /// <param name="target"></param>
-    public void Move(Vector2 target)
-    {
-        StateChange(eUnitState.Move);
-        Vector2 temp = Pos;
-        temp = Vector2.MoveTowards(temp, target, MoveSpeed * Time.deltaTime);
-        transform.localPosition = new Vector3(temp.x,Height,temp.y);
-        Rotate(target);
-    }
-
-    /// <summary>
     /// 보이는적 공격 메서드
+    /// 대기 상태일때만 쓰시오
     /// </summary>
     public void AtkInView()
+    {
+        Target temp = EnemyInView();
+        if(temp != null)
+        {
+            receiptOrder(new AtkTarget(temp));
+        }
+    }
+
+    public Target EnemyInView()
     {
         if (viewList.Count > 0)
         {
@@ -189,9 +202,10 @@ public class UnitCtrl : MonoBehaviour
             {
                 if (target.Owner == Owner)
                     continue;
-                receiptOrder(new ATK(target.transform));
+                return target;
             }
         }
+        return null;
     }
 
     /// <summary>
@@ -206,6 +220,50 @@ public class UnitCtrl : MonoBehaviour
         Rotate(target.Pos);
     }
 
+    public void MovePos(Vector2 pos)
+    {
+        StopCoroutine("Move");
+        StartCoroutine("Move", pos);
+    }
+
+    public void MoveTarget(Target pos)
+    {
+        StopCoroutine("Move");
+        StartCoroutine("Move", pos);
+    }
+    IEnumerator Move(Vector2 target)
+    {
+        StateChange(eUnitState.Move);
+        while (true)
+        {
+            Vector2 temp = Pos;
+            temp = Vector2.MoveTowards(temp, target, MoveSpeed * Time.deltaTime);
+            transform.localPosition = new Vector3(temp.x, Height, temp.y);
+            Rotate(target);
+            if (Pos == target)
+                break;
+            yield return null;
+        }
+        
+        yield break;
+    }
+
+    IEnumerator Move(Target target)
+    {
+        StateChange(eUnitState.Move);
+        while (true)
+        {
+            Vector2 temp = Pos;
+            temp = Vector2.MoveTowards(temp, target.Pos, MoveSpeed * Time.deltaTime);
+            transform.localPosition = new Vector3(temp.x, Height, temp.y);
+            Rotate(target.Pos);
+            if (Pos == target.Pos)
+                break;
+            yield return null;
+        }
+        yield break;
+    }
+
     IEnumerator Attack()
     {
         while (unitState == eUnitState.Atk)
@@ -217,9 +275,7 @@ public class UnitCtrl : MonoBehaviour
                 yield return null;
                 if (curTarget == null)
                 {
-                    StopCoroutine("Attack");
-                    curOrder = null;
-                    StateChange(eUnitState.Standby);
+                    yield break;
                 }
             }
             ani.Play(JobEquipInfoMng.Instance.JobEquip(myJobInfo.ID).AtkingAni);
@@ -228,9 +284,7 @@ public class UnitCtrl : MonoBehaviour
                 yield return null;
                 if (curTarget == null)
                 {
-                    StopCoroutine("Attack");
-                    curOrder = null;
-                    StateChange(eUnitState.Standby);
+                    yield break;
                 }
             }
             yield return null;
@@ -247,8 +301,7 @@ public class UnitCtrl : MonoBehaviour
             yield return null;
         }
         Owner.UnregisterPlayerUnit(this);
-        unitMng.unitList.Remove(this);
-        Destroy(gameObject);
+        unitMng.RemoveUnit(this);
         yield break;
     }
 
@@ -257,11 +310,13 @@ public class UnitCtrl : MonoBehaviour
     /// </summary>
     public void View()
     {
-
-        foreach(Target tgt in viewList)
+        for(int i = 0; i < viewList.Count; i++)
         {
-            if (tgt == null)
-                viewList.Remove(tgt);
+            if (viewList[i] == null)
+            {
+                viewList.Remove(viewList[i]);
+                i = i - 1 < 0 ? i - 1 : 0;
+            }
         }
         foreach(UnitCtrl unit in unitMng.unitList)
         {
@@ -435,13 +490,27 @@ public class UnitCtrl : MonoBehaviour
     {
         get { return myJobInfo.Size; }
     }
+    public eUnitState State
+    {
+        get { return unitState; }
+    }
 
     public void StateChange(eUnitState state)
     {
         if(unitState != state)
         {
+            switch (unitState)
+            {
+                case eUnitState.Standby:
+                    break;
+                case eUnitState.Move:
+                    StopCoroutine("Move");
+                    break;
+                case eUnitState.Atk:
+                    StopCoroutine("Attack");
+                    break;
+            }
             unitState = state;
-            StopAllCoroutines();
             switch (state)
             {
                 case eUnitState.Standby:
@@ -455,6 +524,7 @@ public class UnitCtrl : MonoBehaviour
                     StartCoroutine("Attack");
                     break;
                 case eUnitState.Dead:
+                    StopAllCoroutines();
                     StartCoroutine("Dead");
                     break;
             }
