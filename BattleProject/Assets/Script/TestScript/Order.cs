@@ -63,13 +63,13 @@ namespace GameSys
             {
                 if (target != null)
                 {
-                    if (Vector2.Distance(unit.Pos, target.Pos) > unit.Size*1.5)
+                    if (Vector2.Distance(unit.Pos, target.Pos) > (unit.Radius+target.Radius)*1.5f)
                     {
                         unit.MoveTarget(target);
                     }
                     else
                     {
-                        unit.StateChange(eUnitState.Standby);
+                        unit.Stop();
                     }
                 }
             }
@@ -102,7 +102,7 @@ namespace GameSys
             }
             public override void Works(UnitCtrl unit)
             {
-                //None
+                
             }
 
             public override bool Achievement(UnitCtrl unit)

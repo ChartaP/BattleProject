@@ -103,5 +103,29 @@ public class UnitMng : MonoBehaviour
         return -1;
     }
     
-    
+    public bool IsCollisionPos(UnitCtrl self,Vector2 pos)
+    {
+        foreach(UnitCtrl unit in unitList)
+        {
+            if (unit == self)
+                continue;
+            if(Vector2.Distance(unit.Pos,pos) < unit.Radius/2+self.Radius/2)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public UnitCtrl UnitCollisionPos(UnitCtrl self, Vector2 pos)
+    {
+        foreach (UnitCtrl unit in unitList)
+        {
+            if (Vector2.Distance(unit.Pos, pos) < unit.Radius / 2 + self.Radius / 2)
+            {
+                return unit;
+            }
+        }
+        return null;
+    }
 }

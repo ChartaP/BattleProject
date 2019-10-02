@@ -762,6 +762,9 @@ MonoBehaviour:
   tAtkRange: {fileID: 4948598097988537076}
   curHealth: 1
   curTarget: {fileID: 0}
+  curPos: {x: 0, y: 0}
+  rigid: {fileID: 7906382692176740078}
+  isCollision: 0
   viewList: []
 --- !u!114 &4172733848792464864
 MonoBehaviour:

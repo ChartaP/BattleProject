@@ -53,6 +53,13 @@ public class UnitCtrl : MonoBehaviour
     private Order curOrder = null;
     [SerializeField]
     private Target curTarget = null;
+    [SerializeField]
+    private Vector2 curPos ;
+    [SerializeField]
+    private Rigidbody rigid;
+    [SerializeField]
+    private bool isCollision = false;
+
 
     public List<Target> viewList = new List<Target>();
 
@@ -107,6 +114,7 @@ public class UnitCtrl : MonoBehaviour
     
     void Start()
     {
+        curPos = Pos;
         ani.Play();
         StartCoroutine("Decide");
     }
@@ -115,6 +123,7 @@ public class UnitCtrl : MonoBehaviour
     void Update()
     {
     }
+    
 
     IEnumerator Decide()
     {
@@ -130,6 +139,7 @@ public class UnitCtrl : MonoBehaviour
                 AtkInView();
                 fulfilOrder();
                 RangeUpdate();
+                Unlump();
 
             }
             else if (unitState == eUnitState.Move)
@@ -148,6 +158,49 @@ public class UnitCtrl : MonoBehaviour
             yield return new WaitForSecondsRealtime(0.4f);
         }
         yield break;
+    }
+
+    public void Unlump()
+    {
+        if (IsCollisionPos( Pos))
+        {
+            transform.Translate(Random.Range(-1f, 1.0f) * 0.001f, 0, Random.Range(-1f, 1.0f) * 0.001f);
+        }
+
+        if (!IsCollisionPos( curPos))
+        {
+            if (Vector2.Distance(Pos, curPos) > 0.1f)
+            {
+                MovePos(curPos);
+            }
+        }
+
+    }
+
+    public bool IsCollisionPos( Vector2 pos)
+    {
+        foreach (Target unit in viewList)
+        {
+            if(unit == myTarget)
+                continue;
+            if (Vector2.Distance(unit.Pos, pos) < unit.Radius/2 + Radius/2)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Target TargetCollisionPos(Vector2 pos)
+    {
+        foreach (Target unit in viewList)
+        {
+            if (Vector2.Distance(unit.Pos, pos) < unit.Radius/2 + Radius / 2)
+            {
+                return unit;
+            }
+        }
+        return null;
     }
 
     public void RangeUpdate()
@@ -222,12 +275,14 @@ public class UnitCtrl : MonoBehaviour
 
     public void MovePos(Vector2 pos)
     {
+        curPos = pos;
         StopCoroutine("Move");
         StartCoroutine("Move", pos);
     }
 
     public void MoveTarget(Target pos)
     {
+        curPos = pos.Pos;
         StopCoroutine("Move");
         StartCoroutine("Move", pos);
     }
@@ -236,15 +291,14 @@ public class UnitCtrl : MonoBehaviour
         StateChange(eUnitState.Move);
         while (true)
         {
-            Vector2 temp = Pos;
-            temp = Vector2.MoveTowards(temp, target, MoveSpeed * Time.deltaTime);
-            transform.localPosition = new Vector3(temp.x, Height, temp.y);
             Rotate(target);
-            if (Pos == target)
+            transform.Translate(0, 0 , MoveSpeed * Time.deltaTime);
+            Debug.DrawRay(transform.position, transform.forward * Vector2.Distance(Pos,curPos), Color.blue, Time.deltaTime);
+            if (Vector2.Distance( Pos , target)<0.1f)
                 break;
             yield return null;
         }
-        
+        Stop();
         yield break;
     }
 
@@ -253,14 +307,14 @@ public class UnitCtrl : MonoBehaviour
         StateChange(eUnitState.Move);
         while (true)
         {
-            Vector2 temp = Pos;
-            temp = Vector2.MoveTowards(temp, target.Pos, MoveSpeed * Time.deltaTime);
-            transform.localPosition = new Vector3(temp.x, Height, temp.y);
             Rotate(target.Pos);
-            if (Pos == target.Pos)
+            transform.Translate(0, 0, MoveSpeed * Time.deltaTime);
+            Debug.DrawRay(transform.position, transform.forward * Vector2.Distance(Pos, curPos), Color.blue, 0.3f);
+            if (Vector2.Distance(Pos, target.Pos) < 0.1f)
                 break;
             yield return null;
         }
+        Stop();
         yield break;
     }
 
@@ -363,7 +417,7 @@ public class UnitCtrl : MonoBehaviour
     {
         if (target == Pos)
             return;
-        Vector3 dir = new Vector3(target.x, 0, target.y) - new Vector3(transform.localPosition.x, 0, transform.localPosition.z);
+        Vector3 dir = new Vector3(target.x, 0, target.y) - new Vector3(X, 0, Y);
         dir.Normalize();
         transform.rotation = Quaternion.LookRotation(dir);
     }
@@ -490,6 +544,10 @@ public class UnitCtrl : MonoBehaviour
     {
         get { return myJobInfo.Size; }
     }
+    public float Radius
+    {
+        get { return myJobInfo.ColRadius; }
+    }
     public eUnitState State
     {
         get { return unitState; }
@@ -520,6 +578,7 @@ public class UnitCtrl : MonoBehaviour
                     ani.Play("WalkAni");
                     break;
                 case eUnitState.Atk:
+
                     Debug.Log("changeAtk");
                     StartCoroutine("Attack");
                     break;
@@ -530,7 +589,15 @@ public class UnitCtrl : MonoBehaviour
             }
         }
     }
-    
 
-
+    private void OnCollisionStay(Collision collision)
+    {
+        if(collision.transform.tag == "Unit")
+            isCollision = true;
+    }
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.transform.tag == "Unit")
+            isCollision = false;
+    }
 }

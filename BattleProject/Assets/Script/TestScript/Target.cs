@@ -68,6 +68,19 @@ public class Target : MonoBehaviour
         }
     }
 
+    public float Radius
+    {
+        get
+        {
+            switch (Type)
+            {
+                case eTargetType.Unit:
+                    return unitCtrl.Radius;
+            }
+            return 0.0f;
+        }
+    }
+
     public float Health
     {
         get {
