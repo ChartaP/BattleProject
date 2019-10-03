@@ -71,7 +71,6 @@ public class PlayerCtrl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
     }
 
     
@@ -178,12 +177,9 @@ public class PlayerCtrl : MonoBehaviour
     {
         if (unit != null)
         {
-            if (UnitList.Contains(unit))
-            {
-                UnselectUnits();
-                selectableUnit.Add(unit);
-                unit.SelectMesh.enabled = true;
-            }
+            UnselectUnits();
+            selectableUnit.Add(unit);
+            unit.SelectMesh.enabled = true;
         }
     }
 

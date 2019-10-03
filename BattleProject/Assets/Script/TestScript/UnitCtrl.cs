@@ -59,6 +59,9 @@ public class UnitCtrl : MonoBehaviour
     private Rigidbody rigid;
     [SerializeField]
     private bool isCollision = false;
+    [SerializeField]
+    private ParticleSystem BloodParicle = null;
+
 
 
     public List<Target> viewList = new List<Target>();
@@ -400,6 +403,10 @@ public class UnitCtrl : MonoBehaviour
 
     public void GetDamage(float damage)
     {
+        if(damage > 0)
+        {
+            BloodParicle.Play();
+        }
         curHealth = (curHealth-damage<=0)? 0: (curHealth - damage);
         if (curHealth==0)
         {
@@ -483,6 +490,14 @@ public class UnitCtrl : MonoBehaviour
         {
             return myJobInfo.ID;
         }
+    }
+    public string Name
+    {
+        get { return myJobInfo.Name; }
+    }
+    public string Face
+    {
+        get { return myJobInfo.Face; }
     }
     public float MoveSpeed
     {

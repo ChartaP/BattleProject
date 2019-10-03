@@ -16,6 +16,7 @@ public class InterfaceMng : MonoBehaviour
     public Sprite[] UnitFace;
     public Transform CanvasTrans;
     public Text WideText;
+    public ObjectsInfoInterface ObInfoInterface;
     private Sprite DefFace;
     // Start is called before the first frame update
     void Start()
@@ -31,20 +32,24 @@ public class InterfaceMng : MonoBehaviour
         {
             if(CtrlPlayer.selectableUnit.Count > 0)
             {
-                ChangeFaceInterface(CtrlPlayer.selectableUnit[0].Job);
+                ChangeFaceInterface(CtrlPlayer.selectableUnit[0].Face);
+            }
+            else
+            {
+                ChangeFaceInterface("");
             }
         }
     }
 
-    public void ChangeFaceInterface(eUnitJob unitJob)
+    public void ChangeFaceInterface(string Face)
     {
-        if((int)unitJob <= -1)
+        if(Face == "")
         {
             FaceSprite.sprite = DefFace;
         }
         else
         {
-            FaceSprite.sprite = UnitFace[gameMng.unitMng.UnitjobToID(unitJob)];
+            FaceSprite.sprite = Resources.Load<Sprite>("Texture/"+Face);
         }
     }
 
@@ -67,6 +72,11 @@ public class InterfaceMng : MonoBehaviour
         float sizeX = Mathf.Abs(squareStart.x - endPoint.x) ;
         float sizeY = Mathf.Abs(squareStart.y - endPoint.y) ;
         SelecteBox.sizeDelta = new Vector2(sizeX   , sizeY );
+    }
+
+    public void UnitsInformationInterface(List<UnitCtrl> unitList)
+    {
+        ObInfoInterface.GetUnitList(unitList);
     }
 
     public void DisplayText(string text)

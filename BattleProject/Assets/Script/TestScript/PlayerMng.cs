@@ -23,9 +23,12 @@ public class PlayerMng : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        gameMng.interfaceMng.UnitsInformationInterface(CtrlPlayer.selectableUnit);
     }
 
+    /// <summary>
+    ///GameInfo의 플레이어 정보를 받아오는 메서드
+    /// </summary>
     public void GetPlayerInfo()
     {
         int cnt = 0;
@@ -42,6 +45,10 @@ public class PlayerMng : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 플레이어 탈락 메서드
+    /// </summary>
+    /// <param name="player"></param>
     public void fallPlayer(PlayerCtrl player)
     {
         PlayerList.Remove(player);
@@ -57,6 +64,9 @@ public class PlayerMng : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 플레이어 스폰 메서드
+    /// </summary>
     public void SpawnPlayer()
     {
         foreach(PlayerCtrl player in PlayerList)
@@ -89,6 +99,13 @@ public class PlayerMng : MonoBehaviour
                 UnitCtrl unitTemp = null;
                 unitTemp = gameMng.unitMng.CreateUnit(spawnPos, player, eUnitType.People);
                 gameMng.unitMng.ChangeJob(unitTemp, eUnitJob.Leader);
+
+                unitTemp = gameMng.unitMng.CreateUnit(spawnPos, player, eUnitType.People);
+                gameMng.unitMng.ChangeJob(unitTemp, eUnitJob.Jobless);
+                unitTemp = gameMng.unitMng.CreateUnit(spawnPos, player, eUnitType.People);
+                gameMng.unitMng.ChangeJob(unitTemp, eUnitJob.Jobless);
+                unitTemp = gameMng.unitMng.CreateUnit(spawnPos, player, eUnitType.People);
+                gameMng.unitMng.ChangeJob(unitTemp, eUnitJob.Jobless);
             }
             //관전자 스폰
             else
