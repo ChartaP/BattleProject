@@ -242,12 +242,12 @@ namespace GameSys
             {
                 this.blockInfo = blockInfo;
                 this.model = model;
-                model.transform.GetComponent<MeshRenderer>().material = Resources.Load("Texture/Materials/" + blockInfo.Texture) as Material;
+                model.transform.GetComponentInChildren<MeshRenderer>().material = Resources.Load("Texture/Materials/" + blockInfo.Texture) as Material;
             }
 
             public void MeshEnabled(bool val)
             {
-                model.transform.GetComponent<MeshRenderer>().enabled = val;
+                model.transform.GetComponentInChildren<MeshRenderer>().enabled = val;
             }
 
             public BlockInfo Info

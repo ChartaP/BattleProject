@@ -58,9 +58,13 @@ public class PlayerCtrl : MonoBehaviour
 
     public int[,] FoW; //0 안개, 1 보이는곳, 2 한번 봤던 곳
 
-    public int nPeople;
-    public int nFood;
-    public int nResource;
+    public Dictionary<string, int> dicResource = new Dictionary<string, int>();
+
+    private void Awake()
+    {
+        dicResource.Add("Food", 100);
+        dicResource.Add("WorkPopulation", 0);
+    }
 
     // Start is called before the first frame update
     void Start()

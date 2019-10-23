@@ -17,6 +17,7 @@ public class InterfaceMng : MonoBehaviour
     public Transform CanvasTrans;
     public Text WideText;
     public ObjectsInfoInterface ObInfoInterface;
+    public List<Text> ResourceTestList = new List<Text>();
     private Sprite DefFace;
     // Start is called before the first frame update
     void Start()
@@ -30,13 +31,30 @@ public class InterfaceMng : MonoBehaviour
     {
         if (gameMng.bGameStart)
         {
-            if(CtrlPlayer.selectableUnit.Count > 0)
+            ResourceInterfase();
+            if (CtrlPlayer.selectableUnit.Count > 0)
             {
                 ChangeFaceInterface(CtrlPlayer.selectableUnit[0].Face);
             }
             else
             {
                 ChangeFaceInterface("");
+            }
+        }
+    }
+
+    public void ResourceInterfase()
+    {
+        foreach(Text text in ResourceTestList)
+        {
+            switch (text.transform.name)
+            {
+                case "Population":
+                    text.text = CtrlPlayer.dicResource["WorkPopulation"]+ "/" + CtrlPlayer.UnitList.Count;
+                    break;
+                case "Food":
+                    text.text = CtrlPlayer.dicResource["Food"]+"()";
+                    break;
             }
         }
     }

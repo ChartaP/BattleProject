@@ -76,6 +76,7 @@ public class UnitCtrl : MonoBehaviour
         transform.name = (nUintCnt++) +"-"+ Owner.name+ "-Unit";
         OnGround();
         Owner.RegisterPlayerUnit(this);
+        Owner.dicResource["WorkPopulation"] += 1;
     }
 
     public void SetJob(eUnitJob job)
@@ -89,7 +90,7 @@ public class UnitCtrl : MonoBehaviour
         collider.height = myJobInfo.ColHeight;
         collider.center = new Vector3(0, myJobInfo.ColHeight / 2, 0);
         curHealth = Health;
-
+        
         string Head = JobEquipInfoMng.Instance.JobEquip(ID).Head;
         string RHand = JobEquipInfoMng.Instance.JobEquip(ID).RHand;
         if (tHeadEquip!= null)
@@ -112,6 +113,10 @@ public class UnitCtrl : MonoBehaviour
         {
             Debug.Log(RHand);
             tRHandEquip = Instantiate(Resources.Load("Prefab/" + RHand) as GameObject, tRHand).transform;
+        }
+        if(job != eUnitJob.Jobless)
+        {
+            Owner.dicResource["WorkPopulation"] -= 1;
         }
     }
     

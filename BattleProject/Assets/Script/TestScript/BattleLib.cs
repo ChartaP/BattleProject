@@ -101,5 +101,19 @@ namespace GameSys
             PTR = 4,
             Hold = 5
         }
+
+        public enum eSeason
+        {
+            SPRING = 0,
+            SUMMER = 1,
+            FALL   = 2,
+            WINTER = 3
+        }
+
+        public enum eDayState
+        {
+            DAY = 0,
+            NIGHT = 1
+        }
     }
 }
