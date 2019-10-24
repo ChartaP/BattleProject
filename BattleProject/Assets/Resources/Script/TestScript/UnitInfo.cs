@@ -182,7 +182,7 @@ namespace GameSys
                 }
             }
 
-            private Dictionary<int, JobInfo> jobDic = new Dictionary<int, JobInfo>();
+            private Dictionary<byte, JobInfo> jobDic = new Dictionary<byte, JobInfo>();
 
             public void AddJob(JobInfo info)
             {
@@ -191,7 +191,7 @@ namespace GameSys
                 jobDic.Add(info.ID, info);
             }
 
-            public JobInfo Job(int ID)
+            public JobInfo Job(byte ID)
             {
                 return jobDic[ID];
             }
@@ -216,7 +216,7 @@ namespace GameSys
                 }
             }
 
-            private Dictionary<int, JobEquipInfo> jobEquipDic = new Dictionary<int, JobEquipInfo>();
+            private Dictionary<byte, JobEquipInfo> jobEquipDic = new Dictionary<byte, JobEquipInfo>();
 
             public void AddJobEquip(JobEquipInfo info)
             {
@@ -225,7 +225,7 @@ namespace GameSys
                 jobEquipDic.Add(info.ID, info);
             }
 
-            public JobEquipInfo JobEquip(int ID)
+            public JobEquipInfo JobEquip(byte ID)
             {
                 return jobEquipDic[ID];
             }

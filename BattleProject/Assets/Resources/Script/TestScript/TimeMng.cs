@@ -21,7 +21,7 @@ public class TimeMng : MonoBehaviour
     public GameObject objMaple = null;
 
     private float fDateTime = 9.0f;
-    private float fDateSpeed = 1.0f;
+    private float fDateSpeed = 2.5f;
     private eSeason curSeason = eSeason.SPRING;
     private eDayState curState = eDayState.DAY;
     private bool bPause = false;

@@ -28,20 +28,20 @@ namespace GameSys
                 get { return type; }
             }
 
-            public abstract void Start(UnitCtrl unit);
+            public abstract void Start(ObjectCtrl unit);
 
             /// <summary>
             /// 명령 수행 메서드
             /// </summary>
             /// <param name="unit"></param>
-            public abstract void Works(UnitCtrl unit);
+            public abstract void Works(ObjectCtrl unit);
 
             /// <summary>
             /// 명령 달성 확인 메서드
             /// </summary>
             /// <param name="unit"></param>
             /// <returns></returns>
-            public abstract bool Achievement(UnitCtrl unit);
+            public abstract bool Achievement(ObjectCtrl unit);
         }
 
         /// <summary>
@@ -55,30 +55,32 @@ namespace GameSys
                 type = eOrder.MoveTarget;
             }
 
-            public override void Start(UnitCtrl unit)
+            public override void Start(ObjectCtrl unit)
             {
             }
 
-            public override void Works(UnitCtrl unit)
+            public override void Works(ObjectCtrl unit)
             {
+                UnitCtrl unitCtrl = unit as UnitCtrl;
                 if (target != null)
                 {
-                    if (Vector2.Distance(unit.Pos, target.Pos) > (unit.Radius+target.Radius)*1.5f)
+                    if (Vector2.Distance(unitCtrl.Pos, target.Pos) > (unitCtrl.Stat("Radius")+target.Radius)*1.5f)
                     {
-                        unit.MoveTarget(target);
+                        unitCtrl.MoveTarget(target);
                     }
                     else
                     {
-                        unit.Stop();
+                        unitCtrl.Stop();
                     }
                 }
             }
 
-            public override bool Achievement(UnitCtrl unit)
+            public override bool Achievement(ObjectCtrl unit)
             {
-                if(target == null)
+                UnitCtrl unitCtrl = unit as UnitCtrl;
+                if (target == null)
                 {
-                    unit.Stop();
+                    unitCtrl.Stop();
                     return true;
                 }
                 return false;
@@ -96,20 +98,22 @@ namespace GameSys
                 this.targetPos = targetPos;
                 type = eOrder.MovePos;
             }
-            public override void Start(UnitCtrl unit)
+            public override void Start(ObjectCtrl unit)
             {
-                unit.MovePos(targetPos);
+                UnitCtrl unitCtrl = unit as UnitCtrl;
+                unitCtrl.MovePos(targetPos);
             }
-            public override void Works(UnitCtrl unit)
+            public override void Works(ObjectCtrl unit)
             {
                 
             }
 
-            public override bool Achievement(UnitCtrl unit)
+            public override bool Achievement(ObjectCtrl unit)
             {
-                if (unit.X == targetPos.x && unit.Y == targetPos.y)
+                UnitCtrl unitCtrl = unit as UnitCtrl;
+                if (unitCtrl.X == targetPos.x && unitCtrl.Y == targetPos.y)
                 {
-                    unit.Stop();
+                    unitCtrl.Stop();
                     return true;
                 }
                 return false;
@@ -127,30 +131,33 @@ namespace GameSys
                 this.target = target;
                 type = eOrder.MoveTarget;
             }
-            public override void Start(UnitCtrl unit)
+            public override void Start(ObjectCtrl unit)
             {
             }
-            public override void Works(UnitCtrl unit)
+            public override void Works(ObjectCtrl unit)
             {
+                UnitCtrl unitCtrl = unit as UnitCtrl;
                 if (target != null)
                 {
-                    if (Vector2.Distance(unit.Pos, target.Pos) < unit.AtkRange)
+                    if (Vector2.Distance(unitCtrl.Pos, target.Pos) < unitCtrl.Stat("AtkRange"))
                     {
-                        unit.AtkTarget(target);
+                        unitCtrl.AtkTarget(target);
                     }
                     else
                     {
-                        unit.MoveTarget(target);
+                        unitCtrl.MoveTarget(target);
                     }
                 }
             }
-            public override bool Achievement(UnitCtrl unit)
+            public override bool Achievement(ObjectCtrl unit)
             {
+                UnitCtrl unitCtrl = unit as UnitCtrl;
                 if (target == null)
                 {
-                    unit.Stop();
+                    unitCtrl.Stop();
                     return true;
                 }
+                target = unitCtrl.EnemyInView();
                 return false;
             }
         }
@@ -162,33 +169,36 @@ namespace GameSys
                 this.targetPos = targetPos;
                 type = eOrder.AtkPos;
             }
-            public override void Start(UnitCtrl unit)
+            public override void Start(ObjectCtrl unit)
             {
-                unit.MovePos(targetPos);
+                UnitCtrl unitCtrl = unit as UnitCtrl;
+                unitCtrl.MovePos(targetPos);
             }
-            public override void Works(UnitCtrl unit)
+            public override void Works(ObjectCtrl unit)
             {
-                if(target != null)
+                UnitCtrl unitCtrl = unit as UnitCtrl;
+                if (target != null)
                 {
-                    if (Vector2.Distance(unit.Pos, target.Pos) < unit.AtkRange)
+                    if (Vector2.Distance(unitCtrl.Pos, target.Pos) < unitCtrl.Stat("AtkRange"))
                     {
-                        unit.AtkTarget(target);
+                        unitCtrl.AtkTarget(target);
                     }
                     else
                     {
-                        unit.MoveTarget(target);
+                        unitCtrl.MoveTarget(target);
                     }
                 }
                 else
                 {
-                    target = unit.EnemyInView();
+                    target = unitCtrl.EnemyInView();
                 }
             }
-            public override bool Achievement(UnitCtrl unit)
+            public override bool Achievement(ObjectCtrl unit)
             {
-                if (unit.X == targetPos.x && unit.Y == targetPos.y)
+                UnitCtrl unitCtrl = unit as UnitCtrl;
+                if (unitCtrl.X == targetPos.x && unitCtrl.Y == targetPos.y)
                 {
-                    unit.Stop();
+                    unitCtrl.Stop();
                     return true;
                 }
                 return false;
@@ -200,14 +210,14 @@ namespace GameSys
         /// </summary>
         public class PTR : Order
         {
-            public override void Start(UnitCtrl unit)
+            public override void Start(ObjectCtrl unit)
             {
             }
-            public override void Works(UnitCtrl unit)
+            public override void Works(ObjectCtrl unit)
             {
 
             }
-            public override bool Achievement(UnitCtrl unit)
+            public override bool Achievement(ObjectCtrl unit)
             {
                 return true;
             }
@@ -218,14 +228,14 @@ namespace GameSys
         /// </summary>
         public class Hold : Order
         {
-            public override void Start(UnitCtrl unit)
+            public override void Start(ObjectCtrl unit)
             {
             }
-            public override void Works(UnitCtrl unit)
+            public override void Works(ObjectCtrl unit)
             {
 
             }
-            public override bool Achievement(UnitCtrl unit)
+            public override bool Achievement(ObjectCtrl unit)
             {
                 return true;
             }

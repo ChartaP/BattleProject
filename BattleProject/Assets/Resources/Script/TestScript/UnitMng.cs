@@ -109,7 +109,7 @@ public class UnitMng : MonoBehaviour
         {
             if (unit == self)
                 continue;
-            if(Vector2.Distance(unit.Pos,pos) < unit.Radius/2+self.Radius/2)
+            if(Vector2.Distance(unit.Pos,pos) < unit.Stat("Radius")/2+self.Stat("Radius")/2)
             {
                 return true;
             }
@@ -121,7 +121,7 @@ public class UnitMng : MonoBehaviour
     {
         foreach (UnitCtrl unit in unitList)
         {
-            if (Vector2.Distance(unit.Pos, pos) < unit.Radius / 2 + self.Radius / 2)
+            if (Vector2.Distance(unit.Pos, pos) < unit.Stat("Radius") / 2 + self.Stat("Radius") / 2)
             {
                 return unit;
             }

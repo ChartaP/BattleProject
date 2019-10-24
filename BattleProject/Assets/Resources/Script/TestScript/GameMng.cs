@@ -13,6 +13,22 @@ public class GameMng : MonoBehaviour
 
     public bool bGameStart = false;
 
+    //싱글톤 형식으로 제작
+    private static GameMng instance = null;
+
+    public static GameMng Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = FindObjectOfType(typeof(GameMng)) as GameMng;
+            }
+            return instance;
+        }
+    }
+    //싱글톤 만들기 끝
+
     private void Awake()
     {
         mapMng.CreateMap();

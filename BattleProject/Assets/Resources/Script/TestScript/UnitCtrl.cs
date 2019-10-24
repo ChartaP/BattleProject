@@ -5,7 +5,7 @@ using GameSys.Order;
 using GameSys.Unit;
 using UnityEngine;
 
-public class UnitCtrl : MonoBehaviour
+public class UnitCtrl : ObjectCtrl
 {
     private static int nUintCnt = 0;
     public UnitMng unitMng;
@@ -16,12 +16,7 @@ public class UnitCtrl : MonoBehaviour
     private eUnitJob unitJob;//유닛의 직업
     [SerializeField]
     private eUnitState unitState = eUnitState.Standby;//유닛의 상태
-    [SerializeField]
-    private PlayerCtrl owner;
-    [SerializeField]
-    private Target myTarget;
-
-    public MeshRenderer SelectMesh;
+    
     public Animation ani;
     
     [SerializeField]
@@ -44,28 +39,14 @@ public class UnitCtrl : MonoBehaviour
     private Transform tChestEquip;
     [SerializeField]
     private Transform tUnitEquip;
-
-    public Transform tViewRange;
+    
     public Transform tAtkRange;
-
-    public float curHealth=1;
-
-    private Order curOrder = null;
-    [SerializeField]
-    private Target curTarget = null;
-    [SerializeField]
-    private Vector2 curPos ;
+    
     [SerializeField]
     private Rigidbody rigid;
     [SerializeField]
     private bool isCollision = false;
-    [SerializeField]
-    private ParticleSystem BloodParicle = null;
-
-
-
-    public List<Target> viewList = new List<Target>();
-
+    
     public void SetUnit(UnitMng unitMng, eUnitType unitType,PlayerCtrl owner,Vector3 unitPos)
     {
         this.unitMng = unitMng;
@@ -82,15 +63,17 @@ public class UnitCtrl : MonoBehaviour
     public void SetJob(eUnitJob job)
     {
         unitJob = job;
-        myJobInfo = JobInfoMng.Instance.Job((int)job);
+        myJobInfo = JobInfoMng.Instance.Job((byte)job);
+        RegisterStats();
         CapsuleCollider collider;
         tUnit.localScale = new Vector3(myJobInfo.Size, myJobInfo.Size, myJobInfo.Size);
         collider = transform.GetComponent<CapsuleCollider>();
         collider.radius = myJobInfo.ColRadius;
         collider.height = myJobInfo.ColHeight;
         collider.center = new Vector3(0, myJobInfo.ColHeight / 2, 0);
-        curHealth = Health;
-        
+        curHealth = Stat("Health");
+
+
         string Head = JobEquipInfoMng.Instance.JobEquip(ID).Head;
         string RHand = JobEquipInfoMng.Instance.JobEquip(ID).RHand;
         if (tHeadEquip!= null)
@@ -105,13 +88,11 @@ public class UnitCtrl : MonoBehaviour
         }
         if ( Head != "null")
         {
-            Debug.Log(Head);
             tHeadEquip = Instantiate(Resources.Load("Prefab/" + Head) as GameObject, tHead).transform;
 
         }
         if (RHand != "null")
         {
-            Debug.Log(RHand);
             tRHandEquip = Instantiate(Resources.Load("Prefab/" + RHand) as GameObject, tRHand).transform;
         }
         if(job != eUnitJob.Jobless)
@@ -119,10 +100,25 @@ public class UnitCtrl : MonoBehaviour
             Owner.dicResource["WorkPopulation"] -= 1;
         }
     }
-    
+
+    protected override void RegisterStats()
+    {
+        docStats = new Dictionary<string, float>();
+        docStats.Add("MoveSpeed",myJobInfo.MoveSpeed);
+        docStats.Add("RotateSpeed", myJobInfo.RoateSpeed);
+        docStats.Add("Health", myJobInfo.Health);
+        docStats.Add("AtkPower", myJobInfo.AtkPower);
+        docStats.Add("AtkSpeed", myJobInfo.AtkSpeed);
+        docStats.Add("DefValue", myJobInfo.DefValue);
+        docStats.Add("ViewRange", myJobInfo.ViewRange);
+        docStats.Add("AtkRange", myJobInfo.AtkRange);
+        docStats.Add("Size", myJobInfo.Size);
+        docStats.Add("Radius", myJobInfo.ColRadius);
+    }
+
     void Start()
     {
-        curPos = Pos;
+        base.Start();
         ani.Play();
         StartCoroutine("Decide");
     }
@@ -130,6 +126,7 @@ public class UnitCtrl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        base.Update();
     }
     
 
@@ -185,13 +182,26 @@ public class UnitCtrl : MonoBehaviour
 
     }
 
+    public override void GetDamage(float damage)
+    {
+        if (damage > 0)
+        {
+            DamageParicle.Play();
+        }
+        curHealth = (curHealth - damage <= 0) ? 0 : (curHealth - damage);
+        if (curHealth == 0)
+        {
+            StateChange(eUnitState.Dead);
+        }
+    }
+
     public bool IsCollisionPos( Vector2 pos)
     {
         foreach (Target unit in viewList)
         {
             if(unit == myTarget)
                 continue;
-            if (Vector2.Distance(unit.Pos, pos) < unit.Radius/2 + Radius/2)
+            if (Vector2.Distance(unit.Pos, pos) < unit.Radius/2 + Stat("Radius")/2)
             {
                 return true;
             }
@@ -203,7 +213,7 @@ public class UnitCtrl : MonoBehaviour
     {
         foreach (Target unit in viewList)
         {
-            if (Vector2.Distance(unit.Pos, pos) < unit.Radius/2 + Radius / 2)
+            if (Vector2.Distance(unit.Pos, pos) < unit.Radius/2 + Stat("Radius") / 2)
             {
                 return unit;
             }
@@ -211,37 +221,13 @@ public class UnitCtrl : MonoBehaviour
         return null;
     }
 
-    public void RangeUpdate()
+    public override void RangeUpdate()
     {
-        tViewRange.localScale = new Vector3(ViewRange*2.0f, 0.1f, ViewRange * 2.0f);
-        tAtkRange.localScale = new Vector3(AtkRange * 2.0f, 0.1f, AtkRange * 2.0f);
+        tViewRange.localScale = new Vector3(Stat("ViewRange")*2.0f, 0.1f, Stat("ViewRange") * 2.0f);
+        tAtkRange.localScale = new Vector3(Stat("AtkRange") * 2.0f, 0.1f, Stat("AtkRange") * 2.0f);
     }
 
-    /// <summary>
-    /// 명령 접수
-    /// </summary>
-    /// <param name="order"></param>
-    public void receiptOrder(Order order)
-    {
-        curOrder = order;
-        curOrder.Start(this);
-        Debug.Log("Receipt");
-    }
-
-    /// <summary>
-    /// 명령 수행
-    /// </summary>
-    private void fulfilOrder()
-    {
-        if (curOrder == null)
-            return;
-        curOrder.Works(this);
-        if (curOrder.Achievement(this))//명령 달성 여부 확인
-        {
-            curOrder = null;
-        }
-    }
-
+    
     /// <summary>
     /// 보이는적 공격 메서드
     /// 대기 상태일때만 쓰시오
@@ -257,16 +243,25 @@ public class UnitCtrl : MonoBehaviour
 
     public Target EnemyInView()
     {
+        Target temp = null;
         if (viewList.Count > 0)
         {
             foreach (Target target in viewList)
             {
                 if (target.Owner == Owner)
                     continue;
-                return target;
+                if(temp == null)
+                    temp = target;
+                else
+                {
+                    if(Vector2.Distance(Pos, target.Pos) < Vector2.Distance(Pos, temp.Pos))
+                    {
+                        temp = target;
+                    }
+                }
             }
         }
-        return null;
+        return temp;
     }
 
     /// <summary>
@@ -300,7 +295,7 @@ public class UnitCtrl : MonoBehaviour
         while (true)
         {
             Rotate(target);
-            transform.Translate(0, 0 , MoveSpeed * Time.deltaTime);
+            transform.Translate(0, 0 , Stat("MoveSpeed") * Time.deltaTime);
             Debug.DrawRay(transform.position, transform.forward * Vector2.Distance(Pos,curPos), Color.blue, Time.deltaTime);
             if (Vector2.Distance( Pos , target)<0.1f)
                 break;
@@ -316,7 +311,7 @@ public class UnitCtrl : MonoBehaviour
         while (true)
         {
             Rotate(target.Pos);
-            transform.Translate(0, 0, MoveSpeed * Time.deltaTime);
+            transform.Translate(0, 0, Stat("MoveSpeed") * Time.deltaTime);
             Debug.DrawRay(transform.position, transform.forward * Vector2.Distance(Pos, curPos), Color.blue, 0.3f);
             if (Vector2.Distance(Pos, target.Pos) < 0.1f)
                 break;
@@ -366,59 +361,12 @@ public class UnitCtrl : MonoBehaviour
         unitMng.RemoveUnit(this);
         yield break;
     }
-
-    /// <summary>
-    /// 가까운 타겟 포착 메서드
-    /// </summary>
-    public void View()
-    {
-        for(int i = 0; i < viewList.Count; i++)
-        {
-            if (viewList[i] == null)
-            {
-                viewList.Remove(viewList[i]);
-                i = i - 1 < 0 ? i - 1 : 0;
-            }
-        }
-        foreach(UnitCtrl unit in unitMng.unitList)
-        {
-            float distance = Vector2.Distance(Pos, unit.Pos);
-            if (distance < ViewRange)
-            {
-                if (!viewList.Contains(unit.myTarget))
-                {
-                    viewList.Add(unit.myTarget);
-                }
-            }
-            else
-            {
-                if (viewList.Contains(unit.myTarget))
-                {
-                    viewList.Remove(unit.myTarget);
-                }
-            }
-        }
-    }
-
+    
     public void TargetDamage()
     {
-        Debug.Log(name + "가"+curTarget.transform.name+"에게"+AtkPower+"데미지");
-        curTarget.GetDamage(AtkPower);
+        Debug.Log(name + "가"+curTarget.transform.name+"에게"+ Stat("AtkPower")+"데미지");
+        curTarget.GetDamage(Stat("AtkPower"));
     }
-
-    public void GetDamage(float damage)
-    {
-        if(damage > 0)
-        {
-            BloodParicle.Play();
-        }
-        curHealth = (curHealth-damage<=0)? 0: (curHealth - damage);
-        if (curHealth==0)
-        {
-            StateChange(eUnitState.Dead);
-        }
-    }
-
     public void Stop()
     {
         StateChange(eUnitState.Standby);
@@ -433,14 +381,6 @@ public class UnitCtrl : MonoBehaviour
         dir.Normalize();
         transform.rotation = Quaternion.LookRotation(dir);
     }
-
-    /// <summary>
-    /// 유닛이 땅위에 있게 해주기
-    /// </summary>
-    private void OnGround()
-    {
-        transform.localPosition = new Vector3(X, Height, Y);
-    }
     
     public eUnitType Type
     {
@@ -451,44 +391,7 @@ public class UnitCtrl : MonoBehaviour
     {
         get { return unitJob; }
     }
-
-    /// <summary>
-    /// 유닛의 X좌표 반환
-    /// </summary>
-    public float X
-    {
-        get { return transform.localPosition.x; }
-    }
-
-    /// <summary>
-    /// 유닛의 Y좌표(localPos의 z) 반환
-    /// </summary>
-    public float Y
-    {
-        get { return transform.localPosition.z; }
-    }
-
-    /// <summary>
-    /// 유닛의 현재 높이
-    /// </summary>
-    public int Height
-    {
-        get { return unitMng.gameMng.mapMng.GetHeight((int)X, (int)Y); }
-    }
-
-    public Vector2 Pos
-    {
-        get { return new Vector2(X, Y); }
-    }
-
-    public PlayerCtrl Owner
-    {
-        get { return owner; }
-    }
-    public Target Target
-    {
-        get { return myTarget; }
-    }
+    
     public byte ID
     {
         get
@@ -504,69 +407,12 @@ public class UnitCtrl : MonoBehaviour
     {
         get { return myJobInfo.Face; }
     }
-    public float MoveSpeed
+    public override float Stat(string name)
     {
-        get
-        {
-            return myJobInfo.MoveSpeed;
-        }
-    }
-    public float RotateSpeed
-    {
-        get
-        {
-            return myJobInfo.RoateSpeed;
-        }
-    }
-    public int Health
-    {
-        get
-        {
-            return myJobInfo.Health;
-        }
-    }
-    public int AtkPower
-    {
-        get
-        {
-            return myJobInfo.AtkPower;
-        }
-    }
-    public float AtkSpeed
-    {
-        get
-        {
-            return myJobInfo.AtkSpeed;
-        }
-    }
-    public int DefValue
-    {
-        get
-        {
-            return myJobInfo.DefValue;
-        }
-    }
-    public float ViewRange
-    {
-        get
-        {
-            return myJobInfo.ViewRange;
-        }
-    }
-    public float AtkRange
-    {
-        get
-        {
-            return myJobInfo.AtkRange;
-        }
-    }
-    public float Size
-    {
-        get { return myJobInfo.Size; }
-    }
-    public float Radius
-    {
-        get { return myJobInfo.ColRadius; }
+        if (docStats.ContainsKey(name))
+            return docStats[name];
+        else
+            return 0.0f;
     }
     public eUnitState State
     {
@@ -609,7 +455,7 @@ public class UnitCtrl : MonoBehaviour
             }
         }
     }
-
+    
     private void OnCollisionStay(Collision collision)
     {
         if(collision.transform.tag == "Unit")

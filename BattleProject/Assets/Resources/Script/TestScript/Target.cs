@@ -8,9 +8,7 @@ public class Target : MonoBehaviour
     [SerializeField]
     private eTargetType type;
     [SerializeField]
-    private UnitMng unitMng = null;
-    [SerializeField]
-    private UnitCtrl unitCtrl = null;
+    private ObjectCtrl objectCtrl = null;
     [SerializeField]
     private Bar myBar = null;
     [SerializeField]
@@ -21,13 +19,7 @@ public class Target : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        switch (Type)
-        {
-            case eTargetType.Unit:
-                unitMng = unitCtrl.unitMng;
-                break;
-        }
-        myBar = Instantiate(Resources.Load("Prefab/Bar") as GameObject, unitMng.gameMng.interfaceMng.CanvasTrans).GetComponent<Bar>();
+        myBar = Instantiate(Resources.Load("Prefab/Bar") as GameObject, GameMng.Instance.interfaceMng.CanvasTrans).GetComponent<Bar>();
         myBar.name = name + "Bar";
         myBar.Set(Health, new Color32(255, 0, 0,255));
     }
@@ -38,18 +30,20 @@ public class Target : MonoBehaviour
         myBar.Cur(Health,CurHealth, hpTrans.position);
     }
 
-    public void OnDestroy()
+    private void OnDestroy()
     {
-        Destroy( myBar.gameObject);
+        if(myBar != null)
+        {
+            Destroy(myBar.gameObject);
+        }
     }
-
     public float X
     {
         get {
             switch (Type)
             {
                 case eTargetType.Unit:
-                    return unitCtrl.X;
+                    return objectCtrl.X;
             }
             return 0.0f;
         }
@@ -62,7 +56,7 @@ public class Target : MonoBehaviour
             switch (Type)
             {
                 case eTargetType.Unit:
-                    return unitCtrl.Y;
+                    return objectCtrl.Y;
             }
             return 0.0f;
         }
@@ -75,7 +69,7 @@ public class Target : MonoBehaviour
             switch (Type)
             {
                 case eTargetType.Unit:
-                    return unitCtrl.Radius;
+                    return objectCtrl.Stat("Radius");
             }
             return 0.0f;
         }
@@ -87,7 +81,7 @@ public class Target : MonoBehaviour
             switch (Type)
             {
                 case eTargetType.Unit:
-                    return unitCtrl.Health;
+                    return objectCtrl.Stat("Health");
             }
             return 1.0f;
         }
@@ -100,7 +94,7 @@ public class Target : MonoBehaviour
             switch (Type)
             {
                 case eTargetType.Unit:
-                    return unitCtrl.curHealth;
+                    return objectCtrl.curHealth;
             }
             return 1.0f;
         }
@@ -113,7 +107,7 @@ public class Target : MonoBehaviour
             switch (Type)
             {
                 case eTargetType.Unit:
-                    return unitCtrl.Pos;
+                    return objectCtrl.Pos;
             }
             return Vector2.zero;
         }
@@ -126,7 +120,7 @@ public class Target : MonoBehaviour
             switch (Type)
             {
                 case eTargetType.Unit:
-                    return unitCtrl.Owner;
+                    return objectCtrl.Owner;
             }
             return null;
         }
@@ -142,13 +136,9 @@ public class Target : MonoBehaviour
         switch (Type)
         {
             case eTargetType.Unit:
-                unitCtrl.GetDamage(damage);
+                objectCtrl.GetDamage(damage);
                 return;
         }
     }
-
-    public eUnitState State
-    {
-        get { return unitCtrl.State; }
-    }
+    
 }

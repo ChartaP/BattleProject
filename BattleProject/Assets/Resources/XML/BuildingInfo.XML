@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<BuildingInfo>
+	<Building>
+    <Field>
+      <id>0</id>
+      <name>거주지</name>
+      <component>HouseCtrl</component>
+      <health>400</health>
+      <cost>
+        <time>10</time>
+      </cost>
+    </Field>
+    <Field>
+      <id>1</id>
+      <name>창고</name>
+      <component>StorageCtrl</component>
+      <health>400</health>
+      <cost>
+        <time>10</time>
+      </cost>
+    </Field>
+    <Field>
+      <id>2</id>
+      <name>농장</name>
+      <component>FarmCtrl</component>
+      <health>400</health>
+      <cost>
+        <time>10</time>
+      </cost>
+    </Field>
+  </Building>
+  
+  <Plants>
+    
+  </Plants>
+</BuildingInfo>

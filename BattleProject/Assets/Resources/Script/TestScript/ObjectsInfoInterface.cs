@@ -52,7 +52,7 @@ public class ObjectsInfoInterface : MonoBehaviour
         else if (unitList.Count == 1)
         {
             sName = unitList[0].Name;
-            sLeft = "체력 : " + unitList[0].curHealth + "/" + unitList[0].Health + "\n";
+            sLeft = "체력 : " + unitList[0].curHealth + "/" + unitList[0].Stat("Health") + "\n";
 
             GetInfo(sName, sLeft, sRight);
             foreach (UnitBtn btn in unitBtnList)
