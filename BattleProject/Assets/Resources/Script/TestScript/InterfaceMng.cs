@@ -17,8 +17,10 @@ public class InterfaceMng : MonoBehaviour
     public Transform CanvasTrans;
     public Text WideText;
     public ObjectsInfoInterface ObInfoInterface;
+    public CreateInfoInterface CreateInfoInterface;
     public List<Text> ResourceTestList = new List<Text>();
     private Sprite DefFace;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -50,10 +52,10 @@ public class InterfaceMng : MonoBehaviour
             switch (text.transform.name)
             {
                 case "Population":
-                    text.text = CtrlPlayer.dicResource["WorkPopulation"]+ "/" + CtrlPlayer.UnitList.Count;
+                    text.text = "인구 : "+ CtrlPlayer.dicResource["WorkPopulation"]+ "/" + CtrlPlayer.UnitList.Count + "()";
                     break;
                 case "Food":
-                    text.text = CtrlPlayer.dicResource["Food"]+"()";
+                    text.text = "식량 : "+CtrlPlayer.dicResource["Food"]+"()";
                     break;
             }
         }

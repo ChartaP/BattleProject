@@ -19,7 +19,7 @@ public class Target : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        myBar = Instantiate(Resources.Load("Prefab/Bar") as GameObject, GameMng.Instance.interfaceMng.CanvasTrans).GetComponent<Bar>();
+        myBar = Instantiate(Resources.Load("Prefab/Bar") as GameObject, GameMng.Instance.interfaceMng.CanvasTrans.Find("Bars")).GetComponent<Bar>();
         myBar.name = name + "Bar";
         myBar.Set(Health, new Color32(255, 0, 0,255));
     }

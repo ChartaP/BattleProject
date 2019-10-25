@@ -8,20 +8,7 @@ public class UnitMng : MonoBehaviour
     public GameMng gameMng;
     public List<UnitCtrl> unitList=new List<UnitCtrl>();
     public List<GameObject> gUnitList;
-    public Material[] playerMater;
     public Material[] RangeMater;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     public UnitCtrl CreateUnit(Vector3 unitPos, PlayerCtrl Owner, eUnitType unitType = eUnitType.People)
     {
@@ -37,14 +24,7 @@ public class UnitMng : MonoBehaviour
                 {
                     if (mesh.transform.tag == "Unit")
                     {
-                        if (Owner == gameMng.playerMng.CtrlPlayer)
-                        {
-                            mesh.material = playerMater[0];
-                        }
-                        if (Owner != gameMng.playerMng.CtrlPlayer)
-                        {
-                            mesh.material = playerMater[1];
-                        }
+                        mesh.material = Owner.playerMater;
                     }
                     if(mesh.transform.tag == "Interface")
                     {

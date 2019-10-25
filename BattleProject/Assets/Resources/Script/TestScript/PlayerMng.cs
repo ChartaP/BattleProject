@@ -37,11 +37,21 @@ public class PlayerMng : MonoBehaviour
             PlayerCtrl player = Instantiate(gPlayerCtrl, transform).GetComponent<PlayerCtrl>();
             player.playerInfo = info;
             player.name = info.Name;
-            player.PlayerID = cnt++;
+            player.PlayerID = cnt;
+            switch (cnt)
+            {
+                case 0:
+                    player.playerMater = Resources.Load("Texture/Materials/Blue") as Material;
+                    break;
+                case 1:
+                    player.playerMater = Resources.Load("Texture/Materials/Red") as Material;
+                    break;
+            }
             player.playerMng = this;
             PlayerList.Add(player );
             if (GameInfo.nCtrlPlayerID == info.ID)
                 CtrlPlayer = player;
+            cnt++;
         }
     }
 

@@ -7,6 +7,7 @@ public class GameMng : MonoBehaviour
 {
     public InputMng inputMng;
     public UnitMng unitMng;
+    public BuildingMng buildingMng;
     public MapMng mapMng;
     public InterfaceMng interfaceMng;
     public PlayerMng playerMng;

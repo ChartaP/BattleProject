@@ -10,6 +10,7 @@ TagManager:
   - Plants
   - Resource
   - Interface
+  - Item
   layers:
   - Default
   - TransparentFX
@@ -20,7 +21,7 @@ TagManager:
   - 
   - 
   - PostProcessing
-  - UnitLayer
+  - ObjectLayer
   - TileLayer
   - 
   - 

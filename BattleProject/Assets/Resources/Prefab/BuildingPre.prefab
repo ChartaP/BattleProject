@@ -4764,7 +4764,7 @@ GameObject:
   - component: {fileID: 2500238807040188043}
   - component: {fileID: 92885495067328863}
   - component: {fileID: 3300257629623025504}
-  m_Layer: 5
+  m_Layer: 9
   m_Name: Capsule
   m_TagString: Interface
   m_Icon: {fileID: 0}
@@ -4780,7 +4780,7 @@ Transform:
   m_GameObject: {fileID: 2100052075647613712}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 0.25, z: 1}
+  m_LocalScale: {x: 1.5, y: 0.25, z: 1.5}
   m_Children: []
   m_Father: {fileID: 219264085925022000}
   m_RootOrder: 1
@@ -4843,7 +4843,7 @@ GameObject:
   - component: {fileID: 8134239545652475665}
   - component: {fileID: 5430176136040568238}
   - component: {fileID: 8537366923852058834}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: BuildingPre
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4879,15 +4879,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   owner: {fileID: 0}
-  myTarget: {fileID: 0}
+  myTarget: {fileID: 8537366923852058834}
   curPos: {x: 0, y: 0}
   DamageParicle: {fileID: 6381639675323216725}
   curTarget: {fileID: 0}
-  SelectMesh: {fileID: 0}
+  SelectMesh: {fileID: 3300257629623025504}
   curHealth: 1
   viewList: []
-  tViewRange: {fileID: 0}
+  tViewRange: {fileID: 5689728447960754828}
   buildingMng: {fileID: 0}
+  transModel: {fileID: 219264085925022000}
 --- !u!65 &5430176136040568238
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4913,7 +4914,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbc180212fd6f314e9c0653f6ceb1c4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 0
+  type: 2
   objectCtrl: {fileID: 8134239545652475665}
   myBar: {fileID: 0}
   hpTrans: {fileID: 5738276297004825255}
@@ -4926,7 +4927,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 219264085925022000}
-  m_Layer: 10
+  m_Layer: 9
   m_Name: Building
   m_TagString: Untagged
   m_Icon: {fileID: 0}

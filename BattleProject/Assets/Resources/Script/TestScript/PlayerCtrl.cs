@@ -55,6 +55,7 @@ public class PlayerCtrl : MonoBehaviour
     public List<UnitCtrl> selectableUnit = new List<UnitCtrl>();
 
     public UnitCtrl LeaderUnit;
+    public Material playerMater;
 
     public int[,] FoW; //0 안개, 1 보이는곳, 2 한번 봤던 곳
 

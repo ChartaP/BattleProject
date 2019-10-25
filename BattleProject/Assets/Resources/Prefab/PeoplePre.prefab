@@ -41,7 +41,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 636481833983539310}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: LHand
   m_TagString: Unit
   m_Icon: {fileID: 0}
@@ -182,7 +182,7 @@ GameObject:
   - component: {fileID: 8365353009744650309}
   - component: {fileID: 2116763683746859660}
   - component: {fileID: 4238518955385073823}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: LLeg
   m_TagString: Unit
   m_Icon: {fileID: 0}
@@ -260,7 +260,7 @@ GameObject:
   - component: {fileID: 8125632248346318808}
   - component: {fileID: 9132036100010371231}
   - component: {fileID: 6441885913196165944}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Chest
   m_TagString: Unit
   m_Icon: {fileID: 0}
@@ -338,7 +338,7 @@ GameObject:
   - component: {fileID: 305676718331449774}
   - component: {fileID: 1070682781258296492}
   - component: {fileID: 8614237459986024874}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: RLeg
   m_TagString: Unit
   m_Icon: {fileID: 0}
@@ -416,7 +416,7 @@ GameObject:
   - component: {fileID: 1787972532799218343}
   - component: {fileID: 5275685070931335783}
   - component: {fileID: 6792573264585204240}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Head
   m_TagString: Unit
   m_Icon: {fileID: 0}
@@ -873,7 +873,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5728301319760761244}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: RHand
   m_TagString: Unit
   m_Icon: {fileID: 0}
@@ -968,7 +968,7 @@ GameObject:
   - component: {fileID: 6870410418980090046}
   - component: {fileID: 4835628094774136581}
   - component: {fileID: 6729883767307777075}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Arm
   m_TagString: Unit
   m_Icon: {fileID: 0}
@@ -1046,7 +1046,7 @@ GameObject:
   - component: {fileID: 8238021942914877395}
   - component: {fileID: 5418465235391264450}
   - component: {fileID: 3989460608596577902}
-  m_Layer: 5
+  m_Layer: 9
   m_Name: Capsule
   m_TagString: Interface
   m_Icon: {fileID: 0}
@@ -1124,7 +1124,7 @@ GameObject:
   - component: {fileID: 6184743027399418827}
   - component: {fileID: 8216650027315276455}
   - component: {fileID: 8685491058688925176}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Arm
   m_TagString: Unit
   m_Icon: {fileID: 0}

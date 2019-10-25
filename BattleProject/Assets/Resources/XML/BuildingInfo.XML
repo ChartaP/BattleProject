@@ -3,7 +3,7 @@
 	<Building>
     <Field>
       <id>0</id>
-      <name>거주지</name>
+      <name>House</name>
       <component>HouseCtrl</component>
       <health>400</health>
       <cost>
@@ -12,7 +12,7 @@
     </Field>
     <Field>
       <id>1</id>
-      <name>창고</name>
+      <name>Storage</name>
       <component>StorageCtrl</component>
       <health>400</health>
       <cost>
@@ -21,7 +21,7 @@
     </Field>
     <Field>
       <id>2</id>
-      <name>농장</name>
+      <name>Farm</name>
       <component>FarmCtrl</component>
       <health>400</health>
       <cost>

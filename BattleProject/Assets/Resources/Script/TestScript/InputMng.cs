@@ -1,24 +1,30 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using GameSys.Lib;
+using GameSys.Building;
 
 public class InputMng : MonoBehaviour
 {
     public GameMng gameMng;
-    public Ray ray;
-    public RaycastHit hit;
-    public LayerMask UnitLayer;
-    public LayerMask TileLayer;
-    public Vector3 StartPoint;
-    public Vector3 EndPoint;
-    public Vector3 mPosStart;
-    public Vector3 mPosEnd;
+    private Ray ray;
+    private RaycastHit hit;
+    private Vector3 StartPoint;
+    private Vector3 EndPoint;
+    private Vector3 mPosStart;
+    private Vector3 mPosEnd;
     public float scrSpeed = 10.0f;
     private Vector3 mPos;
     private Vector3 CameraPos;
     public Transform peek;
     private float scroll;
     private bool isMove;
+
+    [SerializeField]
+    private eInputState inputState = eInputState.CONTROL_OBJECT;
+    [SerializeField]
+    private GameObject Preview = null;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -34,20 +40,53 @@ public class InputMng : MonoBehaviour
         gameMng.interfaceMng.MainCameraCarrier.localPosition = Vector3.Lerp(gameMng.interfaceMng.MainCameraCarrier.localPosition,CameraPos,3.0f*Time.deltaTime);
     }
 
+    public void ChangeState(int state)
+    {
+        if (state == (int)inputState)
+            return;
+        switch (state)
+        {
+            case (int)eInputState.CONTROL_OBJECT:
+                peek.Find("Cube").GetComponent<MeshRenderer>().enabled = false;
+                inputState = eInputState.CONTROL_OBJECT;
+                break;
+            case (int)eInputState.CREATE_OBJECT:
+                peek.Find("Cube").GetComponent<MeshRenderer>().enabled = true;
+                inputState = eInputState.CREATE_OBJECT;
+                break;
+        }
+    }
+
     /// <summary>
     /// 마우스 입력 처리 메서드,
     /// 자료출처 : https://youtu.be/ceMyupol6AQ
     /// </summary>
     private void MouseInput()
     {
-        mPos = Vector3.zero ;
-        if (Input.GetMouseButtonDown(0)) {//왼쪽 마우스 누르기
+        switch (inputState)
+        {
+            case eInputState.CONTROL_OBJECT:
+                ObjectCtrl();
+                break;
+            case eInputState.CREATE_OBJECT:
+                isMove = true;
+                CreateObject();
+                break;
+        }
+        ScrollCtrl();
+    }
+
+    private void ObjectCtrl()
+    {
+        mPos = Vector3.zero;
+        if (Input.GetMouseButtonDown(0))
+        {//왼쪽 마우스 누르기
             isMove = false;
             mPos = Input.mousePosition;
             mPosStart = Camera.main.ScreenToViewportPoint(mPos);
             Debug.Log("(" + mPos.x + "," + mPos.y + ") The Left Mouse");
             ray = Camera.main.ScreenPointToRay(mPos);
-            if (Physics.Raycast(ray, out hit,Mathf.Infinity))
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
             {
                 Debug.Log("HitObject : " + hit.transform.name);
                 StartPoint = hit.point;
@@ -81,7 +120,7 @@ public class InputMng : MonoBehaviour
 
         if (Input.GetMouseButtonDown(1))//오른쪽 마우스 누르기
         {
-            
+
         }
         else if (Input.GetMouseButtonUp(1))//오른쪽 마우스 떼기
         {
@@ -107,13 +146,13 @@ public class InputMng : MonoBehaviour
                         {
                             peek.GetComponentInChildren<MeshRenderer>().material = gameMng.unitMng.RangeMater[0];
                             peek.GetComponentInChildren<Animation>().Play();
-                            gameMng.playerMng.CtrlPlayer.OrderUnits(GameSys.Lib.eOrder.MoveTarget,hit.transform);
+                            gameMng.playerMng.CtrlPlayer.OrderUnits(GameSys.Lib.eOrder.MoveTarget, hit.transform);
                         }
                         else
                         {
                             peek.GetComponentInChildren<MeshRenderer>().material = gameMng.unitMng.RangeMater[1];
                             peek.GetComponentInChildren<Animation>().Play();
-                            gameMng.playerMng.CtrlPlayer.OrderUnits(GameSys.Lib.eOrder.AtkTarget,hit.transform);
+                            gameMng.playerMng.CtrlPlayer.OrderUnits(GameSys.Lib.eOrder.AtkTarget, hit.transform);
                         }
                         break;
                 }
@@ -123,11 +162,32 @@ public class InputMng : MonoBehaviour
         {
 
         }
+    }
 
+    private void CreateObject()
+    {
+        mPos = Input.mousePosition;
+        ray = Camera.main.ScreenPointToRay(mPos);
+        int layerMask = (1 << LayerMask.NameToLayer("TileLayer")) | (1 << LayerMask.NameToLayer("UI"));
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
+        {
+            if (hit.collider.gameObject.layer == LayerMask.NameToLayer("UI"))
+                return;
+            Debug.Log("HitObject : " + hit.collider.name + hit.point);
+            peek.position = hit.collider.transform.position;
+            if (Input.GetMouseButtonDown(0))
+            {
+                GameMng.Instance.buildingMng.CreateBuilding(GameMng.Instance.playerMng.CtrlPlayer, BuildingInfoMng.Instance.Building(0), peek.transform.localPosition);
+            }
+        }
+    }
+
+    private void ScrollCtrl()
+    {
         scroll = Input.GetAxis("Mouse ScrollWheel") * scrSpeed;
 
         mPos = gameMng.interfaceMng.MainCamera.transform.localPosition;
-        if(mPos.z - scroll <= -4 && mPos.z - scroll >= -50)
+        if (mPos.z - scroll <= -4 && mPos.z - scroll >= -50)
         {
             mPos.z -= scroll;
             if (mPos.z > -6)
@@ -152,8 +212,6 @@ public class InputMng : MonoBehaviour
             }
         }
         gameMng.interfaceMng.MainCamera.transform.localPosition = mPos;
-
-
     }
 
     /// <summary>
@@ -214,7 +272,14 @@ public class InputMng : MonoBehaviour
         {
             gameMng.mapMng.ResetMap();
         }
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if(inputState == eInputState.CREATE_OBJECT)
+            {
 
+                inputState = eInputState.CONTROL_OBJECT;
+            }
+        }
 
         if (Input.GetKeyDown(KeyCode.E))
         {

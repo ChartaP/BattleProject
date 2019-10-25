@@ -115,5 +115,11 @@ namespace GameSys
             DAY = 0,
             NIGHT = 1
         }
+
+        public enum eInputState
+        {
+            CONTROL_OBJECT = 0,
+            CREATE_OBJECT = 1
+        }
     }
 }

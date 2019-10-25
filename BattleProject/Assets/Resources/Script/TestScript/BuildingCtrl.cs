@@ -11,11 +11,15 @@ public class BuildingCtrl : ObjectCtrl
     public BuildingMng buildingMng = null;
     private BuildingInfo myBuildingInfo = null;
 
+    [SerializeField]
+    private Transform transModel = null;
 
-    public void SetBuilding(BuildingMng buildingMng,byte id,PlayerCtrl owner,Vector3 unitPos)
+    public void SetBuilding(BuildingMng buildingMng, BuildingInfo buildingInfo, PlayerCtrl owner,Vector3 unitPos)
     {
         this.buildingMng = buildingMng;
         this.owner = owner;
+        myBuildingInfo = buildingInfo;
+        Instantiate(Resources.Load("Prefab/" + myBuildingInfo.Name) as GameObject, transModel);
         transform.localPosition = unitPos;
         transform.name = (nBuildingCnt++) + "-" + Owner.name + "-building";
         OnGround();
