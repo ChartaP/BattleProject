@@ -72,7 +72,8 @@ public class UnitCtrl : ObjectCtrl
         collider.height = myJobInfo.ColHeight;
         collider.center = new Vector3(0, myJobInfo.ColHeight / 2, 0);
         curHealth = Stat("Health");
-
+        sName = myJobInfo.Name;
+        sIcon = myJobInfo.Face;
 
         string Head = JobEquipInfoMng.Instance.JobEquip(ID).Head;
         string RHand = JobEquipInfoMng.Instance.JobEquip(ID).RHand;
@@ -399,14 +400,7 @@ public class UnitCtrl : ObjectCtrl
             return myJobInfo.ID;
         }
     }
-    public string Name
-    {
-        get { return myJobInfo.Name; }
-    }
-    public string Face
-    {
-        get { return myJobInfo.Face; }
-    }
+    
     public override float Stat(string name)
     {
         if (docStats.ContainsKey(name))

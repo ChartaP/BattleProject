@@ -23,7 +23,7 @@ public class PlayerMng : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        gameMng.interfaceMng.UnitsInformationInterface(CtrlPlayer.selectableUnit);
+        gameMng.interfaceMng.ObjectsInformationInterface(CtrlPlayer.selectableObject);
     }
 
     /// <summary>
@@ -128,5 +128,10 @@ public class PlayerMng : MonoBehaviour
     public PlayerCtrl GetControlPlayer()
     {
         return CtrlPlayer;
+    }
+
+    public void CtrlPlayerSelectBuild(int id)
+    {
+        CtrlPlayer.selectBuild = (byte)id;
     }
 }

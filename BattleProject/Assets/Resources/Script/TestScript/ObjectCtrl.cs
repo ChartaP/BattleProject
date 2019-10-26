@@ -22,6 +22,9 @@ public abstract class ObjectCtrl : MonoBehaviour
 
     protected Dictionary<string, float> docStats;
 
+    protected string sName = "Object";
+    protected string sIcon = "ObjectIcon";
+
     public MeshRenderer SelectMesh;
     public float curHealth = 1;
     public List<Target> viewList;
@@ -148,6 +151,15 @@ public abstract class ObjectCtrl : MonoBehaviour
     public Vector2 Pos
     {
         get { return new Vector2(X, Y); }
+    }
+
+    public string Name
+    {
+        get { return sName; }
+    }
+    public string Icon
+    {
+        get { return sIcon; }
     }
 
     public PlayerCtrl Owner

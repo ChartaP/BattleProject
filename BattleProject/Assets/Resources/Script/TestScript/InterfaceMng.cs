@@ -34,9 +34,9 @@ public class InterfaceMng : MonoBehaviour
         if (gameMng.bGameStart)
         {
             ResourceInterfase();
-            if (CtrlPlayer.selectableUnit.Count > 0)
+            if (CtrlPlayer.selectableObject.Count > 0)
             {
-                ChangeFaceInterface(CtrlPlayer.selectableUnit[0].Face);
+                ChangeFaceInterface(CtrlPlayer.selectableObject[0].Icon);
             }
             else
             {
@@ -94,9 +94,14 @@ public class InterfaceMng : MonoBehaviour
         SelecteBox.sizeDelta = new Vector2(sizeX   , sizeY );
     }
 
-    public void UnitsInformationInterface(List<UnitCtrl> unitList)
+    public void ObjectsInformationInterface(List<ObjectCtrl> objList)
     {
-        ObInfoInterface.GetUnitList(unitList);
+        ObInfoInterface.GetObjectList(objList);
+    }
+
+    public void CreateInfomationInterface()
+    {
+        CreateInfoInterface.CreateButtonClick();
     }
 
     public void DisplayText(string text)

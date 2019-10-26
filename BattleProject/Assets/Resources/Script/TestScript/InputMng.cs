@@ -1,8 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.EventSystems;
 using UnityEngine;
 using GameSys.Lib;
 using GameSys.Building;
+
 
 public class InputMng : MonoBehaviour
 {
@@ -93,10 +95,13 @@ public class InputMng : MonoBehaviour
                 switch (hit.transform.tag)
                 {
                     case "Tile":
-                        gameMng.playerMng.GetControlPlayer().SelectUnit(null);
+                        gameMng.playerMng.GetControlPlayer().SelectObject(null);
                         break;
                     case "Unit":
-                        gameMng.playerMng.GetControlPlayer().SelectUnit(hit.transform.GetComponent<UnitCtrl>());
+                        gameMng.playerMng.GetControlPlayer().SelectObject(hit.transform.GetComponent<UnitCtrl>());
+                        break;
+                    case "Building":
+                        gameMng.playerMng.GetControlPlayer().SelectObject(hit.transform.GetComponent<BuildingCtrl>());
                         break;
                 }
             }
@@ -135,25 +140,38 @@ public class InputMng : MonoBehaviour
                         //gameMng.unitMng.IssueMoveOrder(hit.transform.localPosition);
                         peek.position = hit.point;
                         point = peek.localPosition;
-                        peek.GetComponentInChildren<MeshRenderer>().material = gameMng.unitMng.RangeMater[0];
+                        foreach(MeshRenderer mesh in peek.GetComponentsInChildren<MeshRenderer>())
+                        {
+                            mesh.material = gameMng.unitMng.RangeMater[0];
+                        }
+
                         peek.GetComponentInChildren<Animation>().Play();
-                        gameMng.playerMng.CtrlPlayer.OrderUnits(GameSys.Lib.eOrder.MovePos, peek);
+                        gameMng.playerMng.CtrlPlayer.OrderObjects(GameSys.Lib.eOrder.MovePos, peek);
                         break;
                     case "Unit":
                         peek.position = hit.transform.position;
                         point = peek.localPosition;
                         if (hit.transform.GetComponent<UnitCtrl>().Owner == gameMng.playerMng.CtrlPlayer)
                         {
-                            peek.GetComponentInChildren<MeshRenderer>().material = gameMng.unitMng.RangeMater[0];
+                            foreach (MeshRenderer mesh in peek.GetComponentsInChildren<MeshRenderer>())
+                            {
+                                mesh.material = gameMng.unitMng.RangeMater[0];
+                            }
                             peek.GetComponentInChildren<Animation>().Play();
-                            gameMng.playerMng.CtrlPlayer.OrderUnits(GameSys.Lib.eOrder.MoveTarget, hit.transform);
+                            gameMng.playerMng.CtrlPlayer.OrderObjects(GameSys.Lib.eOrder.MoveTarget, hit.transform);
                         }
                         else
                         {
-                            peek.GetComponentInChildren<MeshRenderer>().material = gameMng.unitMng.RangeMater[1];
+                            foreach (MeshRenderer mesh in peek.GetComponentsInChildren<MeshRenderer>())
+                            {
+                                mesh.material = gameMng.unitMng.RangeMater[1];
+                            }
                             peek.GetComponentInChildren<Animation>().Play();
-                            gameMng.playerMng.CtrlPlayer.OrderUnits(GameSys.Lib.eOrder.AtkTarget, hit.transform);
+                            gameMng.playerMng.CtrlPlayer.OrderObjects(GameSys.Lib.eOrder.AtkTarget, hit.transform);
                         }
+                        break;
+                    case "Building":
+
                         break;
                 }
             }
@@ -168,16 +186,32 @@ public class InputMng : MonoBehaviour
     {
         mPos = Input.mousePosition;
         ray = Camera.main.ScreenPointToRay(mPos);
-        int layerMask = (1 << LayerMask.NameToLayer("TileLayer")) | (1 << LayerMask.NameToLayer("UI"));
+        int layerMask = 1 << LayerMask.NameToLayer("TileLayer");
         if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
         {
             if (hit.collider.gameObject.layer == LayerMask.NameToLayer("UI"))
                 return;
             Debug.Log("HitObject : " + hit.collider.name + hit.point);
             peek.position = hit.collider.transform.position;
-            if (Input.GetMouseButtonDown(0))
+            if (GameMng.Instance.mapMng.bOpen[(int)peek.localPosition.x, (int)peek.localPosition.z]) {
+                foreach (MeshRenderer mesh in peek.GetComponentsInChildren<MeshRenderer>())
+                {
+                    mesh.material = gameMng.unitMng.RangeMater[0];
+                }
+                if (Input.GetMouseButtonDown(0))
+                {
+                    if (!EventSystem.current.IsPointerOverGameObject())
+                    {
+                        GameMng.Instance.buildingMng.CreateBuilding(GameMng.Instance.playerMng.CtrlPlayer, BuildingInfoMng.Instance.Building(GameMng.Instance.playerMng.CtrlPlayer.selectBuild), peek.transform.localPosition);
+                    }
+                }
+            }
+            else
             {
-                GameMng.Instance.buildingMng.CreateBuilding(GameMng.Instance.playerMng.CtrlPlayer, BuildingInfoMng.Instance.Building(0), peek.transform.localPosition);
+                foreach (MeshRenderer mesh in peek.GetComponentsInChildren<MeshRenderer>())
+                {
+                    mesh.material = gameMng.unitMng.RangeMater[1];
+                }
             }
         }
     }
@@ -276,8 +310,7 @@ public class InputMng : MonoBehaviour
         {
             if(inputState == eInputState.CREATE_OBJECT)
             {
-
-                inputState = eInputState.CONTROL_OBJECT;
+                ChangeState(0);
             }
         }
 

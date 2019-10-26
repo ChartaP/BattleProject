@@ -19,24 +19,31 @@ public class BuildingCtrl : ObjectCtrl
         this.buildingMng = buildingMng;
         this.owner = owner;
         myBuildingInfo = buildingInfo;
-        Instantiate(Resources.Load("Prefab/" + myBuildingInfo.Name) as GameObject, transModel);
+        RegisterStats();
+        curHealth = docStats["Health"];
+        GameObject pre = Instantiate(Resources.Load("Prefab/" + myBuildingInfo.Name) as GameObject, transModel);
+        foreach (MeshRenderer mesh in pre.transform.GetComponentsInChildren<MeshRenderer>())
+        {
+            mesh.material = Owner.playerMater;
+        }
         transform.localPosition = unitPos;
+        GameMng.Instance.mapMng.bOpen[(int)X, (int)Y] = false;
+        sName = myBuildingInfo.Name;
+        sIcon = myBuildingInfo.Name + "Icon";
         transform.name = (nBuildingCnt++) + "-" + Owner.name + "-building";
         OnGround();
-        //Owner.RegisterPlayerBuilding(this);
+        Owner.RegisterPlayerBuilding(this);
 
     }
     // Start is called before the first frame update
     void Start()
     {
-
         base.Start();
     }
 
     // Update is called once per frame
     void Update()
     {
-
         base.Update();
     }
 
@@ -50,6 +57,7 @@ public class BuildingCtrl : ObjectCtrl
         docStats = new Dictionary<string, float>();
         docStats.Add("Size", 1);
         docStats.Add("Radius", 1);
+        docStats.Add("Health", myBuildingInfo.Health);
     }
     public override float Stat(string name)
     {

@@ -50,16 +50,20 @@ public class PlayerCtrl : MonoBehaviour
     public PlayerMng playerMng;
     public PlayerInfo playerInfo;
 
+    //플레이어의 유닛 목록
     public List<UnitCtrl> UnitList;
+    //플레이어의 건물 목록
     public List<BuildingCtrl> BuildingList;
-    public List<UnitCtrl> selectableUnit = new List<UnitCtrl>();
-
+    //플레이어가 선택한 오브젝트 목록
+    public List<ObjectCtrl> selectableObject = new List<ObjectCtrl>();
     public UnitCtrl LeaderUnit;
     public Material playerMater;
 
     public int[,] FoW; //0 안개, 1 보이는곳, 2 한번 봤던 곳
 
     public Dictionary<string, int> dicResource = new Dictionary<string, int>();
+
+    public byte selectBuild = 0;
 
     private void Awake()
     {
@@ -80,13 +84,13 @@ public class PlayerCtrl : MonoBehaviour
 
     
     
-    public void UnselectUnits()
+    public void UnselectObject()
     {
-        foreach (UnitCtrl unit in selectableUnit)
+        foreach (ObjectCtrl obj in selectableObject)
         {
-            unit.SelectMesh.enabled = false;
+            obj.SelectMesh.enabled = false;
         }
-        selectableUnit.Clear();
+        selectableObject.Clear();
     }
 
     /// <summary>
@@ -100,6 +104,8 @@ public class PlayerCtrl : MonoBehaviour
         //찾은 유닛 리스트
         List<UnitCtrl> findUnits = new List<UnitCtrl>();
         //찾은 건물 리스트
+        List<BuildingCtrl> findBuildings = new List<BuildingCtrl>();
+
         Rect selectRect = new Rect(mPosStart.x, mPosStart.y, mPosEnd.x - mPosStart.x, mPosEnd.y - mPosStart.y);
         foreach (UnitCtrl unit in UnitList)
         {
@@ -108,13 +114,18 @@ public class PlayerCtrl : MonoBehaviour
                 findUnits.Add(unit);
             }
         }
-
         if(findUnits.Count == 0 )//찾은 내 유닛 목록수0
         {
             //내 건물 목록 찾기
+            foreach (BuildingCtrl building in BuildingList)
+            {
+                if (selectRect.Contains(Camera.main.WorldToViewportPoint(building.transform.position), true))
+                {
+                    findBuildings.Add(building);
+                }
+            }
 
-
-            if (true)//찾은 내 건물 목록수 0
+            if (findBuildings.Count == 0)//찾은 내 건물 목록수 0
             {
                 foreach(PlayerCtrl player in playerMng.PlayerList)
                 {
@@ -136,18 +147,40 @@ public class PlayerCtrl : MonoBehaviour
                     else//유닛이 존재하지 않음
                     {
                         //내 건물 목록 찾기
+                        foreach (BuildingCtrl building in player.BuildingList)
+                        {
+                            if (selectRect.Contains(Camera.main.WorldToViewportPoint(building.transform.position), true))
+                            {
+                                findBuildings.Add(building);
+                            }
+                        }
+                        if (findBuildings.Count > 0)//이 플레이어의 유닛 존재
+                        {
+                            break;
+                        }
                     }
                 }
             }
         }
         if (findUnits.Count > 0)
         {
-            UnselectUnits();
+            UnselectObject();
             foreach (UnitCtrl unit in findUnits)
             {
                 unit.SelectMesh.enabled = true;
-                selectableUnit.Add(unit);
+                selectableObject.Add(unit);
             }
+            GameMng.Instance.interfaceMng.CreateInfomationInterface();
+        }
+        else if(findBuildings.Count > 0)
+        {
+            UnselectObject();
+            foreach (BuildingCtrl unit in findBuildings)
+            {
+                unit.SelectMesh.enabled = true;
+                selectableObject.Add(unit);
+            }
+            GameMng.Instance.interfaceMng.CreateInfomationInterface();
         }
     }
 
@@ -155,22 +188,23 @@ public class PlayerCtrl : MonoBehaviour
     /// 넘겨받은 유닛리스트를 선택
     /// </summary>
     /// <param name="unitList">유닛리스트</param>
-    public void SelectUnits(List<UnitCtrl> unitList)
+    public void SelectUnits(List<ObjectCtrl> objectList)
     {
-        if (unitList.Count == 0)
+        if (objectList.Count == 0)
         {
         }
         else
         {
-            foreach (UnitCtrl unit in unitList)
+            foreach (ObjectCtrl obj in objectList)
             {
-                unit.SelectMesh.enabled = false;
-                if (UnitList.Contains(unit))
+                obj.SelectMesh.enabled = false;
+                if (UnitList.Contains(obj as UnitCtrl))
                 {
-                    selectableUnit.Add(unit);
-                    unit.SelectMesh.enabled = true;
+                    selectableObject.Add(obj);
+                    obj.SelectMesh.enabled = true;
                 }
             }
+            GameMng.Instance.interfaceMng.CreateInfomationInterface();
         }
     }
     
@@ -178,13 +212,14 @@ public class PlayerCtrl : MonoBehaviour
     /// 유닛 선택 메서드
     /// </summary>
     /// <param name="unit"></param>
-    public void SelectUnit(UnitCtrl unit)
+    public void SelectObject(ObjectCtrl obj)
     {
-        if (unit != null)
+        if (obj != null)
         {
-            UnselectUnits();
-            selectableUnit.Add(unit);
-            unit.SelectMesh.enabled = true;
+            UnselectObject();
+            selectableObject.Add(obj);
+            obj.SelectMesh.enabled = true;
+            GameMng.Instance.interfaceMng.CreateInfomationInterface();
         }
     }
 
@@ -203,7 +238,7 @@ public class PlayerCtrl : MonoBehaviour
     public void UnregisterPlayerUnit(UnitCtrl unit)
     {
         UnitList.Remove(unit);
-        selectableUnit.Remove(unit);
+        selectableObject.Remove(unit);
         if (unit.Job == eUnitJob.Leader)
             playerMng.fallPlayer(this);
     }
@@ -212,46 +247,46 @@ public class PlayerCtrl : MonoBehaviour
     /// 선택된 유닛에 명령 메서드
     /// </summary>
     /// <param name="target"></param>
-    public void OrderUnits(eOrder type, Transform target)
+    public void OrderObjects(eOrder type, Transform target)
     {
-        if (selectableUnit.Count == 0)
+        if (selectableObject.Count == 0)
             return;
-        if (selectableUnit[0].Owner != this)
+        if (selectableObject[0].Owner != this)
             return;
 
-        Vector2 center = UnitsCenterPos();
+        Vector2 center = SelectCenterPos();
 
-        foreach (UnitCtrl unit in selectableUnit)
+        foreach (ObjectCtrl obj in selectableObject)
         {
             switch (type)
             {
                 case eOrder.MoveTarget:
-                    unit.receiptOrder(new MoveTarget(target.GetComponent<Target>()));
+                    obj.receiptOrder(new MoveTarget(target.GetComponent<Target>()));
                     break;
                 case eOrder.MovePos:
-                    unit.receiptOrder(new MovePos( new Vector2(unit.X-UnitsCenterPos().x + target.localPosition.x, unit.Y- UnitsCenterPos().y+ target.localPosition.z )));
+                    obj.receiptOrder(new MovePos( new Vector2(obj.X- SelectCenterPos().x + target.localPosition.x, obj.Y- SelectCenterPos().y+ target.localPosition.z )));
                     break;
                 case eOrder.AtkTarget:
-                    unit.receiptOrder(new AtkTarget(target.GetComponent<Target>()));
+                    obj.receiptOrder(new AtkTarget(target.GetComponent<Target>()));
                     break;
                 case eOrder.AtkPos:
-                    unit.receiptOrder(new AtkPos(new Vector2(unit.X-UnitsCenterPos().x+ target.localPosition.x, unit.Y-UnitsCenterPos().y + target.localPosition.z)));
+                    obj.receiptOrder(new AtkPos(new Vector2(obj.X- SelectCenterPos().x+ target.localPosition.x, obj.Y- SelectCenterPos().y + target.localPosition.z)));
                     break;
             }
         }
     }
 
-    public Vector2 UnitsCenterPos()
+    public Vector2 SelectCenterPos()
     {
         float X=0;
         float Y=0;
-        foreach(UnitCtrl unit in selectableUnit)
+        foreach(ObjectCtrl obj in selectableObject)
         {
-            X += unit.X;
-            Y += unit.Y;
+            X += obj.X;
+            Y += obj.Y;
         }
-        X /= selectableUnit.Count;
-        Y /= selectableUnit.Count;
+        X /= selectableObject.Count;
+        Y /= selectableObject.Count;
 
         return new Vector2(X, Y);
     }
@@ -259,5 +294,23 @@ public class PlayerCtrl : MonoBehaviour
     public ePlayerType Type
     {
         get { return playerInfo.Type; }
+    }
+
+    /// <summary>
+    /// 플레이어 유닛 등록 메서드
+    /// </summary>
+    /// <param name="unit"></param>
+    public void RegisterPlayerBuilding(BuildingCtrl building)
+    {
+        BuildingList.Add(building);
+    }
+    /// <summary>
+    /// 플레이어 유닛 해지 메서드
+    /// </summary>
+    /// <param name="unit"></param>
+    public void UnregisterPlayerBuilding(BuildingCtrl building)
+    {
+        BuildingList.Remove(building);
+        selectableObject.Remove(building);
     }
 }

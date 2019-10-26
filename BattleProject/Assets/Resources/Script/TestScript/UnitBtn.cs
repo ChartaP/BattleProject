@@ -28,14 +28,14 @@ public class UnitBtn : MonoBehaviour
         else
         {
             BtnImage.enabled = true;
-            BtnImage.sprite = Resources.Load<Sprite>("Texture/"+ myUnit.Face);
+            BtnImage.sprite = Resources.Load<Sprite>("Texture/"+ myUnit.Icon);
             Btn.enabled = true;
         }
     }
 
     public void SelectUnit()
     {
-        myUnit.unitMng.gameMng.playerMng.CtrlPlayer.SelectUnit(myUnit);
+        myUnit.unitMng.gameMng.playerMng.CtrlPlayer.SelectObject(myUnit);
     }
 
 }

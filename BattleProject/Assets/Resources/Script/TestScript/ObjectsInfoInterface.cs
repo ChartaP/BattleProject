@@ -36,29 +36,26 @@ public class ObjectsInfoInterface : MonoBehaviour
         tRight.text = sRight;
     }
 
-    public void GetUnitList(List<UnitCtrl> unitList)
+    public void GetObjectList(List<ObjectCtrl> objList)
     {
         string sName = "";
         string sLeft = "";
         string sRight = "";
-        if (unitList.Count == 0)
+        foreach (UnitBtn btn in unitBtnList)
+        {
+            btn.myUnit = null;
+        }
+        if (objList.Count == 0)
         {
             GetInfo(sName, sLeft, sRight);
-            foreach(UnitBtn btn in unitBtnList)
-            {
-                btn.myUnit = null;
-            }
         }
-        else if (unitList.Count == 1)
+        else if (objList.Count == 1)
         {
-            sName = unitList[0].Name;
-            sLeft = "체력 : " + unitList[0].curHealth + "/" + unitList[0].Stat("Health") + "\n";
+            sName = objList[0].Name;
+            sLeft = "체력 : " + objList[0].curHealth + "/" + objList[0].Stat("Health") + "\n";
 
             GetInfo(sName, sLeft, sRight);
-            foreach (UnitBtn btn in unitBtnList)
-            {
-                btn.myUnit = null;
-            }
+            
 
         }
         else
@@ -66,16 +63,17 @@ public class ObjectsInfoInterface : MonoBehaviour
             GetInfo(sName, sLeft, sRight);
             int nRow=1;
             int nCol=2;
-            for(nRow=1; unitList.Count/nRow < nRow*2;nRow++)
+            for(nRow=1; objList.Count/nRow < nRow*2;nRow++)
             {
 
             }
             nCol = nRow * 2;
-            for(int i = 0; i < unitList.Count; i++)
+
+            for(int i = 0; i < objList.Count; i++)
             {
                 if (i > 8)
                     break;
-                unitBtnList[i].myUnit = unitList[i];
+                unitBtnList[i].myUnit = objList[i] as UnitCtrl;
             }
 
         }
