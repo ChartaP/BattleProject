@@ -95,11 +95,8 @@ public class PlayerMng : MonoBehaviour
                 gameMng.unitMng.ChangeJob(unitTemp, eUnitJob.Leader);
 
                 unitTemp = gameMng.unitMng.CreateUnit(spawnPos, player, eUnitType.People);
-                gameMng.unitMng.ChangeJob(unitTemp, eUnitJob.Jobless);
                 unitTemp = gameMng.unitMng.CreateUnit(spawnPos, player, eUnitType.People);
-                gameMng.unitMng.ChangeJob(unitTemp, eUnitJob.Jobless);
                 unitTemp = gameMng.unitMng.CreateUnit(spawnPos, player, eUnitType.People);
-                gameMng.unitMng.ChangeJob(unitTemp, eUnitJob.Jobless);
 
             }
             //컴퓨터 플레이어 스폰
@@ -111,11 +108,11 @@ public class PlayerMng : MonoBehaviour
                 gameMng.unitMng.ChangeJob(unitTemp, eUnitJob.Leader);
 
                 unitTemp = gameMng.unitMng.CreateUnit(spawnPos, player, eUnitType.People);
-                gameMng.unitMng.ChangeJob(unitTemp, eUnitJob.Jobless);
+                gameMng.unitMng.ChangeJob(unitTemp, eUnitJob.Worker);
                 unitTemp = gameMng.unitMng.CreateUnit(spawnPos, player, eUnitType.People);
-                gameMng.unitMng.ChangeJob(unitTemp, eUnitJob.Jobless);
+                gameMng.unitMng.ChangeJob(unitTemp, eUnitJob.Worker);
                 unitTemp = gameMng.unitMng.CreateUnit(spawnPos, player, eUnitType.People);
-                gameMng.unitMng.ChangeJob(unitTemp, eUnitJob.Jobless);
+                gameMng.unitMng.ChangeJob(unitTemp, eUnitJob.Worker);
             }
             //관전자 스폰
             else

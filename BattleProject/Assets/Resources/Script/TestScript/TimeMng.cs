@@ -21,8 +21,11 @@ public class TimeMng : MonoBehaviour
     public GameObject objMaple = null;
 
     private float fDateTime = 9.0f;
-    private float fDateSpeed = 2.5f;
+    private int preHour = 9;
+    private float fDateSpeed = 0.5f;
+    [SerializeField]
     private eSeason curSeason = eSeason.SPRING;
+    [SerializeField]
     private eDayState curState = eDayState.DAY;
     private bool bPause = false;
 
@@ -56,7 +59,19 @@ public class TimeMng : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if(preHour != Hour)
+        {
+            switch (Hour)
+            {
+                case 0:
+                    foreach (UnitCtrl unit in GameMng.Instance.unitMng.unitList)
+                    {
+                        unit.Hunger();
+                    }
+                    break;
+            }
+            preHour = Hour;
+        }
     }
 
     IEnumerator TimeTick()
@@ -151,7 +166,7 @@ public class TimeMng : MonoBehaviour
         }
     }
 
-    private string CurSeasonKR()
+    public string CurSeasonKR()
     {
         switch (curSeason)
         {
@@ -165,6 +180,14 @@ public class TimeMng : MonoBehaviour
                 return "겨울";
         }
         return "오류";
+    }
+
+    public eSeason CurSeason
+    {
+        get
+        {
+            return curSeason;
+        }
     }
 
     private string CurTime()
@@ -207,5 +230,25 @@ public class TimeMng : MonoBehaviour
         }
     }
 
+    public bool isDay
+    {
+        get
+        {
+            if (Hour >= 7 && Hour <= 19)
+                return true;
+            else
+                return false;
+        }
+    }
 
+    public bool isNight
+    {
+        get
+        {
+            if (isDay)
+                return false;
+            else
+                return true;
+        }
+    }
 }

@@ -171,7 +171,26 @@ public class InputMng : MonoBehaviour
                         }
                         break;
                     case "Building":
-
+                        peek.position = hit.transform.position;
+                        point = peek.localPosition;
+                        if (hit.transform.GetComponent<BuildingCtrl>().Owner == gameMng.playerMng.CtrlPlayer)
+                        {
+                            foreach (MeshRenderer mesh in peek.GetComponentsInChildren<MeshRenderer>())
+                            {
+                                mesh.material = gameMng.unitMng.RangeMater[0];
+                            }
+                            peek.GetComponentInChildren<Animation>().Play();
+                            gameMng.playerMng.CtrlPlayer.OrderObjects(GameSys.Lib.eOrder.MoveTarget, hit.transform);
+                        }
+                        else
+                        {
+                            foreach (MeshRenderer mesh in peek.GetComponentsInChildren<MeshRenderer>())
+                            {
+                                mesh.material = gameMng.unitMng.RangeMater[1];
+                            }
+                            peek.GetComponentInChildren<Animation>().Play();
+                            gameMng.playerMng.CtrlPlayer.OrderObjects(GameSys.Lib.eOrder.AtkTarget, hit.transform);
+                        }
                         break;
                 }
             }
@@ -191,7 +210,7 @@ public class InputMng : MonoBehaviour
         {
             if (hit.collider.gameObject.layer == LayerMask.NameToLayer("UI"))
                 return;
-            Debug.Log("HitObject : " + hit.collider.name + hit.point);
+           // Debug.Log("HitObject : " + hit.collider.name + hit.point);
             peek.position = hit.collider.transform.position;
             if (GameMng.Instance.mapMng.bOpen[(int)peek.localPosition.x, (int)peek.localPosition.z]) {
                 foreach (MeshRenderer mesh in peek.GetComponentsInChildren<MeshRenderer>())

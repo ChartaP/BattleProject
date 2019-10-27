@@ -230,6 +230,7 @@ public class PlayerCtrl : MonoBehaviour
     public void RegisterPlayerUnit(UnitCtrl unit)
     {
         UnitList.Add(unit);
+        dicResource["WorkPopulation"] += 1;
     }
     /// <summary>
     /// 플레이어 유닛 해지 메서드
@@ -238,9 +239,11 @@ public class PlayerCtrl : MonoBehaviour
     public void UnregisterPlayerUnit(UnitCtrl unit)
     {
         UnitList.Remove(unit);
+        dicResource["WorkPopulation"] -= 1;
         selectableObject.Remove(unit);
         if (unit.Job == eUnitJob.Leader)
             playerMng.fallPlayer(this);
+
     }
     
     /// <summary>

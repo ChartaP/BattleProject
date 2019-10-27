@@ -71,16 +71,18 @@ namespace GameSys
         {
             Null        = -1,
             Leader      = 0,//지도자
-            Jobless     = 100,//백수
-            Farmer      = 101,//농부
-            Miner       = 102,//광부
-            Laborer     = 104,//인부
+            Worker     = 100,//일꾼
             Stoneman    = 200,//돌도끼병
             Spearman    = 201,//창병
             Bowman      = 202,//궁병
             Swordman    = 203,//검사
             Cavalry     = 204,//기병
+        }
 
+        public enum eUnitWorkState
+        {
+            Jobless     =0,
+            Working     =1
         }
 
         public enum eUnitState
@@ -88,7 +90,8 @@ namespace GameSys
             Standby     =0,//대기중
             Move      =1,//이동중
             Atk       =2,//공격중
-            Dead        =3
+            Dead        =3,
+            Work        =4
         }
 
         public enum eOrder

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <UnitInfo>
 	<Job>
-    <Field id="0" name="Leader" face="LeaderIcon" size ="0.5" colradius="0.3" colheight="1.0" movespeed="1.5" rotatespeed="1.0" health="100" atkpower ="16" atkspeed="1.0" defvalue="0" viewrange="3.0" atkrange="0.9"/>
-    <Field id="100" name="Worker" face="WorkerIcon" size="0.3" colradius="0.18" colheight="0.6" movespeed="1.0" rotatespeed="1.0" health="40" atkpower ="4" atkspeed="1.0" defvalue="0" viewrange="2.5" atkrange="0.54"/>
-    <Field id="200" name="Stoneman" face="StonemanIcon" size="0.4" colradius="0.24" colheight="0.8" movespeed="1.5" rotatespeed="1.0" health="100" atkpower ="40" atkspeed="1.0" defvalue="0" viewrange="3.5" atkrange="0.72"/>
-    <Field id="201" name="Spearman" face="SpearmanIcon" size="0.4" colradius="0.24" colheight="0.8" movespeed="1.5" rotatespeed="1.0" health="100" atkpower ="60" atkspeed="1.0" defvalue="0" viewrange="3.5" atkrange="0.72"/>
-    <Field id="202" name="Bowman" face="BowmanIcon" size="0.4" colradius="0.24" colheight="0.8" movespeed="1.5" rotatespeed="1.0" health="100" atkpower ="40" atkspeed="1.0" defvalue="0" viewrange="3.5" atkrange="0.72"/>
-    <Field id="203" name="Swordman" face="SwordIcon" size="0.4" colradius="0.24" colheight="0.8" movespeed="1.5" rotatespeed="1.0" health="100" atkpower ="50" atkspeed="1.0" defvalue="0" viewrange="3.5" atkrange="0.72"/>
-    <Field id="204" name="Cavalry" face="CavalryIcon" size="0.4" colradius="0.24" colheight="0.8" movespeed="3.0" rotatespeed="1.0" health="100" atkpower ="60" atkspeed="1.0" defvalue="0" viewrange="3.5" atkrange="0.72"/>
+    <Field id="0" name="Leader" face="LeaderIcon" size ="0.5" colradius="0.3" colheight="1.0" movespeed="1.5" rotatespeed="1.0" health="100" atkpower ="16" atkspeed="1.0" defvalue="0" viewrange="6.0" atkrange="1.5"/>
+    <Field id="100" name="Worker" face="WorkerIcon" size="0.3" colradius="0.18" colheight="0.6" movespeed="1.0" rotatespeed="1.0" health="40" atkpower ="4" atkspeed="1.0" defvalue="0" viewrange="4.0" atkrange="1.00"/>
+    <Field id="200" name="Stoneman" face="StonemanIcon" size="0.4" colradius="0.24" colheight="0.8" movespeed="1.5" rotatespeed="1.0" health="100" atkpower ="40" atkspeed="1.0" defvalue="0" viewrange="6.0" atkrange="1.5"/>
+    <Field id="201" name="Spearman" face="SpearmanIcon" size="0.4" colradius="0.24" colheight="0.8" movespeed="1.5" rotatespeed="1.0" health="100" atkpower ="60" atkspeed="1.0" defvalue="0" viewrange="6.0" atkrange="1.5"/>
+    <Field id="202" name="Bowman" face="BowmanIcon" size="0.4" colradius="0.24" colheight="0.8" movespeed="1.5" rotatespeed="1.0" health="100" atkpower ="40" atkspeed="1.0" defvalue="0" viewrange="6.0" atkrange="6.0"/>
+    <Field id="203" name="Swordman" face="SwordIcon" size="0.4" colradius="0.24" colheight="0.8" movespeed="1.5" rotatespeed="1.0" health="100" atkpower ="50" atkspeed="1.0" defvalue="0" viewrange="6.0" atkrange="1.5"/>
+    <Field id="204" name="Cavalry" face="CavalryIcon" size="0.4" colradius="0.24" colheight="0.8" movespeed="3.0" rotatespeed="1.0" health="100" atkpower ="60" atkspeed="1.0" defvalue="0" viewrange="6.0" atkrange="1.5"/>
   </Job>
   <JobEquip>
     <Field id="0" head="Crown" rhand="Sword" lhand="null" chest="null" projectile="null" atkreadyani = "StoneAxeReadyAni" atkingani ="StoneAxeSwingAni"/>

@@ -21,13 +21,44 @@ public class Target : MonoBehaviour
     {
         myBar = Instantiate(Resources.Load("Prefab/Bar") as GameObject, GameMng.Instance.interfaceMng.CanvasTrans.Find("Bars")).GetComponent<Bar>();
         myBar.name = name + "Bar";
-        myBar.Set(Health, new Color32(255, 0, 0,255));
+
+        Color32 color;
+        if(Owner == GameMng.Instance.playerMng.CtrlPlayer)
+        {
+            color = new Color32(0, 255, 0, 255);
+        }
+        else
+        {
+            color = new Color32(255, 0, 0, 255);
+        }
+        
+        myBar.SetHP(Health, color);
+        if (Type == eTargetType.Unit)
+        {
+            myBar.SetHungry(Hungry);
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        myBar.Cur(Health,CurHealth, hpTrans.position);
+        myBar.CurHP(Health,CurHealth, hpTrans.position);
+        if(Type == eTargetType.Unit)
+        {
+            myBar.CurHungry(Hungry);
+        }
+    }
+
+    private void OnEnable()
+    {
+        if(myBar)
+            myBar.gameObject.SetActive ( true);
+    }
+
+    private void OnDisable()
+    {
+        if (myBar)
+            myBar.gameObject.SetActive(false);
     }
 
     private void OnDestroy()
@@ -40,12 +71,7 @@ public class Target : MonoBehaviour
     public float X
     {
         get {
-            switch (Type)
-            {
-                case eTargetType.Unit:
-                    return objectCtrl.X;
-            }
-            return 0.0f;
+            return objectCtrl.X;
         }
     }
 
@@ -53,12 +79,7 @@ public class Target : MonoBehaviour
     {
         get
         {
-            switch (Type)
-            {
-                case eTargetType.Unit:
-                    return objectCtrl.Y;
-            }
-            return 0.0f;
+            return objectCtrl.Y;
         }
     }
 
@@ -66,24 +87,22 @@ public class Target : MonoBehaviour
     {
         get
         {
-            switch (Type)
-            {
-                case eTargetType.Unit:
-                    return objectCtrl.Stat("Radius");
-            }
-            return 0.0f;
+            return objectCtrl.Stat("Radius");
         }
     }
 
     public float Health
     {
         get {
-            switch (Type)
-            {
-                case eTargetType.Unit:
-                    return objectCtrl.Stat("Health");
-            }
-            return 1.0f;
+            return objectCtrl.Stat("Health");
+        }
+    }
+
+    public int Hungry
+    {
+        get
+        {
+            return (objectCtrl as UnitCtrl).Hungry;
         }
     }
 
@@ -91,12 +110,7 @@ public class Target : MonoBehaviour
     {
         get
         {
-            switch (Type)
-            {
-                case eTargetType.Unit:
-                    return objectCtrl.curHealth;
-            }
-            return 1.0f;
+            return objectCtrl.curHealth;
         }
     }
 
@@ -104,12 +118,7 @@ public class Target : MonoBehaviour
     {
         get
         {
-            switch (Type)
-            {
-                case eTargetType.Unit:
-                    return objectCtrl.Pos;
-            }
-            return Vector2.zero;
+            return objectCtrl.Pos;
         }
     }
 
@@ -117,12 +126,7 @@ public class Target : MonoBehaviour
     {
         get
         {
-            switch (Type)
-            {
-                case eTargetType.Unit:
-                    return objectCtrl.Owner;
-            }
-            return null;
+            return objectCtrl.Owner;
         }
     }
 
@@ -133,12 +137,7 @@ public class Target : MonoBehaviour
 
     public void GetDamage(float damage)
     {
-        switch (Type)
-        {
-            case eTargetType.Unit:
-                objectCtrl.GetDamage(damage);
-                return;
-        }
+        objectCtrl.GetDamage(damage);
     }
     
 }

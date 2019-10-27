@@ -4,8 +4,8 @@
     <Field>
       <id>0</id>
       <name>House</name>
-      <component>HouseCtrl</component>
-      <health>400</health>
+      <component>HousePre</component>
+      <health>200</health>
       <cost>
         <time>10</time>
       </cost>
@@ -13,8 +13,8 @@
     <Field>
       <id>1</id>
       <name>Storage</name>
-      <component>StorageCtrl</component>
-      <health>400</health>
+      <component>StoragePre</component>
+      <health>200</health>
       <cost>
         <time>10</time>
       </cost>
@@ -22,8 +22,17 @@
     <Field>
       <id>2</id>
       <name>Farm</name>
-      <component>FarmCtrl</component>
-      <health>400</health>
+      <component>FarmPre</component>
+      <health>200</health>
+      <cost>
+        <time>10</time>
+      </cost>
+    </Field>
+    <Field>
+      <id>3</id>
+      <name>BootCamp</name>
+      <component>BootCampPre</component>
+      <health>200</health>
       <cost>
         <time>10</time>
       </cost>

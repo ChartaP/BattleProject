@@ -11,7 +11,7 @@ public class BuildingMng : MonoBehaviour
 
     public BuildingCtrl CreateBuilding(PlayerCtrl Owner, BuildingInfo buildingInfo, Vector3 buildingPos)
     {
-        GameObject pre = Resources.Load("Prefab/BuildingPre") as GameObject;
+        GameObject pre = Resources.Load("Prefab/"+buildingInfo.Component) as GameObject;
         BuildingCtrl temp = Instantiate(pre, this.transform).GetComponent<BuildingCtrl>();
         temp.SetBuilding(this, buildingInfo, Owner, buildingPos);
         buildingList.Add(temp);

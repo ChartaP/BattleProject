@@ -16,7 +16,7 @@ public abstract class ObjectCtrl : MonoBehaviour
     [SerializeField]
     protected ParticleSystem DamageParicle = null;
     [SerializeField]
-    protected Target curTarget = null;
+    protected Target curAtkTarget = null;
 
     protected Order curOrder = null;
 
@@ -27,16 +27,16 @@ public abstract class ObjectCtrl : MonoBehaviour
 
     public MeshRenderer SelectMesh;
     public float curHealth = 1;
-    public List<Target> viewList;
+    public List<Target> viewList = new List<Target>();
 
     public Transform tViewRange;
     // Start is called before the first frame update
 
+    protected List<IEnumerator> enumerators = new List<IEnumerator>();
 
     protected void Start()
     {
         curPos = Pos;
-        viewList = new List<Target>();
     }
 
     // Update is called once per frame
@@ -44,13 +44,14 @@ public abstract class ObjectCtrl : MonoBehaviour
     {
 
     }
-
+    
     /// <summary>
     /// 명령 접수
     /// </summary>
     /// <param name="order"></param>
     public void receiptOrder(Order order)
     {
+        
         curOrder = order;
         curOrder.Start(this);
         Debug.Log("Receipt");
@@ -98,6 +99,24 @@ public abstract class ObjectCtrl : MonoBehaviour
                 if (viewList.Contains(unit.myTarget))
                 {
                     viewList.Remove(unit.myTarget);
+                }
+            }
+        }
+        foreach (BuildingCtrl building in GameMng.Instance.buildingMng.buildingList)
+        {
+            float distance = Vector2.Distance(Pos, building.Pos);
+            if (distance < docStats["ViewRange"])
+            {
+                if (!viewList.Contains(building.myTarget))
+                {
+                    viewList.Add(building.myTarget);
+                }
+            }
+            else
+            {
+                if (viewList.Contains(building.myTarget))
+                {
+                    viewList.Remove(building.myTarget);
                 }
             }
         }

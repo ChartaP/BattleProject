@@ -7,57 +7,62 @@ using UnityEngine;
 
 public class UnitCtrl : ObjectCtrl
 {
-    private static int nUintCnt = 0;
+    protected static int nUintCnt = 0;
     public UnitMng unitMng;
-    private JobInfo myJobInfo = null;
+    protected JobInfo myJobInfo = null;
     [SerializeField]
-    private eUnitType unitType;//유닛 종류
+    protected eUnitType unitType;//유닛 종류
     [SerializeField]
-    private eUnitJob unitJob;//유닛의 직업
+    protected eUnitJob unitJob;//유닛의 직업
     [SerializeField]
-    private eUnitState unitState = eUnitState.Standby;//유닛의 상태
-    
+    protected eUnitState unitState = eUnitState.Standby;//유닛의 상태
+
+    protected int nHungry = 4;
+
     public Animation ani;
     
     [SerializeField]
-    private Transform tLHand;
+    protected Transform tLHand;
     [SerializeField]
-    private Transform tRHand;
+    protected Transform tRHand;
     [SerializeField]
-    private Transform tHead;
+    protected Transform tHead;
     [SerializeField]
-    private Transform tChest;
+    protected Transform tChest;
     [SerializeField]
-    private Transform tUnit;
+    protected Transform tUnit;
     [SerializeField]
-    private Transform tLHandEquip;
+    protected Transform tLHandEquip;
     [SerializeField]
-    private Transform tRHandEquip;
+    protected Transform tRHandEquip;
     [SerializeField]
-    private Transform tHeadEquip;
+    protected Transform tHeadEquip;
     [SerializeField]
-    private Transform tChestEquip;
+    protected Transform tChestEquip;
     [SerializeField]
-    private Transform tUnitEquip;
+    protected Transform tUnitEquip;
     
     public Transform tAtkRange;
     
     [SerializeField]
-    private Rigidbody rigid;
+    protected Rigidbody rigid;
     [SerializeField]
-    private bool isCollision = false;
+    protected bool isCollision = false;
     
+    protected BuildingCtrl HomeCtrl = null;
+    protected BuildingCtrl WorkSpaceCtrl = null;
+    
+
     public void SetUnit(UnitMng unitMng, eUnitType unitType,PlayerCtrl owner,Vector3 unitPos)
     {
         this.unitMng = unitMng;
         this.unitType = unitType;
         this.owner = owner;
-        SetJob(eUnitJob.Jobless);
+        SetJob(eUnitJob.Worker);
         transform.localPosition = unitPos;
         transform.name = (nUintCnt++) +"-"+ Owner.name+ "-Unit";
         OnGround();
         Owner.RegisterPlayerUnit(this);
-        Owner.dicResource["WorkPopulation"] += 1;
     }
 
     public void SetJob(eUnitJob job)
@@ -96,7 +101,8 @@ public class UnitCtrl : ObjectCtrl
         {
             tRHandEquip = Instantiate(Resources.Load("Prefab/" + RHand) as GameObject, tRHand).transform;
         }
-        if(job != eUnitJob.Jobless)
+
+        if (myJobInfo.Name == "Leader")
         {
             Owner.dicResource["WorkPopulation"] -= 1;
         }
@@ -117,21 +123,21 @@ public class UnitCtrl : ObjectCtrl
         docStats.Add("Radius", myJobInfo.ColRadius);
     }
 
-    void Start()
+    protected void Start()
     {
         base.Start();
         ani.Play();
-        StartCoroutine("Decide");
+        StartCoroutine(Decide());
     }
 
     // Update is called once per frame
-    void Update()
+    protected void Update()
     {
         base.Update();
     }
-    
 
-    IEnumerator Decide()
+
+    protected IEnumerator Decide()
     {
         while (true)
         {
@@ -160,6 +166,10 @@ public class UnitCtrl : ObjectCtrl
                 View();
                 fulfilOrder();
                 RangeUpdate();
+            }
+            else if (unitState == eUnitState.Work)
+            {
+
             }
             yield return new WaitForSecondsRealtime(0.4f);
         }
@@ -202,7 +212,7 @@ public class UnitCtrl : ObjectCtrl
         {
             if(unit == myTarget)
                 continue;
-            if (Vector2.Distance(unit.Pos, pos) < unit.Radius/2 + Stat("Radius")/2)
+            if (Vector2.Distance(unit.Pos, pos) < unit.Radius + Stat("Radius"))
             {
                 return true;
             }
@@ -272,7 +282,7 @@ public class UnitCtrl : ObjectCtrl
     /// <param name="unit"></param>
     public void AtkTarget(Target target)
     {
-        curTarget = target;
+        curAtkTarget = target;
         StateChange(eUnitState.Atk);
         Rotate(target.Pos);
     }
@@ -290,11 +300,12 @@ public class UnitCtrl : ObjectCtrl
         StopCoroutine("Move");
         StartCoroutine("Move", pos);
     }
-    IEnumerator Move(Vector2 target)
+    protected IEnumerator Move(Vector2 target)
     {
         StateChange(eUnitState.Move);
         while (true)
         {
+
             Rotate(target);
             transform.Translate(0, 0 , Stat("MoveSpeed") * Time.deltaTime);
             Debug.DrawRay(transform.position, transform.forward * Vector2.Distance(Pos,curPos), Color.blue, Time.deltaTime);
@@ -306,15 +317,16 @@ public class UnitCtrl : ObjectCtrl
         yield break;
     }
 
-    IEnumerator Move(Target target)
+    protected IEnumerator Move(Target target)
     {
         StateChange(eUnitState.Move);
         while (true)
         {
+            curPos = target.Pos;
             Rotate(target.Pos);
             transform.Translate(0, 0, Stat("MoveSpeed") * Time.deltaTime);
             Debug.DrawRay(transform.position, transform.forward * Vector2.Distance(Pos, curPos), Color.blue, 0.3f);
-            if (Vector2.Distance(Pos, target.Pos) < 0.1f)
+            if (Vector2.Distance(Pos, target.Pos) < Stat("Radius") + target.Radius + 0.1f)
                 break;
             yield return null;
         }
@@ -322,7 +334,7 @@ public class UnitCtrl : ObjectCtrl
         yield break;
     }
 
-    IEnumerator Attack()
+    protected IEnumerator Attack()
     {
         while (unitState == eUnitState.Atk)
         {
@@ -331,7 +343,7 @@ public class UnitCtrl : ObjectCtrl
             while (ani.isPlaying == true)
             {
                 yield return null;
-                if (curTarget == null)
+                if (curAtkTarget == null)
                 {
                     yield break;
                 }
@@ -340,7 +352,7 @@ public class UnitCtrl : ObjectCtrl
             while (ani.isPlaying == true)
             {
                 yield return null;
-                if (curTarget == null)
+                if (curAtkTarget == null)
                 {
                     yield break;
                 }
@@ -350,13 +362,17 @@ public class UnitCtrl : ObjectCtrl
         yield break;
     }
 
-    IEnumerator Dead()
+    protected IEnumerator Dead()
     {
         ani.Stop();
         ani.Play("DeadAni");
         while (ani.isPlaying == true)
         {
             yield return null;
+        }
+        if (!isJobless)
+        {
+            Owner.dicResource["WorkPopulation"] += 1;
         }
         Owner.UnregisterPlayerUnit(this);
         unitMng.RemoveUnit(this);
@@ -365,12 +381,13 @@ public class UnitCtrl : ObjectCtrl
     
     public void TargetDamage()
     {
-        Debug.Log(name + "가"+curTarget.transform.name+"에게"+ Stat("AtkPower")+"데미지");
-        curTarget.GetDamage(Stat("AtkPower"));
+        Debug.Log(name + "가"+curAtkTarget.transform.name+"에게"+ Stat("AtkPower")+"데미지");
+        curAtkTarget.GetDamage(Stat("AtkPower"));
     }
     public void Stop()
     {
-        StateChange(eUnitState.Standby);
+        if(unitState != eUnitState.Work)
+            StateChange(eUnitState.Standby);
     }
 
     
@@ -427,6 +444,18 @@ public class UnitCtrl : ObjectCtrl
                 case eUnitState.Atk:
                     StopCoroutine("Attack");
                     break;
+                case eUnitState.Work:
+                    Renderer[] rl = transform.GetComponentsInChildren<Renderer>();
+                    foreach ( Renderer r in rl)
+                    {
+                        r.enabled = true;
+                    }
+                    Collider[] cl = transform.GetComponentsInChildren<Collider>();
+                    foreach (Collider c in cl)
+                    {
+                        c.enabled = true;
+                    }
+                    break;
             }
             unitState = state;
             switch (state)
@@ -446,18 +475,99 @@ public class UnitCtrl : ObjectCtrl
                     StopAllCoroutines();
                     StartCoroutine("Dead");
                     break;
+                case eUnitState.Work:
+                    Renderer[] rl = transform.GetComponentsInChildren<Renderer>();
+                    foreach (Renderer r in rl)
+                    {
+                        r.enabled = false;
+                    }
+                    Collider[] cl = transform.GetComponentsInChildren<Collider>();
+                    foreach (Collider c in cl)
+                    {
+                        c.enabled = false;
+                    }
+                    break;
             }
         }
     }
-    
-    private void OnCollisionStay(Collision collision)
+
+    protected void OnCollisionStay(Collision collision)
     {
         if(collision.transform.tag == "Unit")
             isCollision = true;
     }
-    private void OnCollisionExit(Collision collision)
+    protected void OnCollisionExit(Collision collision)
     {
         if (collision.transform.tag == "Unit")
             isCollision = false;
+    }
+
+    public void Hunger()
+    {
+        nHungry -= 1;
+
+        if(nHungry <= 0)
+        {
+            StateChange(eUnitState.Dead);
+        }
+    }
+    
+    public bool Eat()
+    {
+        if(Owner.dicResource["Food"] < (4 - nHungry))
+        {
+            return false;
+        }
+        else
+        {
+            Owner.dicResource["Food"] -= (4 - nHungry);
+            nHungry = 4;
+            return true;
+        }
+        
+    }
+    
+    public int Hungry
+    {
+        get
+        {
+            return nHungry;
+        }
+    }
+
+    public void GetHome(BuildingCtrl home)
+    {
+        HomeCtrl = home;
+    }
+
+    public void GetWork(BuildingCtrl workplace)
+    {
+        WorkSpaceCtrl = workplace;
+        Owner.dicResource["WorkPopulation"] -= 1;
+    }
+
+    public void Fired()
+    {
+        WorkSpaceCtrl = null;
+        Owner.dicResource["WorkPopulation"] += 1;
+    }
+
+    public bool isHomeless
+    {
+        get
+        {
+            return !HomeCtrl;
+        }
+    }
+
+    public bool isJobless
+    {
+        get
+        {
+            if (myJobInfo.Name == "Leader")
+                return false;
+            else
+                return !WorkSpaceCtrl;
+        }
     }
 }

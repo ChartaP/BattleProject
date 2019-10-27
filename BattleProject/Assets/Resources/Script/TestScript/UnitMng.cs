@@ -55,33 +55,6 @@ public class UnitMng : MonoBehaviour
         Destroy(unit.gameObject);
     }
     
-    public int UnitjobToID(eUnitJob job)
-    {
-        switch (job)
-        {
-            case eUnitJob.Leader:
-                return 0;
-            case eUnitJob.Jobless:
-                return 1;
-            case eUnitJob.Farmer:
-                return 2;
-            case eUnitJob.Miner:
-                return 3;
-            case eUnitJob.Laborer:
-                return 4;
-            case eUnitJob.Stoneman:
-                return 5;
-            case eUnitJob.Spearman:
-                return 6;
-            case eUnitJob.Bowman:
-                return 7;
-            case eUnitJob.Swordman:
-                return 8;
-            case eUnitJob.Cavalry:
-                return 9;
-        }
-        return -1;
-    }
     
     public bool IsCollisionPos(UnitCtrl self,Vector2 pos)
     {

@@ -57,6 +57,7 @@ namespace GameSys
 
             public override void Start(ObjectCtrl unit)
             {
+                Debug.Log("StartMoveTarget"+Target.name+Target.Pos);
             }
 
             public override void Works(ObjectCtrl unit)
@@ -64,12 +65,19 @@ namespace GameSys
                 UnitCtrl unitCtrl = unit as UnitCtrl;
                 if (target != null)
                 {
-                    if (Vector2.Distance(unitCtrl.Pos, target.Pos) > (unitCtrl.Stat("Radius")+target.Radius)*1.5f)
+                    //Debug.Log(Vector2.Distance(unitCtrl.Pos, target.Pos)+"/"+ (unitCtrl.Stat("Radius") + target.Radius + 0.1f));
+                    if (Vector2.Distance(unitCtrl.Pos, target.Pos) > unitCtrl.Stat("Radius") +target.Radius +0.1f)
                     {
                         unitCtrl.MoveTarget(target);
                     }
                     else
                     {
+                        Debug.Log("wow");
+                        if(target.Type == eTargetType.Building)
+                        {
+                            target.transform.GetComponent<BuildingCtrl>().EnterBuilding(unitCtrl);
+                            target = null;
+                        }
                         unitCtrl.Stop();
                     }
                 }
@@ -80,6 +88,7 @@ namespace GameSys
                 UnitCtrl unitCtrl = unit as UnitCtrl;
                 if (target == null)
                 {
+                    Debug.Log("No");
                     unitCtrl.Stop();
                     return true;
                 }
@@ -240,5 +249,7 @@ namespace GameSys
                 return true;
             }
         }
+
+        
     }
 }
