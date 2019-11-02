@@ -7,7 +7,7 @@
       <component>HousePre</component>
       <health>200</health>
       <cost>
-        <time>10</time>
+        <time>4</time>
       </cost>
     </Field>
     <Field>
@@ -16,7 +16,7 @@
       <component>StoragePre</component>
       <health>200</health>
       <cost>
-        <time>10</time>
+        <time>4</time>
       </cost>
     </Field>
     <Field>
@@ -25,7 +25,8 @@
       <component>FarmPre</component>
       <health>200</health>
       <cost>
-        <time>10</time>
+        <time>4</time>
+        <Food>20</Food>
       </cost>
     </Field>
     <Field>
@@ -34,7 +35,7 @@
       <component>BootCampPre</component>
       <health>200</health>
       <cost>
-        <time>10</time>
+        <time>4</time>
       </cost>
     </Field>
   </Building>

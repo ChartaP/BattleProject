@@ -73,9 +73,17 @@ namespace GameSys
                     else
                     {
                         Debug.Log("wow");
-                        if(target.Type == eTargetType.Building)
+                        if(target.Type == eTargetType.Building && unitCtrl.Job == eUnitJob.Worker)
                         {
-                            target.transform.GetComponent<BuildingCtrl>().EnterBuilding(unitCtrl);
+                            BuildingCtrl building = target.transform.GetComponent<BuildingCtrl>();
+                            if (building.BuildingState == eBuildingState.Construction)
+                            {
+                                unitCtrl.receiptOrder(new Build(target));
+                            }
+                            else
+                            {
+                                building.EnterBuilding(unitCtrl);
+                            }
                             target = null;
                         }
                         unitCtrl.Stop();
@@ -250,6 +258,43 @@ namespace GameSys
             }
         }
 
-        
+        public class Build : Order
+        {
+            public Build(Target target)
+            {
+                this.target = target;
+                type = eOrder.Build;
+            }
+            public override void Start(ObjectCtrl unit)
+            {
+            }
+
+            public override void Works(ObjectCtrl unit)
+            {
+                UnitCtrl unitCtrl = unit as UnitCtrl;
+                if (target != null)
+                {
+                    if (Vector2.Distance(unitCtrl.Pos, target.Pos) < unitCtrl.Stat("AtkRange"))
+                    {
+                        unitCtrl.BuildTarget(target);
+                    }
+                    else
+                    {
+                        unitCtrl.MoveTarget(target);
+                    }
+                }
+            }
+            public override bool Achievement(ObjectCtrl unit)
+            {
+                UnitCtrl unitCtrl = unit as UnitCtrl;
+                if ((target.TargetObject as BuildingCtrl).BuildingState != eBuildingState.Construction)
+                {
+                    Debug.Log("WTF");
+                    unitCtrl.Stop();
+                    return true;
+                }
+                return false;
+            }
+        }
     }
 }

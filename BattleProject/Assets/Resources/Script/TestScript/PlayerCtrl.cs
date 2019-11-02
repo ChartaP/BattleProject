@@ -68,6 +68,7 @@ public class PlayerCtrl : MonoBehaviour
     private void Awake()
     {
         dicResource.Add("Food", 100);
+        dicResource.Add("FoodStorage", 100);
         dicResource.Add("WorkPopulation", 0);
     }
 

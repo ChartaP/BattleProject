@@ -592,6 +592,7 @@ MonoBehaviour:
   HungryBackTrans: {fileID: 5089120243225670311}
   HungryBlankTrans: {fileID: 6013445537558100741}
   BarImage: {fileID: 2751907437911249081}
+  NameText: {fileID: 4815321436521609560}
 --- !u!1 &5756604665730111341
 GameObject:
   m_ObjectHideFlags: 0

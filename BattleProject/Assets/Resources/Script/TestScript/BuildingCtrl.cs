@@ -10,6 +10,8 @@ public class BuildingCtrl : ObjectCtrl
     protected static int nBuildingCnt = 0;
     public BuildingMng buildingMng = null;
     protected BuildingInfo myBuildingInfo = null;
+    protected Dictionary<string, int> dicCost = new Dictionary<string, int>();
+    protected float fComplete = 0;
 
     /// <summary>
     /// 건물에 들어온 유닛 목록
@@ -21,6 +23,13 @@ public class BuildingCtrl : ObjectCtrl
     /// </summary>
     [SerializeField]
     protected List<UnitCtrl> regUnits = new List<UnitCtrl>();
+
+    [SerializeField]
+    protected eBuildingState buildingState = eBuildingState.Construction;
+    [SerializeField]
+    protected MeshRenderer model;
+    [SerializeField]
+    protected MeshRenderer constModel;
 
     protected int nEnteredCnt = 0;
     public int nEnterMax = 0;
@@ -44,12 +53,13 @@ public class BuildingCtrl : ObjectCtrl
         transform.name = (nBuildingCnt++) + "-" + Owner.name + "-building";
         OnGround();
         Owner.RegisterPlayerBuilding(this);
-
+        StartCoroutine("Construction");
     }
     // Start is called before the first frame update
     void Start()
     {
         base.Start();
+        StartCoroutine("Decide");
     }
 
     // Update is called once per frame
@@ -58,9 +68,14 @@ public class BuildingCtrl : ObjectCtrl
         base.Update();
     }
 
-    public override void RangeUpdate()
+    protected virtual IEnumerator Decide()
     {
+        yield break;
+    }
 
+    protected virtual IEnumerator Work()
+    {
+        yield break;
     }
 
     protected override void RegisterStats()
@@ -69,6 +84,7 @@ public class BuildingCtrl : ObjectCtrl
         docStats.Add("Size", 0.6f);
         docStats.Add("Radius", 0.6f);
         docStats.Add("Health", myBuildingInfo.Health);
+        dicCost = myBuildingInfo.Cost;
     }
     public override float Stat(string name)
     {
@@ -82,6 +98,8 @@ public class BuildingCtrl : ObjectCtrl
     {
         foreach(UnitCtrl unit in regUnits)
         {
+            if (unit.Job != eUnitJob.Worker)
+                continue;
             if (!enteredUnits.Contains(unit))
             {
                 unit.receiptOrder(new MoveTarget(myTarget));
@@ -90,6 +108,8 @@ public class BuildingCtrl : ObjectCtrl
     }
     public void RegisterUnit(UnitCtrl unit)
     {
+        if (unit.Job != eUnitJob.Worker)
+            return;
         if (regUnits.Count < nEnterMax)
         {
             regUnits.Add(unit);
@@ -131,6 +151,8 @@ public class BuildingCtrl : ObjectCtrl
     {
         foreach (UnitCtrl unit in Owner.UnitList)
         {
+            if (unit.Job != eUnitJob.Worker)
+                continue;
             if (regUnits.Count >= nEnterMax)
             {
                 break;
@@ -145,6 +167,8 @@ public class BuildingCtrl : ObjectCtrl
 
     public void EnterBuilding(UnitCtrl enterUnit)
     {
+        if (enterUnit.Job != eUnitJob.Worker)
+            return;
         if (nEnteredCnt < nEnterMax)
         {
             if (!enteredUnits.Contains(enterUnit))
@@ -191,10 +215,79 @@ public class BuildingCtrl : ObjectCtrl
         }
     }
 
-    protected void Destruction()
+    protected virtual void Destruction()
     {
         GameMng.Instance.mapMng.bOpen[(int)X, (int)Y] = true;
         Owner.UnregisterPlayerBuilding(this);
         buildingMng.RemoveBuilding(this);
+    }
+
+    protected IEnumerator Construction()
+    {
+        buildingState = eBuildingState.Construction;
+        model.enabled = false;
+        while (true)
+        {
+            if(fComplete >= dicCost["time"])
+            {
+                ChangeState(eBuildingState.Standby);
+                model.enabled = true;
+                constModel.enabled = false;
+                yield break;
+            }
+            yield return null;
+        }
+
+        yield break;
+    }
+
+    public bool WorkConstruction(UnitCtrl Worker,float fContribution)
+    {
+        fComplete += fContribution;
+        RegisterUnit(Worker);
+        if (buildingState == eBuildingState.Construction)
+            return false;
+        else
+            return true;
+    }
+
+    public eBuildingState BuildingState
+    {
+        get
+        {
+            return buildingState;
+        }
+    }
+
+    protected virtual void ChangeState(eBuildingState state)
+    {
+        if (buildingState != state)
+        {
+            switch (buildingState)
+            {
+                case eBuildingState.Construction:
+                    break;
+                case eBuildingState.Standby:
+                    break;
+                case eBuildingState.Work:
+                    break;
+                case eBuildingState.Sleep:
+                    break;
+
+            }
+            buildingState = state;
+            switch (state)
+            {
+                case eBuildingState.Construction:
+                    break;
+                case eBuildingState.Standby:
+                    break;
+                case eBuildingState.Work:
+
+                    break;
+                case eBuildingState.Sleep:
+                    break;
+            }
+        }
     }
 }

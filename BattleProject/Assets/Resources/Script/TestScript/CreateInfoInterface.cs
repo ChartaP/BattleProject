@@ -35,12 +35,21 @@ public class CreateInfoInterface : MonoBehaviour
         PlayerCtrl ctrl = GameMng.Instance.playerMng.CtrlPlayer;
         if (ctrl.selectableObject.Count == 0)
         {
-            BuilderSet();
+            InactiveSet();
         }
         else if(ctrl.selectableObject[0] is UnitCtrl)
         {
-            BuilderSet();
-            beforeObject = ctrl.selectableObject[0];
+            UnitCtrl unit = ctrl.selectableObject[0] as UnitCtrl;
+
+            if (unit.Job == GameSys.Lib.eUnitJob.Worker)
+            {
+                BuilderSet();
+                beforeObject = ctrl.selectableObject[0];
+            }
+            else
+            {
+                InactiveSet();
+            }
         }
         else if(ctrl.selectableObject[0] is BuildingCtrl)
         {
@@ -79,6 +88,12 @@ public class CreateInfoInterface : MonoBehaviour
         TitleText.text = "유닛 목록";
         GameMng.Instance.inputMng.ChangeState(0);
         transUnitList.gameObject.SetActive(true);
+        transBuildList.gameObject.SetActive(false);
+    }
+
+    private void InactiveSet()
+    {
+        transUnitList.gameObject.SetActive(false);
         transBuildList.gameObject.SetActive(false);
     }
 }

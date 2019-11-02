@@ -221,7 +221,8 @@ public class InputMng : MonoBehaviour
                 {
                     if (!EventSystem.current.IsPointerOverGameObject())
                     {
-                        GameMng.Instance.buildingMng.CreateBuilding(GameMng.Instance.playerMng.CtrlPlayer, BuildingInfoMng.Instance.Building(GameMng.Instance.playerMng.CtrlPlayer.selectBuild), peek.transform.localPosition);
+
+                        GameMng.Instance.buildingMng.CreateBuilding(GameMng.Instance.playerMng.CtrlPlayer,GameMng.Instance.playerMng.CtrlPlayer.selectableObject[0] as UnitCtrl, BuildingInfoMng.Instance.Building(GameMng.Instance.playerMng.CtrlPlayer.selectBuild), peek.transform.localPosition);
                     }
                 }
             }
@@ -332,9 +333,20 @@ public class InputMng : MonoBehaviour
                 ChangeState(0);
             }
         }
-
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            if(Time.timeScale == 1f)
+            {
+                Time.timeScale = 0f;
+            }
+            else
+            {
+                Time.timeScale = 1f;
+            }
+        }
         if (Input.GetKeyDown(KeyCode.E))
         {
+            gameMng.interfaceMng.AlertText("경고 테스트 123");
             //Debug.Log(GameSys.Item.ItemMng.Instance.Item(0).ID+ GameSys.Item.ItemMng.Instance.Item(0).Name+ GameSys.Item.ItemMng.Instance.Item(0).Icon+ GameSys.Item.ItemMng.Instance.Item(0).Size);
         }
     }

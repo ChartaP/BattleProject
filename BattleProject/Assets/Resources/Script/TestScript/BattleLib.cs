@@ -91,7 +91,16 @@ namespace GameSys
             Move      =1,//이동중
             Atk       =2,//공격중
             Dead        =3,
-            Work        =4
+            Work        =4,
+            Build       =5
+        }
+
+        public enum eBuildingState
+        {
+            Construction = 0,
+            Standby     =1,
+            Work        =2,
+            Sleep       =3,
         }
 
         public enum eOrder
@@ -102,7 +111,8 @@ namespace GameSys
             AtkTarget = 2,
             AtkPos  =3,
             PTR = 4,
-            Hold = 5
+            Hold = 5,
+            Build = 6
         }
 
         public enum eSeason

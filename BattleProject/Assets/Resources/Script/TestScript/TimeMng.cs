@@ -22,7 +22,7 @@ public class TimeMng : MonoBehaviour
 
     private float fDateTime = 9.0f;
     private int preHour = 9;
-    private float fDateSpeed = 0.5f;
+    private float fDateSpeed = 2.5f;
     [SerializeField]
     private eSeason curSeason = eSeason.SPRING;
     [SerializeField]
@@ -48,6 +48,7 @@ public class TimeMng : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //TimePause(true);
         StartCoroutine("TimeTick");
     }
 
@@ -249,6 +250,23 @@ public class TimeMng : MonoBehaviour
                 return false;
             else
                 return true;
+        }
+    }
+
+    public void TimePause(bool pause)
+    {
+        if((Time.timeScale==0 && pause == true) || (Time.timeScale == 1 && pause == false))
+        {
+            return;
+        }
+
+        if (pause)
+        {
+            Time.timeScale = 0;
+        }
+        else
+        {
+            Time.timeScale = 1;
         }
     }
 }

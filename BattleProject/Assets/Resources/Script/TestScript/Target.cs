@@ -37,6 +37,7 @@ public class Target : MonoBehaviour
         {
             myBar.SetHungry(Hungry);
         }
+        myBar.SetName(objectCtrl.Name);
     }
 
     // Update is called once per frame
@@ -46,16 +47,17 @@ public class Target : MonoBehaviour
         if(Type == eTargetType.Unit)
         {
             myBar.CurHungry(Hungry);
+            
         }
     }
 
-    private void OnEnable()
+    public void OnTargetEnable()
     {
         if(myBar)
             myBar.gameObject.SetActive ( true);
     }
 
-    private void OnDisable()
+    public void OnTargetDisable()
     {
         if (myBar)
             myBar.gameObject.SetActive(false);
@@ -138,6 +140,14 @@ public class Target : MonoBehaviour
     public void GetDamage(float damage)
     {
         objectCtrl.GetDamage(damage);
+    }
+
+    public ObjectCtrl TargetObject
+    {
+        get
+        {
+            return objectCtrl;
+        }
     }
     
 }

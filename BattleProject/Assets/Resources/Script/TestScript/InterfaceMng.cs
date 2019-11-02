@@ -20,6 +20,9 @@ public class InterfaceMng : MonoBehaviour
     public CreateInfoInterface CreateInfoInterface;
     public List<Text> ResourceTestList = new List<Text>();
     private Sprite DefFace;
+    public Text alert = null;
+    private Color32 invisible = new Color32(255, 255, 255, 0);
+
 
     // Start is called before the first frame update
     void Start()
@@ -55,7 +58,7 @@ public class InterfaceMng : MonoBehaviour
                     text.text = "인구 : "+ CtrlPlayer.dicResource["WorkPopulation"]+ "/" + CtrlPlayer.UnitList.Count + "()";
                     break;
                 case "Food":
-                    text.text = "식량 : "+CtrlPlayer.dicResource["Food"]+"()";
+                    text.text = "식량 : "+CtrlPlayer.dicResource["Food"]+ "/" + CtrlPlayer.dicResource["FoodStorage"] + "()";
                     break;
             }
         }
@@ -107,5 +110,23 @@ public class InterfaceMng : MonoBehaviour
     public void DisplayText(string text)
     {
         WideText.text = text;
+    }
+
+    public void AlertText(string text)
+    {
+        StopAllCoroutines();
+        StartCoroutine("Alert", text);
+    }
+    IEnumerator Alert(string text)
+    {
+        alert.color = Color.black;
+        alert.text = text;
+        yield return new WaitForSecondsRealtime(1.0f);
+        while (alert.color.a != 0)
+        {
+            alert.color = Color32.LerpUnclamped(alert.color,invisible,2.0f*Time.deltaTime);
+            yield return null;
+        }
+        yield break;
     }
 }

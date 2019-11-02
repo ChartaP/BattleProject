@@ -28,8 +28,7 @@ public abstract class ObjectCtrl : MonoBehaviour
     public MeshRenderer SelectMesh;
     public float curHealth = 1;
     public List<Target> viewList = new List<Target>();
-
-    public Transform tViewRange;
+    
     // Start is called before the first frame update
 
     protected List<IEnumerator> enumerators = new List<IEnumerator>();
@@ -185,9 +184,7 @@ public abstract class ObjectCtrl : MonoBehaviour
     {
         get { return owner; }
     }
-
-    public abstract void RangeUpdate();
-
+    
     protected abstract void RegisterStats();
 
     public abstract float Stat(string name);

@@ -19,6 +19,8 @@ public class Bar : MonoBehaviour
     private RectTransform HungryBlankTrans;
     [SerializeField]
     private Image BarImage;
+    [SerializeField]
+    private Text NameText;
 
     private float Length = 1;
 
@@ -37,6 +39,11 @@ public class Bar : MonoBehaviour
         HealthBarTrans.sizeDelta = new Vector2(Length * Cur/Max, 8);
 
         transform.position = Camera.main.WorldToScreenPoint(pos);
+    }
+
+    public void SetName(string name)
+    {
+        NameText.text = name;
     }
 
     public void SetHungry(int Max)

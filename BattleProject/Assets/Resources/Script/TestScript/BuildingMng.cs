@@ -9,8 +9,24 @@ public class BuildingMng : MonoBehaviour
     public List<BuildingCtrl> buildingList = new List<BuildingCtrl>();
     public Material[] RangeMater;
 
-    public BuildingCtrl CreateBuilding(PlayerCtrl Owner, BuildingInfo buildingInfo, Vector3 buildingPos)
+    public BuildingCtrl CreateBuilding(PlayerCtrl Owner ,UnitCtrl Worker, BuildingInfo buildingInfo, Vector3 buildingPos)
     {
+        foreach(string Cost in buildingInfo.Cost.Keys)
+        {
+            if (Cost == "time")
+                continue;
+            if(Owner.dicResource[Cost] - buildingInfo.Cost[Cost] < 0)
+            {
+                gameMng.interfaceMng.AlertText(Cost+"가 부족합니다");
+                return null;
+            }
+        }
+        foreach (string Cost in buildingInfo.Cost.Keys)
+        {
+            if (Cost == "time")
+                continue;
+            Owner.dicResource[Cost] -= buildingInfo.Cost[Cost];
+        }
         GameObject pre = Resources.Load("Prefab/"+buildingInfo.Component) as GameObject;
         BuildingCtrl temp = Instantiate(pre, this.transform).GetComponent<BuildingCtrl>();
         temp.SetBuilding(this, buildingInfo, Owner, buildingPos);
@@ -34,6 +50,7 @@ public class BuildingMng : MonoBehaviour
                 }
             }
         }
+        Worker.receiptOrder(new GameSys.Order.Build(temp.Target));
         return temp;
     }
 

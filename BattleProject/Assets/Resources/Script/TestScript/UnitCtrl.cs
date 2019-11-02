@@ -4,6 +4,7 @@ using GameSys.Lib;
 using GameSys.Order;
 using GameSys.Unit;
 using UnityEngine;
+using UnityEditor;
 
 public class UnitCtrl : ObjectCtrl
 {
@@ -42,7 +43,6 @@ public class UnitCtrl : ObjectCtrl
     [SerializeField]
     protected Transform tUnitEquip;
     
-    public Transform tAtkRange;
     
     [SerializeField]
     protected Rigidbody rigid;
@@ -150,7 +150,6 @@ public class UnitCtrl : ObjectCtrl
                 View();
                 AtkInView();
                 fulfilOrder();
-                RangeUpdate();
                 Unlump();
 
             }
@@ -159,17 +158,20 @@ public class UnitCtrl : ObjectCtrl
                 View();
                 OnGround();
                 fulfilOrder();
-                RangeUpdate();
             }
             else if (unitState == eUnitState.Atk)
             {
                 View();
                 fulfilOrder();
-                RangeUpdate();
             }
             else if (unitState == eUnitState.Work)
             {
 
+            }
+            else if (unitState == eUnitState.Build)
+            {
+                View();
+                fulfilOrder();
             }
             yield return new WaitForSecondsRealtime(0.4f);
         }
@@ -232,13 +234,8 @@ public class UnitCtrl : ObjectCtrl
         return null;
     }
 
-    public override void RangeUpdate()
-    {
-        tViewRange.localScale = new Vector3(Stat("ViewRange")*2.0f, 0.1f, Stat("ViewRange") * 2.0f);
-        tAtkRange.localScale = new Vector3(Stat("AtkRange") * 2.0f, 0.1f, Stat("AtkRange") * 2.0f);
-    }
-
     
+
     /// <summary>
     /// 보이는적 공격 메서드
     /// 대기 상태일때만 쓰시오
@@ -275,6 +272,12 @@ public class UnitCtrl : ObjectCtrl
         return temp;
     }
 
+    private void OnDrawGizmos()
+    {
+        //Gizmos.DrawWireSphere(transform.position, Stat("ViewRange"));
+        //Gizmos.DrawWireSphere(transform.position, Stat("AtkRange"));
+    }
+
     /// <summary>
     /// 공격 메서드
     /// 공격중이면 유닛 회전
@@ -284,6 +287,18 @@ public class UnitCtrl : ObjectCtrl
     {
         curAtkTarget = target;
         StateChange(eUnitState.Atk);
+        Rotate(target.Pos);
+    }
+
+    /// <summary>
+    /// 빌드 메서드
+    /// 건설 중이면 유닛 회전
+    /// </summary>
+    /// <param name="unit"></param>
+    public void BuildTarget(Target target)
+    {
+        curAtkTarget = target;
+        StateChange(eUnitState.Build);
         Rotate(target.Pos);
     }
 
@@ -336,7 +351,7 @@ public class UnitCtrl : ObjectCtrl
 
     protected IEnumerator Attack()
     {
-        while (unitState == eUnitState.Atk)
+        while (unitState == eUnitState.Atk || unitState == eUnitState.Build)
         {
             ani.Stop();
             ani.Play(JobEquipInfoMng.Instance.JobEquip(myJobInfo.ID).AtkReadyAni);
@@ -381,8 +396,16 @@ public class UnitCtrl : ObjectCtrl
     
     public void TargetDamage()
     {
-        Debug.Log(name + "가"+curAtkTarget.transform.name+"에게"+ Stat("AtkPower")+"데미지");
-        curAtkTarget.GetDamage(Stat("AtkPower"));
+        if (unitState == eUnitState.Atk)
+        {
+            Debug.Log(name + "가" + curAtkTarget.transform.name + "에게" + Stat("AtkPower") + "데미지");
+            curAtkTarget.GetDamage(Stat("AtkPower"));
+        }
+        else if (unitState == eUnitState.Build)
+        {
+            Debug.Log("건설중");
+            (curAtkTarget.TargetObject as BuildingCtrl).WorkConstruction(this, 1.0f);
+        }
     }
     public void Stop()
     {
@@ -444,6 +467,9 @@ public class UnitCtrl : ObjectCtrl
                 case eUnitState.Atk:
                     StopCoroutine("Attack");
                     break;
+                case eUnitState.Build:
+                    StopCoroutine("Attack");
+                    break;
                 case eUnitState.Work:
                     Renderer[] rl = transform.GetComponentsInChildren<Renderer>();
                     foreach ( Renderer r in rl)
@@ -455,6 +481,7 @@ public class UnitCtrl : ObjectCtrl
                     {
                         c.enabled = true;
                     }
+                    Target.OnTargetEnable();
                     break;
             }
             unitState = state;
@@ -467,8 +494,9 @@ public class UnitCtrl : ObjectCtrl
                     ani.Play("WalkAni");
                     break;
                 case eUnitState.Atk:
-
-                    Debug.Log("changeAtk");
+                    StartCoroutine("Attack");
+                    break;
+                case eUnitState.Build:
                     StartCoroutine("Attack");
                     break;
                 case eUnitState.Dead:
@@ -486,6 +514,7 @@ public class UnitCtrl : ObjectCtrl
                     {
                         c.enabled = false;
                     }
+                    Target.OnTargetDisable();
                     break;
             }
         }
