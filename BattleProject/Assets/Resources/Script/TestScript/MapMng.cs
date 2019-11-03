@@ -10,8 +10,6 @@ public class MapMng : MonoBehaviour
     public GameMng gameMng;
     // Start is called before the first frame update
     public GameObject gTilePre = null;
-    public List<GameObject> gPlantsPre = null;
-    public List<GameObject> gBuildPre = null;
     public Dictionary<int,MapTile> MapTiles;
     public List<Material> BlockMaterials;
     public bool[,] bOpen;
@@ -54,11 +52,13 @@ public class MapMng : MonoBehaviour
             cTile.SetPos(tile.X,tile.Y);
             cTile.myMapMng = this;
             cTile.Height = tile.Height;
+            if (tile.Height < 5)
+                bOpen[tile.X, tile.Y] = false;
             cTile.StackBlock(tile.Stratum);
             MapTiles.Add((tile.X  << 8)|tile.Y, cTile);
         }
 
-        foreach(int key in MapTiles.Keys)
+        foreach (int key in MapTiles.Keys)
         {
             MapTiles[key].optimizeBlock();
         }

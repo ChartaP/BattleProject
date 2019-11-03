@@ -9,6 +9,7 @@ namespace GameSys
 {
     namespace Map
     {
+       
         /// <summary>
         /// 타일 데이터 클래스
         /// 타일의 타입과 높이 등 정보를 보유
@@ -19,7 +20,8 @@ namespace GameSys
             private int nY;
             private int nHeight;
             private byte[] b_Stratum = new byte[64];
-            //0~7심층 8~15지하(바다) 16~23평지 24~63산
+            //0~1심층 2~3지하(바다) 4~7평지 8~11산
+
 
             public TileData(int nX,int nY)
             {
@@ -50,7 +52,7 @@ namespace GameSys
             
             public void CoverDirt()
             {
-                for (int z = nHeight-4; z < nHeight; z++)
+                for (int z = nHeight-2; z < nHeight; z++)
                 {
                     b_Stratum[z] = 1;
                 }
@@ -111,14 +113,30 @@ namespace GameSys
                         {
                             for(int y = 0; y < 8; y++)
                             {
-                                tiles[x, y].Height=16;
+                                tiles[x, y].Height=5;
                                 tiles[x, y].CoverDirt();
                             }
                         }
                         break;
                     case eGeoType.Hill:
+                        for (int x = 0; x < 8; x++)
+                        {
+                            for (int y = 0; y < 8; y++)
+                            {
+                                tiles[x, y].Height = 11;
+                                tiles[x, y].CoverDirt();
+                            }
+                        }
                         break;
                     case eGeoType.Sea:
+                        for (int x = 0; x < 8; x++)
+                        {
+                            for (int y = 0; y < 8; y++)
+                            {
+                                tiles[x, y].Height = 2;
+                                tiles[x, y].CoverDirt();
+                            }
+                        }
                         break;
                     case eGeoType.Water:
                         break;
@@ -199,9 +217,22 @@ namespace GameSys
 
             public void GenerateChunk()
             {
+                int[,] temp = new int[XSize, YSize];
+
+                for (int x = 0; x < XSize; x++)
+                {
+                    for (int y = 0; y < YSize; y++)
+                    {
+                        temp[x, y] = Random.Range(0, 3);
+                    }
+                }
+                temp = CreateMap.CellularAutomata(temp, XSize, YSize, 0, 2, true);
+
+                int cnt = 0;
                 foreach(Chunk chunk in Chunks)
                 {
-                    chunk.GenerateTile(eGeoType.Flat);
+                    chunk.GenerateTile((eGeoType)temp[cnt%XSize,cnt/XSize]);
+                    cnt++;
                 }
             }
         }
@@ -241,6 +272,67 @@ namespace GameSys
                 mapTable.GenerateChunk();
                 
                 return mapTable;
+            }
+
+            public static int[,] CellularAutomata(int[,] matrix,int xSize,int ySize, int defaultValue, int repeat , bool isBorder)
+            {
+                int[,] temp = new int[xSize, ySize];
+
+                for(int x = 0; x < xSize; x++)
+                {
+                    for(int y = 0; y < ySize; y++)
+                    {
+                        if (x == 0 || y == 0 || x == xSize || y == ySize)
+                            temp[x, y] = defaultValue;
+                        else
+                            temp[x, y] = matrix[x, y];
+                    }
+                }
+
+                for (int xPos = 0; xPos < xSize; xPos++)
+                {
+                    for (int yPos = 0; yPos < ySize; yPos++)
+                    {
+                        const int range = 1;
+                        Dictionary<int, int> valueDic = new Dictionary<int, int>();
+                        for (int x = xPos - range; x < xPos + range; x++)
+                        {
+                            for (int y = yPos - range; y < yPos + range; y++)
+                            {
+                                if(x < 0 || y < 0 || x>=xSize || y >= ySize)
+                                {
+                                    if (valueDic.ContainsKey(defaultValue))
+                                        valueDic[defaultValue] += 1;
+                                    else
+                                        valueDic.Add(defaultValue, 1);
+                                    continue;
+                                }
+                                if (valueDic.ContainsKey(matrix[x, y]))
+                                    valueDic[matrix[x, y]] += 1;
+                                else
+                                    valueDic.Add(matrix[x, y], 1);
+                            }
+                        }
+
+                        int maxValue = -1;
+                        foreach(int key in valueDic.Keys)
+                        {
+                            if (maxValue == -1)
+                            {
+                                maxValue = key;
+                                continue;
+                            }
+                            if (valueDic[maxValue] < valueDic[key])
+                                maxValue = key;
+                        }
+                        temp[xPos, yPos] = maxValue;
+                    }
+                }
+
+                if (repeat <= 1)
+                    return temp;
+                else
+                    return CellularAutomata(temp, xSize, ySize, defaultValue, --repeat, isBorder);
             }
 
 

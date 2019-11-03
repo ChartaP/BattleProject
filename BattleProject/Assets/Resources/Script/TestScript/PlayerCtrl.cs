@@ -112,7 +112,7 @@ public class PlayerCtrl : MonoBehaviour
         Rect selectRect = new Rect(mPosStart.x, mPosStart.y, mPosEnd.x - mPosStart.x, mPosEnd.y - mPosStart.y);
         foreach (UnitCtrl unit in UnitList)
         {
-            if (selectRect.Contains(Camera.main.WorldToViewportPoint(unit.transform.position), true))
+            if (selectRect.Contains(GameMng.Instance.interfaceMng.MainCamera.WorldToViewportPoint(unit.transform.position), true))
             {
                 findUnits.Add(unit);
             }
@@ -122,7 +122,7 @@ public class PlayerCtrl : MonoBehaviour
             //내 건물 목록 찾기
             foreach (BuildingCtrl building in BuildingList)
             {
-                if (selectRect.Contains(Camera.main.WorldToViewportPoint(building.transform.position), true))
+                if (selectRect.Contains(GameMng.Instance.interfaceMng.MainCamera.WorldToViewportPoint(building.transform.position), true))
                 {
                     findBuildings.Add(building);
                 }
@@ -137,7 +137,7 @@ public class PlayerCtrl : MonoBehaviour
                     
                     foreach (UnitCtrl unit in player.UnitList)
                     {
-                        if (selectRect.Contains(Camera.main.WorldToViewportPoint(unit.transform.position), true))
+                        if (selectRect.Contains(GameMng.Instance.interfaceMng.MainCamera.WorldToViewportPoint(unit.transform.position), true))
                         {
                             findUnits.Add(unit);
                             break;//현재 플레이어가 아닌 플레이어의 유닛은 여럿 찾을 필요 없으므로 반복문 탈출
@@ -152,7 +152,7 @@ public class PlayerCtrl : MonoBehaviour
                         //내 건물 목록 찾기
                         foreach (BuildingCtrl building in player.BuildingList)
                         {
-                            if (selectRect.Contains(Camera.main.WorldToViewportPoint(building.transform.position), true))
+                            if (selectRect.Contains(GameMng.Instance.interfaceMng.MainCamera.WorldToViewportPoint(building.transform.position), true))
                             {
                                 findBuildings.Add(building);
                             }

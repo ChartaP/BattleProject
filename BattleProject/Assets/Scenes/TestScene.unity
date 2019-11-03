@@ -14,7 +14,7 @@ OcclusionCullingSettings:
 RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 9
-  m_Fog: 1
+  m_Fog: 0
   m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_FogMode: 3
   m_FogDensity: 0.01
@@ -72,14 +72,14 @@ LightmapSettings:
     m_FinalGatherRayCount: 256
     m_ReflectionCompression: 2
     m_MixedBakeMode: 2
-    m_BakeBackend: 1
+    m_BakeBackend: 2
     m_PVRSampling: 1
     m_PVRDirectSampleCount: 32
     m_PVRSampleCount: 500
     m_PVRBounces: 2
     m_PVREnvironmentSampleCount: 500
     m_PVREnvironmentReferencePointCount: 2048
-    m_PVRFilteringMode: 2
+    m_PVRFilteringMode: 0
     m_PVRDenoiserTypeDirect: 0
     m_PVRDenoiserTypeIndirect: 0
     m_PVRDenoiserTypeAO: 0
@@ -8466,9 +8466,6 @@ MonoBehaviour:
   gameMng: {fileID: 719238060}
   gTilePre: {fileID: 5629600549079135829, guid: f78b88b4bb714e342ab73698f216cfe9,
     type: 3}
-  gPlantsPre:
-  - {fileID: 6814501387665756462, guid: a157b76920129584db3fbadbf43a262a, type: 3}
-  gBuildPre: []
   BlockMaterials:
   - {fileID: 0}
   - {fileID: 0}
@@ -10615,7 +10612,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 1000
+  far clip plane: 80
   field of view: 45
   orthographic: 0
   orthographic size: 5

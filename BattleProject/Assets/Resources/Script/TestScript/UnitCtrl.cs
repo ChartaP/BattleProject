@@ -541,11 +541,12 @@ public class UnitCtrl : ObjectCtrl
     public void Hunger()
     {
         nHungry -= 1;
-
-        if(nHungry <= 0)
+        Target.TargetUpdate();
+        if (nHungry <= 0)
         {
             StateChange(eUnitState.Dead);
         }
+
     }
     
     public bool Eat()
@@ -553,6 +554,7 @@ public class UnitCtrl : ObjectCtrl
         if(Owner.UseResource("Food", (4 - nHungry)))
         {
             nHungry = 4;
+            Target.TargetUpdate();
             return true;
         }
         else

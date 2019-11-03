@@ -136,6 +136,7 @@ public abstract class ObjectCtrl : MonoBehaviour
             DamageParicle.Play();
         }
         curHealth = (curHealth - damage <= 0) ? 0 : (curHealth - damage);
+        Target.TargetUpdate();
     }
 
     public Target Target

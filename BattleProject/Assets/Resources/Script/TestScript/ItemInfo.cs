@@ -248,6 +248,7 @@ namespace GameSys
             public void MeshEnabled(bool val)
             {
                 model.transform.GetComponentInChildren<MeshRenderer>().enabled = val;
+                model.transform.GetComponentInChildren<Collider>().enabled = val;
             }
 
             public BlockInfo Info

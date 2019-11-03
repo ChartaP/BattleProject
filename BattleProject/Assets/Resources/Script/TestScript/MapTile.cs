@@ -49,18 +49,14 @@ public class MapTile : MonoBehaviour
         int nR = myMapMng.GetHeight(nX-1, nY);
 
         int lower = Mathf.Min(nHeight, nU,nD,nL,nR);
-        if (nX == 0 || nY == 0 || nX == GameInfo.nXSize || nY == GameInfo.nYSize)
-            lower = 0;
+        //if (nX == 0 || nY == 0 || nX == GameInfo.nXSize || nY == GameInfo.nYSize)
+            //lower = 0;
 
         for(int z = 0; z < lower-1; z++)
         {
             blockList[z].MeshEnabled(false);
         }
-
-        for(int z = lower; z < nHeight; z++)
-        {
-            blockList[z].MeshEnabled(true);
-        }
+        
     }
     public int Height
     {

@@ -85,9 +85,9 @@ public class InputMng : MonoBehaviour
         {//왼쪽 마우스 누르기
             isMove = false;
             mPos = Input.mousePosition;
-            mPosStart = Camera.main.ScreenToViewportPoint(mPos);
+            mPosStart = GameMng.Instance.interfaceMng.MainCamera.ScreenToViewportPoint(mPos);
             Debug.Log("(" + mPos.x + "," + mPos.y + ") The Left Mouse");
-            ray = Camera.main.ScreenPointToRay(mPos);
+            ray = GameMng.Instance.interfaceMng.MainCamera.ScreenPointToRay(mPos);
             if (Physics.Raycast(ray, out hit, Mathf.Infinity))
             {
                 Debug.Log("HitObject : " + hit.transform.name);
@@ -120,7 +120,7 @@ public class InputMng : MonoBehaviour
             mPos = Input.mousePosition;
             EndPoint = mPos;
             gameMng.interfaceMng.DragRectInterface(StartPoint, EndPoint);
-            mPosEnd = Camera.main.ScreenToViewportPoint(mPos);
+            mPosEnd = GameMng.Instance.interfaceMng.MainCamera.ScreenToViewportPoint(mPos);
         }
 
         if (Input.GetMouseButtonDown(1))//오른쪽 마우스 누르기
@@ -130,7 +130,7 @@ public class InputMng : MonoBehaviour
         else if (Input.GetMouseButtonUp(1))//오른쪽 마우스 떼기
         {
             mPos = Input.mousePosition;
-            ray = Camera.main.ScreenPointToRay(mPos);
+            ray = GameMng.Instance.interfaceMng.MainCamera.ScreenPointToRay(mPos);
             if (Physics.Raycast(ray, out hit))
             {
                 Vector3 point;
@@ -204,7 +204,7 @@ public class InputMng : MonoBehaviour
     private void CreateObject()
     {
         mPos = Input.mousePosition;
-        ray = Camera.main.ScreenPointToRay(mPos);
+        ray = GameMng.Instance.interfaceMng.MainCamera.ScreenPointToRay(mPos);
         int layerMask = 1 << LayerMask.NameToLayer("TileLayer");
         if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
         {
@@ -248,11 +248,11 @@ public class InputMng : MonoBehaviour
             mPos.z -= scroll;
             if (mPos.z > -6)
             {
-                gameMng.interfaceMng.MainCameraCarrier.localRotation = Quaternion.AngleAxis(30, Vector3.right);
+                gameMng.interfaceMng.MainCameraCarrier.localRotation = Quaternion.AngleAxis(45, Vector3.right);
             }
             else if (mPos.z > -8)
             {
-                gameMng.interfaceMng.MainCameraCarrier.localRotation = Quaternion.AngleAxis(40, Vector3.right);
+                gameMng.interfaceMng.MainCameraCarrier.localRotation = Quaternion.AngleAxis(45, Vector3.right);
             }
             else if (mPos.z > -10)
             {
@@ -260,11 +260,11 @@ public class InputMng : MonoBehaviour
             }
             else if (mPos.z > -12)
             {
-                gameMng.interfaceMng.MainCameraCarrier.localRotation = Quaternion.AngleAxis(65, Vector3.right);
+                gameMng.interfaceMng.MainCameraCarrier.localRotation = Quaternion.AngleAxis(45, Vector3.right);
             }
             else
             {
-                gameMng.interfaceMng.MainCameraCarrier.localRotation = Quaternion.AngleAxis(75, Vector3.right);
+                gameMng.interfaceMng.MainCameraCarrier.localRotation = Quaternion.AngleAxis(45, Vector3.right);
             }
         }
         gameMng.interfaceMng.MainCamera.transform.localPosition = mPos;

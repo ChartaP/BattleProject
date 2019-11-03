@@ -100,7 +100,7 @@ public class InterfaceMng : MonoBehaviour
         {
             SelecteBox.gameObject.SetActive(true);
         }
-        Vector3 squareStart = Camera.main.WorldToScreenPoint(startPoint);
+        Vector3 squareStart = GameMng.Instance.interfaceMng.MainCamera.WorldToScreenPoint(startPoint);
         squareStart.z = 0;
         Vector3 center = (squareStart + endPoint) / 2f ;
         SelecteBox.position = center;

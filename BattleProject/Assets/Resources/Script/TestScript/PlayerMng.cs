@@ -82,15 +82,21 @@ public class PlayerMng : MonoBehaviour
     {
         foreach(PlayerCtrl player in PlayerList)
         {
+            Vector3Int spawnPos;
+            while (true)
+            {
+                spawnPos = new Vector3Int(Random.Range(2, GameInfo.nXSize - 2), 0, Random.Range(2, GameInfo.nYSize - 2));
 
+                if (GameMng.Instance.mapMng.bOpen[spawnPos.x, spawnPos.z])
+                    break;
+            }
             //플레이어 스폰
             if (player.playerInfo.Type == ePlayerType.Player)
             {
-                Vector3 spawnPos = new Vector3(Random.Range(2,GameInfo.nXSize-2),0,Random.Range(2,GameInfo.nYSize-2));
                 UnitCtrl unitTemp = null;
                 if (player == CtrlPlayer)
                 {
-                    gameMng.interfaceMng.MainCameraCarrier.localPosition = new Vector3(spawnPos.x, 16, spawnPos.z);
+                    gameMng.interfaceMng.MainCameraCarrier.localPosition = new Vector3(spawnPos.x, 8, spawnPos.z);
                 }
                 unitTemp = gameMng.unitMng.CreateUnit(spawnPos, player, eUnitType.People);
                 gameMng.unitMng.ChangeJob(unitTemp, eUnitJob.Leader);
@@ -103,7 +109,6 @@ public class PlayerMng : MonoBehaviour
             //컴퓨터 플레이어 스폰
             else if (player.playerInfo.Type == ePlayerType.Computer)
             {
-                Vector3 spawnPos = new Vector3(Random.Range(2, GameInfo.nXSize - 2), 0, Random.Range(2, GameInfo.nYSize - 2));
                 UnitCtrl unitTemp = null;
                 unitTemp = gameMng.unitMng.CreateUnit(spawnPos, player, eUnitType.People);
                 gameMng.unitMng.ChangeJob(unitTemp, eUnitJob.Leader);

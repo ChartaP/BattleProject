@@ -25,6 +25,14 @@ public class Bar : MonoBehaviour
     private Text NameText;
 
     private float Length = 1;
+    
+
+    public void UpdatePos(Vector3 pos)
+    {
+        Vector3 temp = GameMng.Instance.interfaceMng.MainCamera.WorldToScreenPoint(pos);
+        transform.position = temp;
+    }
+    
 
     public void SetHP(float Max,Color32 BarColor)
     {
@@ -35,12 +43,11 @@ public class Bar : MonoBehaviour
         BarImage.color = BarColor;
     }
 
-    public void CurHP(float Max,float Cur,Vector3 pos)
+    public void CurHP(float Max,float Cur)
     {
 
         HealthBarTrans.sizeDelta = new Vector2(Length * Cur/Max, 8);
-
-        transform.position = Camera.main.WorldToScreenPoint(pos);
+        
     }
 
     public void SetName(string name)

@@ -26,10 +26,10 @@ namespace GameSys
 
         public enum eGeoType
         {
-            Flat = 0,
-            Water = 1,
-            Sea = 2,
-            Hill = 3
+            Sea = 0,
+            Flat = 1,
+            Hill = 2,
+            Water = 4
         }
 
         public enum eItemType

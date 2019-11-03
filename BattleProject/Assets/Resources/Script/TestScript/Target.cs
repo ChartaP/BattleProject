@@ -38,16 +38,22 @@ public class Target : MonoBehaviour
             myBar.SetHungry(Hungry);
         }
         myBar.SetName(objectCtrl.Name);
+
+        TargetUpdate();
     }
 
     // Update is called once per frame
     void Update()
     {
-        myBar.CurHP(Health,CurHealth, hpTrans.position);
-        if(Type == eTargetType.Unit)
+        myBar.UpdatePos(hpTrans.position);
+    }
+
+    public void TargetUpdate()
+    {
+        myBar.CurHP(Health, CurHealth);
+        if (Type == eTargetType.Unit)
         {
             myBar.CurHungry(Hungry);
-            
         }
     }
 
