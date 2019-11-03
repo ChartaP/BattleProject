@@ -22,7 +22,7 @@ public class InterfaceMng : MonoBehaviour
     private Sprite DefFace;
     public Text alert = null;
     private Color32 invisible = new Color32(255, 255, 255, 0);
-
+    public GameObject Result;
 
     // Start is called before the first frame update
     void Start()
@@ -121,6 +121,7 @@ public class InterfaceMng : MonoBehaviour
 
     public void DisplayText(string text)
     {
+        Result.SetActive(true);
         WideText.text = text;
     }
 

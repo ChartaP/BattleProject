@@ -127,6 +127,7 @@ namespace GameSys
         /// </summary>
         public class ItemInfoMng
         {
+            public bool set = false;
             //싱글톤 형식으로 제작
             private static ItemInfoMng instance = null;
 
@@ -147,6 +148,7 @@ namespace GameSys
 
             public void AddItem(ItemInfo info)
             {
+                set = true;
                 if (itemDic.ContainsKey(info.ID)) return;
 
                 itemDic.Add(info.ID, info);
@@ -174,6 +176,7 @@ namespace GameSys
         /// </summary>
         public class BlockInfoMng
         {
+            public bool set = false;
             //싱글톤 형식으로 제작
             private static BlockInfoMng instance = null;
 
@@ -193,6 +196,7 @@ namespace GameSys
 
             public void AddBlock(BlockInfo info)
             {
+                set = true;
                 if (blockDic.ContainsKey(info.ID)) return;
 
                 blockDic.Add(info.ID, info);

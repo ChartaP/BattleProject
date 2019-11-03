@@ -50,7 +50,7 @@ public class PlayerMng : MonoBehaviour
             }
             player.playerMng = this;
             PlayerList.Add(player );
-            if (GameInfo.nCtrlPlayerID == info.ID)
+            if (GameInfo.nCtrlPlayerID == player.PlayerID)
                 CtrlPlayer = player;
             cnt++;
         }
@@ -63,6 +63,7 @@ public class PlayerMng : MonoBehaviour
     public void fallPlayer(PlayerCtrl player)
     {
         PlayerList.Remove(player);
+        player.isFall = true;
         if (player == CtrlPlayer)//현재 플레이어 탈락
         {
             Time.timeScale = 0;
@@ -90,6 +91,7 @@ public class PlayerMng : MonoBehaviour
                 if (GameMng.Instance.mapMng.bOpen[spawnPos.x, spawnPos.z])
                     break;
             }
+            player.spawnPos = spawnPos;
             //플레이어 스폰
             if (player.playerInfo.Type == ePlayerType.Player)
             {
@@ -100,7 +102,6 @@ public class PlayerMng : MonoBehaviour
                 }
                 unitTemp = gameMng.unitMng.CreateUnit(spawnPos, player, eUnitType.People);
                 gameMng.unitMng.ChangeJob(unitTemp, eUnitJob.Leader);
-
                 unitTemp = gameMng.unitMng.CreateUnit(spawnPos, player, eUnitType.People);
                 unitTemp = gameMng.unitMng.CreateUnit(spawnPos, player, eUnitType.People);
                 unitTemp = gameMng.unitMng.CreateUnit(spawnPos, player, eUnitType.People);

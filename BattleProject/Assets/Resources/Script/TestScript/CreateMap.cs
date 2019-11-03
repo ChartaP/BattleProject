@@ -19,7 +19,7 @@ namespace GameSys
             private int nX;
             private int nY;
             private int nHeight;
-            private byte[] b_Stratum = new byte[64];
+            private byte[] b_Stratum = new byte[12];
             //0~1심층 2~3지하(바다) 4~7평지 8~11산
 
 
@@ -27,8 +27,8 @@ namespace GameSys
             {
                 this.nX = nX;
                 this.nY = nY;
-               this.nHeight = 16;
-               for(int z = 0;z < 64; z++)
+               this.nHeight = 4;
+               for(int z = 0;z < 12; z++)
                 {
                     b_Stratum[z] = 0;
                 }
@@ -39,8 +39,8 @@ namespace GameSys
                 get { return nHeight; }
                 set
                 {
-                    if (value > 64)
-                        nHeight = 64;
+                    if (value > 11)
+                        nHeight = 11;
                     else
                         nHeight = value;
                     for (int z = 0; z < nHeight; z++)
@@ -223,16 +223,40 @@ namespace GameSys
                 {
                     for (int y = 0; y < YSize; y++)
                     {
-                        temp[x, y] = Random.Range(0, 3);
+                        int num = Random.Range(0, 100);
+                        if (num >= 35)
+                            num = 3;
+                        else if (num > 25)
+                            num = 0;
+                        else
+                            num = 1;
+                        temp[x, y] = num;
                     }
                 }
-                temp = CreateMap.CellularAutomata(temp, XSize, YSize, 0, 2, true);
+                temp = CreateMap.CellularAutomata(temp, XSize, YSize, 0, 2,1, true);
 
                 int cnt = 0;
                 foreach(Chunk chunk in Chunks)
                 {
                     chunk.GenerateTile((eGeoType)temp[cnt%XSize,cnt/XSize]);
                     cnt++;
+                }
+            }
+
+            public void Smoothing()
+            {
+                int[,] nGeo = new int[nXSize * 8, nYSize * 8];
+                foreach (TileData tile in TileList)
+                {
+                    nGeo[tile.X, tile.Y] = tile.Height;
+                }
+
+                nGeo = CreateMap.CellularAutomata(nGeo, nXSize * 8, nYSize * 8,2, 2, 4, true);
+
+                foreach (TileData tile in TileList)
+                {
+                    tile.Height = nGeo[tile.X, tile.Y];
+                    tile.CoverDirt();
                 }
             }
         }
@@ -270,11 +294,13 @@ namespace GameSys
                 mapTable = new MapTable(nXSize, nYSize);
 
                 mapTable.GenerateChunk();
+
+                mapTable.Smoothing();
                 
                 return mapTable;
             }
 
-            public static int[,] CellularAutomata(int[,] matrix,int xSize,int ySize, int defaultValue, int repeat , bool isBorder)
+            public static int[,] CellularAutomata(int[,] matrix,int xSize,int ySize, int defaultValue, int repeat ,int range , bool isBorder)
             {
                 int[,] temp = new int[xSize, ySize];
 
@@ -282,10 +308,7 @@ namespace GameSys
                 {
                     for(int y = 0; y < ySize; y++)
                     {
-                        if (x == 0 || y == 0 || x == xSize || y == ySize)
-                            temp[x, y] = defaultValue;
-                        else
-                            temp[x, y] = matrix[x, y];
+                        temp[x, y] = defaultValue;
                     }
                 }
 
@@ -293,46 +316,37 @@ namespace GameSys
                 {
                     for (int yPos = 0; yPos < ySize; yPos++)
                     {
-                        const int range = 1;
-                        Dictionary<int, int> valueDic = new Dictionary<int, int>();
-                        for (int x = xPos - range; x < xPos + range; x++)
+                        if ((xPos == 0 || yPos == 0 || xPos == xSize - 1 || yPos == ySize - 1) && isBorder)
                         {
-                            for (int y = yPos - range; y < yPos + range; y++)
+                            temp[xPos, yPos] = defaultValue;
+                            continue;
+                        }
+                        List<int> valueList = new List<int>();
+                        for (int x = xPos - range; x <= xPos + range; x++)
+                        {
+                            for (int y = yPos - range; y <= yPos + range; y++)
                             {
-                                if(x < 0 || y < 0 || x>=xSize || y >= ySize)
+                                if(x <= 0 || y <= 0 || x >= xSize-1 || y >= ySize-1)
                                 {
-                                    if (valueDic.ContainsKey(defaultValue))
-                                        valueDic[defaultValue] += 1;
-                                    else
-                                        valueDic.Add(defaultValue, 1);
+                                    valueList.Add(defaultValue);
                                     continue;
                                 }
-                                if (valueDic.ContainsKey(matrix[x, y]))
-                                    valueDic[matrix[x, y]] += 1;
-                                else
-                                    valueDic.Add(matrix[x, y], 1);
+                                valueList.Add(matrix[x, y]);
                             }
                         }
-
-                        int maxValue = -1;
-                        foreach(int key in valueDic.Keys)
+                        int total =0 ;
+                        foreach(int value in valueList)
                         {
-                            if (maxValue == -1)
-                            {
-                                maxValue = key;
-                                continue;
-                            }
-                            if (valueDic[maxValue] < valueDic[key])
-                                maxValue = key;
+                            total += value;
                         }
-                        temp[xPos, yPos] = maxValue;
+                        temp[xPos, yPos] = (int)(total / valueList.Count);
                     }
                 }
 
                 if (repeat <= 1)
                     return temp;
                 else
-                    return CellularAutomata(temp, xSize, ySize, defaultValue, --repeat, isBorder);
+                    return CellularAutomata(temp, xSize, ySize, defaultValue, --repeat,range, isBorder);
             }
 
 

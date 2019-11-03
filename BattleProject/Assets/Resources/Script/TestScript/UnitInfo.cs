@@ -168,6 +168,7 @@ namespace GameSys
 
         public class JobInfoMng
         {
+            public bool set = false;
             private static JobInfoMng instance = null;
 
             public static JobInfoMng Instance
@@ -186,6 +187,7 @@ namespace GameSys
 
             public void AddJob(JobInfo info)
             {
+                set = true;
                 if (jobDic.ContainsKey(info.ID)) return;
 
                 jobDic.Add(info.ID, info);

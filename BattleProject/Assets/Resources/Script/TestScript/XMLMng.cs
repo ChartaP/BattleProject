@@ -21,6 +21,8 @@ public class XMLMng : MonoBehaviour
     
     private void LoadItemXML(string sFileName)
     {
+        if (ItemInfoMng.Instance.set)
+            return;
         //XML파일을 텍스트에셋으로 불러오기
         TextAsset textAsset = (TextAsset)Resources.Load("XML/" + sFileName);
         //불러온 텍스트에셋을 XmlDocument 형식으로 불러오는 작업
@@ -82,6 +84,8 @@ public class XMLMng : MonoBehaviour
 
     private void LoadUnitXML(string sFileName)
     {
+        if (JobInfoMng.Instance.set)
+            return;
         //XML파일을 텍스트에셋으로 불러오기
         TextAsset textAsset = (TextAsset)Resources.Load("XML/" + sFileName);
         //불러온 텍스트에셋을 XmlDocument 형식으로 불러오는 작업
@@ -138,6 +142,8 @@ public class XMLMng : MonoBehaviour
 
     private void LoadBuildingXML(string sFileName)
     {
+        if (BuildingInfoMng.Instance.set)
+            return;
         //XML파일을 텍스트에셋으로 불러오기
         TextAsset textAsset = (TextAsset)Resources.Load("XML/" + sFileName);
         //불러온 텍스트에셋을 XmlDocument 형식으로 불러오는 작업

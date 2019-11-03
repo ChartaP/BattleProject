@@ -64,6 +64,7 @@ namespace GameSys
 
         public class BuildingInfoMng
         {
+            public bool set = false;
             private static BuildingInfoMng instance = null;
 
             public static BuildingInfoMng Instance
@@ -82,6 +83,7 @@ namespace GameSys
 
             public void AddBuilding(BuildingInfo info)
             {
+                set = true;
                 if (buildingDic.ContainsKey(info.ID)) return;
 
                 buildingDic.Add(info.ID, info);

@@ -50,6 +50,8 @@ public class PlayerCtrl : MonoBehaviour
     public PlayerMng playerMng;
     public PlayerInfo playerInfo;
 
+    public Vector3 spawnPos;
+
     //플레이어의 유닛 목록
     public List<UnitCtrl> UnitList;
     //플레이어의 건물 목록
@@ -58,6 +60,8 @@ public class PlayerCtrl : MonoBehaviour
     public List<ObjectCtrl> selectableObject = new List<ObjectCtrl>();
     public UnitCtrl LeaderUnit;
     public Material playerMater;
+
+    public bool isFall = false;
 
     public int[,] FoW; //0 안개, 1 보이는곳, 2 한번 봤던 곳
 
@@ -77,16 +81,106 @@ public class PlayerCtrl : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        if (playerInfo.Type == ePlayerType.Computer)
+            StartCoroutine("AIDecide");
     }
 
     // Update is called once per frame
     void Update()
     {
+        
     }
 
+    IEnumerator AIDecide()
+    {
+        while (!isFall)
+        {
+            if (HasUnit(eUnitJob.Swordman) || HasUnit(eUnitJob.Bowman)){
+                List<ObjectCtrl> objList = new List<ObjectCtrl>();
+                foreach(UnitCtrl obj in FindUnits(eUnitJob.Swordman))
+                {
+                    objList.Add(obj as ObjectCtrl);
+                }
+                SelectObjects(objList);
+                OrderObjects(eOrder.AtkTarget, playerMng.CtrlPlayer.LeaderUnit.transform);
+                foreach (UnitCtrl obj in FindUnits(eUnitJob.Bowman))
+                {
+                    objList.Add(obj as ObjectCtrl);
+                }
+                SelectObjects(objList);
+                OrderObjects(eOrder.AtkTarget, playerMng.CtrlPlayer.LeaderUnit.transform);
+            }
+            else
+            {
+                if (HasBuilding("BootCamp"))
+                {
+                    BootCampCtrl camp = FindBuilding("BootCamp") as BootCampCtrl;
+                    camp.AddProductUnit(eUnitJob.Swordman);
+                    camp.AddProductUnit(eUnitJob.Bowman);
+                }
+                else
+                {
+                    int x = Random.Range(-8, 8);
+                    int y = Random.Range(-8,8);
+                    GameMng.Instance.buildingMng.CreateBuilding(this, FindUnit(eUnitJob.Worker) , GameSys.Building.BuildingInfoMng.Instance.Building(3), new Vector3(spawnPos.x + x,GameMng.Instance.mapMng.GetHeight((int)spawnPos.x + x, (int)spawnPos.z + y),spawnPos.z + y));
+
+                }
+            }
+            yield return new WaitForSecondsRealtime(1f);
+        }
+        yield break;
+    }
+    public UnitCtrl FindUnit(eUnitJob job)
+    {
+        foreach (UnitCtrl unit in UnitList)
+        {
+            if (unit.Job == job)
+                return unit;
+        }
+        return null;
+    }
+
+    public List<UnitCtrl> FindUnits(eUnitJob job)
+    {
+        List<UnitCtrl> units = new List<UnitCtrl>();
+        foreach (UnitCtrl unit in UnitList)
+        {
+            if (unit.Job == job)
+                units.Add(unit) ;
+        }
+        return units;
+    }
+
+    public BuildingCtrl FindBuilding(string name)
+    {
+        foreach (BuildingCtrl building in BuildingList)
+        {
+            if (building.Name == name)
+                return building;
+        }
+        return null;
+    }
     
-    
+    public bool HasUnit(eUnitJob job)
+    {
+        foreach (UnitCtrl unit in UnitList)
+        {
+            if (unit.Job == job)
+                return true;
+        }
+        return false;
+    }
+
+    public bool HasBuilding(string name)
+    {
+        foreach (BuildingCtrl building in BuildingList)
+        {
+            if (building.Name == name)
+                return true;
+        }
+        return false;
+    }
+
     public void UnselectObject()
     {
         foreach (ObjectCtrl obj in selectableObject)
@@ -191,7 +285,7 @@ public class PlayerCtrl : MonoBehaviour
     /// 넘겨받은 유닛리스트를 선택
     /// </summary>
     /// <param name="unitList">유닛리스트</param>
-    public void SelectUnits(List<ObjectCtrl> objectList)
+    public void SelectObjects(List<ObjectCtrl> objectList)
     {
         if (objectList.Count == 0)
         {
@@ -342,7 +436,8 @@ public class PlayerCtrl : MonoBehaviour
         }
         else
         {
-            GameMng.Instance.interfaceMng.AlertText(name + "자원이 부족합니다");
+            if(this == playerMng.CtrlPlayer)
+                GameMng.Instance.interfaceMng.AlertText(name + "자원이 부족합니다");
             return false;
         }
     }

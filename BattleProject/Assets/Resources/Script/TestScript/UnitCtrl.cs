@@ -51,6 +51,8 @@ public class UnitCtrl : ObjectCtrl
     
     protected BuildingCtrl HomeCtrl = null;
     protected BuildingCtrl WorkSpaceCtrl = null;
+
+    public ColInfo frontCol = null;
     
 
     public void SetUnit(UnitMng unitMng, eUnitType unitType,PlayerCtrl owner,Vector3 unitPos)
@@ -105,6 +107,10 @@ public class UnitCtrl : ObjectCtrl
         if (myJobInfo.Name == "Leader")
         {
             Owner.UseResource("WorkPopulation",1);
+        }
+        if(job == eUnitJob.Leader)
+        {
+            Owner.LeaderUnit = this;
         }
     }
 
@@ -213,6 +219,7 @@ public class UnitCtrl : ObjectCtrl
         {
             StateChange(eUnitState.Dead);
         }
+        Target.TargetUpdate();
     }
 
     public bool IsCollisionPos( Vector2 pos)
@@ -330,6 +337,8 @@ public class UnitCtrl : ObjectCtrl
 
             Rotate(target);
             transform.Translate(0, 0 , Stat("MoveSpeed") * Time.deltaTime);
+            if (frontCol.isTrigger)
+                transform.Translate(0, 1, 0);
             Debug.DrawRay(transform.position, transform.forward * Vector2.Distance(Pos,curPos), Color.blue, Time.deltaTime);
             if (Vector2.Distance( Pos , target)<0.1f)
                 break;
@@ -347,6 +356,8 @@ public class UnitCtrl : ObjectCtrl
             curPos = target.Pos;
             Rotate(target.Pos);
             transform.Translate(0, 0, Stat("MoveSpeed") * Time.deltaTime);
+            if (frontCol.isTrigger)
+                transform.Translate(0, 1, 0);
             Debug.DrawRay(transform.position, transform.forward * Vector2.Distance(Pos, curPos), Color.blue, 0.3f);
             if (Vector2.Distance(Pos, target.Pos) < Stat("Radius") + target.Radius + 0.1f)
                 break;

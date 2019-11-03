@@ -8,7 +8,7 @@ public class BootCampCtrl : BuildingCtrl
     [SerializeField]
     private List<eUnitJob> ProductSchedule = new List<eUnitJob>();
     private float fProgress = 0.0f;
-    private float fDesired = 1.0f;
+    private float fDesired = 600.0f;
 
     private void Start()
     {
