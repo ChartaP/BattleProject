@@ -21,9 +21,7 @@ public class StorageCtrl : BuildingCtrl
     protected override void Destruction()
     {
         GameMng.Instance.mapMng.bOpen[(int)X, (int)Y] = true;
-        owner.dicResource["FoodStorage"] -= 100;
-        if (owner.dicResource["FoodStorage"] < 0)
-            owner.dicResource["FoodStorage"] = 0;
+        owner.RemoveStorage("Food",100);
         Owner.UnregisterPlayerBuilding(this);
         buildingMng.RemoveBuilding(this);
     }
@@ -35,7 +33,7 @@ public class StorageCtrl : BuildingCtrl
             switch (buildingState)
             {
                 case eBuildingState.Construction:
-                    owner.dicResource["FoodStorage"] += 100;
+                    owner.AddStorage("Food",  100);
                     break;
                 case eBuildingState.Standby:
                     break;

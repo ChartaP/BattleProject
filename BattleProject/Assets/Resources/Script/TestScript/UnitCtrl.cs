@@ -104,7 +104,7 @@ public class UnitCtrl : ObjectCtrl
 
         if (myJobInfo.Name == "Leader")
         {
-            Owner.dicResource["WorkPopulation"] -= 1;
+            Owner.UseResource("WorkPopulation",1);
         }
     }
 
@@ -394,7 +394,7 @@ public class UnitCtrl : ObjectCtrl
         }
         if (!isJobless)
         {
-            Owner.dicResource["WorkPopulation"] += 1;
+            Owner.UseResource("WorkPopulation" , 1);
         }
         Owner.UnregisterPlayerUnit(this);
         unitMng.RemoveUnit(this);
@@ -550,15 +550,14 @@ public class UnitCtrl : ObjectCtrl
     
     public bool Eat()
     {
-        if(Owner.dicResource["Food"] < (4 - nHungry))
+        if(Owner.UseResource("Food", (4 - nHungry)))
         {
-            return false;
+            nHungry = 4;
+            return true;
         }
         else
         {
-            Owner.dicResource["Food"] -= (4 - nHungry);
-            nHungry = 4;
-            return true;
+            return false;
         }
         
     }
@@ -591,13 +590,13 @@ public class UnitCtrl : ObjectCtrl
             Fired();
         }
         WorkSpaceCtrl = workplace;
-        Owner.dicResource["WorkPopulation"] -= 1;
+        Owner.UseResource("WorkPopulation", 1);
     }
 
     public void Fired()
     {
         WorkSpaceCtrl = null;
-        Owner.dicResource["WorkPopulation"] += 1;
+        Owner.GetResource("WorkPopulation", 1);
     }
 
     public bool isHomeless

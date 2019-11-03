@@ -26,19 +26,38 @@ public class FarmCtrl : BuildingCtrl
 
     protected override IEnumerator Work()
     {
+        int cnt = 0;
         while (buildingState == eBuildingState.Work)
         {
             if(TimeMng.Instance.CurSeason == eSeason.SPRING)
             {
-                fSow += Time.deltaTime * 1.0f;
+                cnt = 0;
+                fSow += 20.0f * Time.deltaTime * TimeMng.Instance.DateSpeed / 24;
             }
             else if (TimeMng.Instance.CurSeason == eSeason.SUMMER)
             {
-                
+                fWeeding += 20.0f * Time.deltaTime * TimeMng.Instance.DateSpeed / 24;
             }
             else if (TimeMng.Instance.CurSeason == eSeason.FALL)
             {
+                
+                fYield += 20.0f * Time.deltaTime * TimeMng.Instance.DateSpeed / 24;
 
+                if(fYield > 1.0f)
+                {
+                    if (Mathf.Min(fSow, fWeeding) > cnt)
+                    {
+                        Owner.GetResource("Food", (int)fYield);
+                        fYield = 0.0f;
+                        cnt++;
+                    }
+                }
+            }
+            else if (TimeMng.Instance.CurSeason == eSeason.WINTER)
+            {
+                fSow = 0.0f;
+                fWeeding = 0.0f;
+                fYield = 0.0f;
             }
             yield return null;
         }
@@ -53,33 +72,43 @@ public class FarmCtrl : BuildingCtrl
             {
                 yield return new WaitForSecondsRealtime(0.4f);
             }
-            if (TimeMng.Instance.isDay && TimeMng.Instance.CurSeason != eSeason.WINTER)
+            switch (buildingState)
             {
-                if (!isEnterUnitFull)
-                {
-                    if (!isRegisterUnitFull)
+                case eBuildingState.Standby:
+                    if (TimeMng.Instance.isDay && TimeMng.Instance.CurSeason != eSeason.WINTER)
                     {
-                        RegisterFindJoblessUnit();
+                        if (!isEnterUnitFull)
+                        {
+                            if (!isRegisterUnitFull)
+                            {
+                                RegisterFindJoblessUnit();
+                            }
+                            else
+                            {
+                                Debug.Log("ComeCome");
+                                CallRegisterUnit();
+                            }
+                        }
+                        else
+                        {
+                            ChangeState(eBuildingState.Work);
+                        }
                     }
-                    else
+                    break;
+                case eBuildingState.Work:
+                    if (TimeMng.Instance.isNight)
                     {
-                        Debug.Log("ComeCome");
-                        CallRegisterUnit();
+                        if (enteredUnits.Count != 0)
+                        {
+                            ExitBuilding();
+                        }
+                        else
+                        {
+                            ChangeState(eBuildingState.Standby);
+                        }
                     }
-                }
-                else
-                {
-
-                }
+                    break;
             }
-            if (TimeMng.Instance.isNight)
-            {
-                if (enteredUnits.Count != 0)
-                {
-                    ExitBuilding();
-                }
-            }
-
             yield return new WaitForSecondsRealtime(0.4f);
         }
     }

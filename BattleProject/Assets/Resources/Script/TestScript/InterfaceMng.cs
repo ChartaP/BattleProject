@@ -67,10 +67,10 @@ public class InterfaceMng : MonoBehaviour
             switch (text.transform.name)
             {
                 case "Population":
-                    text.text = "인구 : "+ CtrlPlayer.dicResource["WorkPopulation"]+ "/" + CtrlPlayer.UnitList.Count + "()";
+                    text.text = "인구 : "+ CtrlPlayer.CurResource("WorkPopulation")+ "/" + CtrlPlayer.UnitList.Count + "()";
                     break;
                 case "Food":
-                    text.text = "식량 : "+CtrlPlayer.dicResource["Food"]+ "/" + CtrlPlayer.dicResource["FoodStorage"] + "()";
+                    text.text = "식량 : "+CtrlPlayer.CurResource("Food")+ "/" + CtrlPlayer.CurResource("FoodStorage") + "()";
                     break;
             }
         }

@@ -212,7 +212,7 @@ public class TimeMng : MonoBehaviour
         return (Hour < 10 ? ("0" + Hour) : Hour + "") + ":" + (Minit < 10?("0"+ Minit) : Minit + "");
     }
 
-    private float DateSpeed
+    public float DateSpeed
     {
         get
         {

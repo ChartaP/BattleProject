@@ -17,14 +17,8 @@ public class BootCampCtrl : BuildingCtrl
 
     public void AddProductUnit(eUnitJob job)
     {
-        if (Owner.dicResource["Food"] - 10 < 0)
-        {
-            GameMng.Instance.interfaceMng.AlertText("food" + "가 부족합니다");
-            return;
-        }
-        Owner.dicResource["Food"] -= 10;
-
-        ProductSchedule.Add(job);
+        if(Owner.UseResource("Food", 10))
+            ProductSchedule.Add(job);
 
     }
 

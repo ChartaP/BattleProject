@@ -15,7 +15,7 @@ public class BuildingMng : MonoBehaviour
         {
             if (Cost == "time")
                 continue;
-            if(Owner.dicResource[Cost] - buildingInfo.Cost[Cost] < 0)
+            if(Owner.CurResource(Cost) - buildingInfo.Cost[Cost] < 0)
             {
                 gameMng.interfaceMng.AlertText(Cost+"가 부족합니다");
                 return null;
@@ -25,7 +25,7 @@ public class BuildingMng : MonoBehaviour
         {
             if (Cost == "time")
                 continue;
-            Owner.dicResource[Cost] -= buildingInfo.Cost[Cost];
+            Owner.UseResource(Cost, buildingInfo.Cost[Cost]);
         }
         GameObject pre = Resources.Load("Prefab/"+buildingInfo.Component) as GameObject;
         BuildingCtrl temp = Instantiate(pre, this.transform).GetComponent<BuildingCtrl>();

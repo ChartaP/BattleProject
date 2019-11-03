@@ -61,7 +61,8 @@ public class PlayerCtrl : MonoBehaviour
 
     public int[,] FoW; //0 안개, 1 보이는곳, 2 한번 봤던 곳
 
-    public Dictionary<string, int> dicResource = new Dictionary<string, int>();
+    [SerializeField]
+    private Dictionary<string, int> dicResource = new Dictionary<string, int>();
 
     public byte selectBuild = 0;
 
@@ -70,6 +71,7 @@ public class PlayerCtrl : MonoBehaviour
         dicResource.Add("Food", 100);
         dicResource.Add("FoodStorage", 100);
         dicResource.Add("WorkPopulation", 0);
+        dicResource.Add("WorkPopulationStorage", 255);
     }
 
     // Start is called before the first frame update
@@ -231,7 +233,7 @@ public class PlayerCtrl : MonoBehaviour
     public void RegisterPlayerUnit(UnitCtrl unit)
     {
         UnitList.Add(unit);
-        dicResource["WorkPopulation"] += 1;
+        GetResource("WorkPopulation",1);
     }
     /// <summary>
     /// 플레이어 유닛 해지 메서드
@@ -240,7 +242,7 @@ public class PlayerCtrl : MonoBehaviour
     public void UnregisterPlayerUnit(UnitCtrl unit)
     {
         UnitList.Remove(unit);
-        dicResource["WorkPopulation"] -= 1;
+        UseResource("WorkPopulation", 1);
         selectableObject.Remove(unit);
         if (unit.Job == eUnitJob.Leader)
             playerMng.fallPlayer(this);
@@ -316,5 +318,49 @@ public class PlayerCtrl : MonoBehaviour
     {
         BuildingList.Remove(building);
         selectableObject.Remove(building);
+    }
+
+    public void GetResource(string name, int value)
+    {
+        if(dicResource[name]+value < dicResource[name + "Storage"])
+        {
+            dicResource[name] += value;
+        }
+        else
+        {
+            dicResource[name] = dicResource[name + "Storage"];
+            GameMng.Instance.interfaceMng.AlertText(name+"자원 저장 공간이 가득 찼습니다");
+        }
+    }
+
+    public bool UseResource(string name, int value)
+    {
+        if(dicResource[name] - value > 0)
+        {
+            dicResource[name] -= value;
+            return true ;
+        }
+        else
+        {
+            GameMng.Instance.interfaceMng.AlertText(name + "자원이 부족합니다");
+            return false;
+        }
+    }
+
+    public void AddStorage(string name, int value)
+    {
+        dicResource[name + "Storage"] += value;
+    }
+
+    public void RemoveStorage(string name, int value)
+    {
+        dicResource[name + "Storage"] -= value;
+        if (dicResource[name + "Storage"] < 0)
+            dicResource[name + "Storage"] = 0;
+    }
+
+    public int CurResource(string name)
+    {
+        return dicResource[name];
     }
 }
