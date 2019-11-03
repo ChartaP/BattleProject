@@ -15,7 +15,8 @@ public class ObjectsInfoInterface : MonoBehaviour
     private GameObject gUnitBtn = null;
     [SerializeField]
     private List<UnitBtn> unitBtnList = new List<UnitBtn>();
-
+    [SerializeField]
+    private List<UnitBtn> unitSmallBtnList = new List<UnitBtn>();
 
     // Start is called before the first frame update
     void Start()
@@ -43,7 +44,11 @@ public class ObjectsInfoInterface : MonoBehaviour
         string sRight = "";
         foreach (UnitBtn btn in unitBtnList)
         {
-            btn.myUnit = null;
+            btn.SetBtn(null);
+        }
+        foreach (UnitBtn btn in unitSmallBtnList)
+        {
+            btn.SetBtn(null);
         }
         if (objList.Count == 0)
         {
@@ -56,7 +61,20 @@ public class ObjectsInfoInterface : MonoBehaviour
 
             GetInfo(sName, sLeft, sRight);
             
+            if(objList[0] is UnitCtrl)
+            {
 
+            }
+            else
+            {
+                BuildingCtrl building = objList[0] as BuildingCtrl;
+                for (int i = 0; i < building.RegUnits.Count; i++)
+                {
+                    if (i >= 8)
+                        break;
+                    unitSmallBtnList[i].SetBtn(building.RegUnits[i]);
+                }
+            }
         }
         else
         {
@@ -71,9 +89,9 @@ public class ObjectsInfoInterface : MonoBehaviour
 
             for(int i = 0; i < objList.Count; i++)
             {
-                if (i > 8)
+                if (i >= 8)
                     break;
-                unitBtnList[i].myUnit = objList[i] as UnitCtrl;
+                unitBtnList[i].SetBtn(objList[i] as UnitCtrl);
             }
 
         }

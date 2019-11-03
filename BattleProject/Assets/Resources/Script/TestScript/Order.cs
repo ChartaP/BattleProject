@@ -289,7 +289,6 @@ namespace GameSys
                 UnitCtrl unitCtrl = unit as UnitCtrl;
                 if ((target.TargetObject as BuildingCtrl).BuildingState != eBuildingState.Construction)
                 {
-                    Debug.Log("WTF");
                     unitCtrl.Stop();
                     return true;
                 }

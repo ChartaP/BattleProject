@@ -29,23 +29,35 @@ public class InterfaceMng : MonoBehaviour
     {
         DefFace = FaceSprite.sprite;
         CtrlPlayer = gameMng.playerMng.GetControlPlayer();
+        StartCoroutine("Interface");
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (gameMng.bGameStart)
+        
+    }
+
+    IEnumerator Interface()
+    {
+        while (true)
         {
-            ResourceInterfase();
-            if (CtrlPlayer.selectableObject.Count > 0)
+            if (gameMng.bGameStart)
             {
-                ChangeFaceInterface(CtrlPlayer.selectableObject[0].Icon);
+                ResourceInterfase();
+                ObjectsInformationInterface(gameMng.playerMng.CtrlPlayer.selectableObject);
+                if (CtrlPlayer.selectableObject.Count > 0)
+                {
+                    ChangeFaceInterface(CtrlPlayer.selectableObject[0].Icon);
+                }
+                else
+                {
+                    ChangeFaceInterface("");
+                }
             }
-            else
-            {
-                ChangeFaceInterface("");
-            }
+            yield return new WaitForSecondsRealtime(0.4f);
         }
+        yield break;
     }
 
     public void ResourceInterfase()

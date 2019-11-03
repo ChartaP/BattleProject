@@ -173,6 +173,13 @@ public class UnitCtrl : ObjectCtrl
                 View();
                 fulfilOrder();
             }
+            if(unitJob == eUnitJob.Leader)
+            {
+                if (isHungry)
+                {
+                    Eat();
+                }
+            }
             yield return new WaitForSecondsRealtime(0.4f);
         }
         yield break;
@@ -564,6 +571,14 @@ public class UnitCtrl : ObjectCtrl
         }
     }
 
+    public bool isHungry
+    {
+        get
+        {
+            return nHungry != 4;
+        }
+    }
+
     public void GetHome(BuildingCtrl home)
     {
         HomeCtrl = home;
@@ -571,6 +586,10 @@ public class UnitCtrl : ObjectCtrl
 
     public void GetWork(BuildingCtrl workplace)
     {
+        if (WorkSpaceCtrl)
+        {
+            Fired();
+        }
         WorkSpaceCtrl = workplace;
         Owner.dicResource["WorkPopulation"] -= 1;
     }

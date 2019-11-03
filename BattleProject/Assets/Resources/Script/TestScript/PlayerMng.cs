@@ -23,8 +23,9 @@ public class PlayerMng : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        gameMng.interfaceMng.ObjectsInformationInterface(CtrlPlayer.selectableObject);
+       
     }
+
 
     /// <summary>
     ///GameInfo의 플레이어 정보를 받아오는 메서드

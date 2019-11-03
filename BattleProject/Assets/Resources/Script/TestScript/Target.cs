@@ -150,4 +150,11 @@ public class Target : MonoBehaviour
         }
     }
     
+    public Bar MyBar
+    {
+        get
+        {
+            return myBar;
+        }
+    }
 }

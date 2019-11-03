@@ -60,7 +60,22 @@ public class TimeMng : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(preHour != Hour)
+        if (Input.GetKeyDown(KeyCode.PageUp))
+        {
+            fDateSpeed -= 0.4f;
+            if(fDateSpeed < 0)
+            {
+                fDateSpeed = 0.1f;
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.PageDown))
+        {
+            if(fDateSpeed == 0.1f){
+                fDateSpeed = 0f;
+            }
+            fDateSpeed += 0.4f;
+        }
+        if (preHour != Hour)
         {
             switch (Hour)
             {
@@ -73,6 +88,7 @@ public class TimeMng : MonoBehaviour
             }
             preHour = Hour;
         }
+        
     }
 
     IEnumerator TimeTick()

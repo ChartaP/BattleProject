@@ -28,6 +28,7 @@ public class CreateInfoInterface : MonoBehaviour
     }
     public void UnSelectCreate()
     {
+        SelectImg.enabled = false;
     }
     
     public void CreateButtonClick()
@@ -74,7 +75,6 @@ public class CreateInfoInterface : MonoBehaviour
         SelectImg.rectTransform.localPosition = new Vector3(56 + num * 96, -2, 0);
         SelectImg.enabled = true;
     }
-    
 
     private void BuilderSet()
     {
@@ -89,6 +89,13 @@ public class CreateInfoInterface : MonoBehaviour
         GameMng.Instance.inputMng.ChangeState(0);
         transUnitList.gameObject.SetActive(true);
         transBuildList.gameObject.SetActive(false);
+    }
+
+    public void UnitCreateClick(int job)
+    {
+        PlayerCtrl ctrlPlayer = GameMng.Instance.playerMng.CtrlPlayer;
+        BootCampCtrl bootcamp = ctrlPlayer.selectableObject[0] as BootCampCtrl;
+        bootcamp.AddProductUnit((GameSys.Lib.eUnitJob)job);
     }
 
     private void InactiveSet()

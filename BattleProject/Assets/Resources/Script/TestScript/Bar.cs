@@ -12,11 +12,13 @@ public class Bar : MonoBehaviour
     [SerializeField]
     private RectTransform HealthBlankTrans;
     [SerializeField]
-    private RectTransform HungryBarTrans;
+    private RectTransform ProgressBarTrans;
     [SerializeField]
-    private RectTransform HungryBackTrans;
+    private RectTransform ProgressBackTrans;
     [SerializeField]
-    private RectTransform HungryBlankTrans;
+    private RectTransform ProgressBlankTrans;
+    [SerializeField]
+    private RectTransform HungryTrans;
     [SerializeField]
     private Image BarImage;
     [SerializeField]
@@ -48,14 +50,33 @@ public class Bar : MonoBehaviour
 
     public void SetHungry(int Max)
     {
-        HungryBackTrans.gameObject.SetActive(true);
-        HungryBarTrans.sizeDelta = new Vector2(Max*15, 6);
-        HungryBlankTrans.sizeDelta = new Vector2(Max * 15, 6);
-        HungryBackTrans.sizeDelta = new Vector2(Max * 15 + 4, 10);
+        ProgressBackTrans.gameObject.SetActive(true);
+        HungryTrans.gameObject.SetActive(true);
+        ProgressBarTrans.sizeDelta = new Vector2(Max*15, 6);
+        ProgressBlankTrans.sizeDelta = new Vector2(Max * 15, 6);
+        ProgressBackTrans.sizeDelta = new Vector2(Max * 15 + 4, 10);
     }
 
     public void CurHungry(int Cur)
     {
-        HungryBarTrans.sizeDelta = new Vector2(Cur * 15, 6);
+        ProgressBarTrans.sizeDelta = new Vector2(Cur * 15, 6);
+    }
+
+    public void SetProgress(int Max)
+    {
+        ProgressBackTrans.gameObject.SetActive(true);
+        ProgressBarTrans.sizeDelta = new Vector2(Max * 15f, 6);
+        ProgressBlankTrans.sizeDelta = new Vector2(Max * 15f, 6);
+        ProgressBackTrans.sizeDelta = new Vector2(Max * 15f + 4, 10);
+    }
+
+    public void CurProgress(int Cur)
+    {
+        ProgressBarTrans.sizeDelta = new Vector2(Cur * 15f, 6);
+    }
+
+    public void InProgress()
+    {
+        ProgressBackTrans.gameObject.SetActive(false);
     }
 }

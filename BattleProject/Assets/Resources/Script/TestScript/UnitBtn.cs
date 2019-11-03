@@ -20,7 +20,13 @@ public class UnitBtn : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(myUnit == null)
+        
+    }
+
+    public void SetBtn(UnitCtrl myUnit)
+    {
+        this.myUnit = myUnit;
+        if (myUnit == null)
         {
             BtnImage.enabled = false;
             Btn.enabled = false;
@@ -28,14 +34,14 @@ public class UnitBtn : MonoBehaviour
         else
         {
             BtnImage.enabled = true;
-            BtnImage.sprite = Resources.Load<Sprite>("Texture/"+ myUnit.Icon);
+            BtnImage.sprite = Resources.Load<Sprite>("Texture/" + myUnit.Icon);
             Btn.enabled = true;
         }
     }
 
     public void SelectUnit()
     {
-        myUnit.unitMng.gameMng.playerMng.CtrlPlayer.SelectObject(myUnit);
+        GameMng.Instance.playerMng.CtrlPlayer.SelectObject(myUnit);
     }
 
 }

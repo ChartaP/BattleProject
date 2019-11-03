@@ -7,18 +7,20 @@ using GameSys.Building;
 
 public class FarmCtrl : BuildingCtrl
 {
+    [SerializeField]
     private float fSow = 0;
+    [SerializeField]
     private float fWeeding = 0;
+    [SerializeField]
     private float fYield = 0;
 
     protected void Start()
     {
-        base.Start();
+        StartCoroutine("Decide");
     }
 
     protected void Update()
     {
-        base.Update();
         
     }
 
@@ -82,7 +84,7 @@ public class FarmCtrl : BuildingCtrl
         }
     }
 
-    public void SetBuilding(BuildingMng buildingMng, BuildingInfo buildingInfo, PlayerCtrl owner, Vector3 unitPos)
+    public override void SetBuilding(BuildingMng buildingMng, BuildingInfo buildingInfo, PlayerCtrl owner, Vector3 unitPos)
     {
         this.buildingMng = buildingMng;
         this.owner = owner;

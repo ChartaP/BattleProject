@@ -6,7 +6,7 @@
     <Field id="200" name="Stoneman" face="StonemanIcon" size="0.4" colradius="0.24" colheight="0.8" movespeed="1.5" rotatespeed="1.0" health="100" atkpower ="40" atkspeed="1.0" defvalue="0" viewrange="6.0" atkrange="1.5"/>
     <Field id="201" name="Spearman" face="SpearmanIcon" size="0.4" colradius="0.24" colheight="0.8" movespeed="1.5" rotatespeed="1.0" health="100" atkpower ="60" atkspeed="1.0" defvalue="0" viewrange="6.0" atkrange="1.5"/>
     <Field id="202" name="Bowman" face="BowmanIcon" size="0.4" colradius="0.24" colheight="0.8" movespeed="1.5" rotatespeed="1.0" health="100" atkpower ="40" atkspeed="1.0" defvalue="0" viewrange="6.0" atkrange="6.0"/>
-    <Field id="203" name="Swordman" face="SwordIcon" size="0.4" colradius="0.24" colheight="0.8" movespeed="1.5" rotatespeed="1.0" health="100" atkpower ="50" atkspeed="1.0" defvalue="0" viewrange="6.0" atkrange="1.5"/>
+    <Field id="203" name="Swordman" face="SwordmanIcon" size="0.4" colradius="0.24" colheight="0.8" movespeed="1.5" rotatespeed="1.0" health="100" atkpower ="50" atkspeed="1.0" defvalue="0" viewrange="6.0" atkrange="1.5"/>
     <Field id="204" name="Cavalry" face="CavalryIcon" size="0.4" colradius="0.24" colheight="0.8" movespeed="3.0" rotatespeed="1.0" health="100" atkpower ="60" atkspeed="1.0" defvalue="0" viewrange="6.0" atkrange="1.5"/>
   </Job>
   <JobEquip>
@@ -18,8 +18,8 @@
     <Field id="200" head="null" rhand="StoneAxe" lhand="null" chest="null" projectile="null" atkreadyani = "StoneAxeReadyAni" atkingani ="StoneAxeSwingAni" />
     <Field id="201" head="null" rhand="Spear" lhand="null" chest="null" projectile="null" atkreadyani = "SpearReadyAni" atkingani ="SpearLungeAni" />
     <Field id="202" head="null" rhand="Bow" lhand="null" chest="null" projectile="Arrow" atkreadyani = "BowPullAni" atkingani ="BowShootAni" />
-    <Field id="203" head="null" rhand="Sword" lhand="null" chest="null" projectile="null" atkreadyani = "SwordReadyAni" atkingani ="SwordSwingAni" />
-    <Field id="204" head="null" rhand="Sword" lhand="null" chest="null" projectile="null" atkreadyani = "SwordReadyAni" atkingani ="SwordSwingAni" />
+    <Field id="203" head="null" rhand="Sword" lhand="null" chest="null" projectile="null" atkreadyani = "StoneAxeReadyAni" atkingani ="StoneAxeSwingAni" />
+    <Field id="204" head="null" rhand="Sword" lhand="null" chest="null" projectile="null" atkreadyani = "StoneAxeReadyAni" atkingani ="StoneAxeSwingAni" />
   </JobEquip>
   <Animal>
     <Field />

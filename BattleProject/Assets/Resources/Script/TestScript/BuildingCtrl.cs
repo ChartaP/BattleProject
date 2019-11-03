@@ -34,7 +34,7 @@ public class BuildingCtrl : ObjectCtrl
     protected int nEnteredCnt = 0;
     public int nEnterMax = 0;
 
-    public void SetBuilding(BuildingMng buildingMng, BuildingInfo buildingInfo, PlayerCtrl owner,Vector3 unitPos)
+    public virtual void SetBuilding(BuildingMng buildingMng, BuildingInfo buildingInfo, PlayerCtrl owner,Vector3 unitPos)
     {
         this.buildingMng = buildingMng;
         this.owner = owner;
@@ -58,14 +58,12 @@ public class BuildingCtrl : ObjectCtrl
     // Start is called before the first frame update
     void Start()
     {
-        base.Start();
         StartCoroutine("Decide");
     }
 
     // Update is called once per frame
     void Update()
     {
-        base.Update();
     }
 
     protected virtual IEnumerator Decide()
@@ -74,6 +72,11 @@ public class BuildingCtrl : ObjectCtrl
     }
 
     protected virtual IEnumerator Work()
+    {
+        yield break;
+    }
+
+    protected virtual IEnumerator Standby()
     {
         yield break;
     }
@@ -106,10 +109,11 @@ public class BuildingCtrl : ObjectCtrl
             }
         }
     }
-    public void RegisterUnit(UnitCtrl unit)
+    public virtual void RegisterUnit(UnitCtrl unit)
     {
-        if (unit.Job != eUnitJob.Worker)
+        if (unit.Job != eUnitJob.Worker || regUnits.Contains(unit))
             return;
+
         if (regUnits.Count < nEnterMax)
         {
             regUnits.Add(unit);
@@ -146,6 +150,13 @@ public class BuildingCtrl : ObjectCtrl
         }
     }
     
+    public bool isEmpty
+    {
+        get
+        {
+            return enteredUnits.Count == 0;
+        }
+    }
 
     public void RegisterFindJoblessUnit()
     {
@@ -224,15 +235,19 @@ public class BuildingCtrl : ObjectCtrl
 
     protected IEnumerator Construction()
     {
+        yield return null;
         buildingState = eBuildingState.Construction;
+        Target.MyBar.SetProgress(dicCost["time"]);
         model.enabled = false;
         while (true)
         {
+            Target.MyBar.CurProgress((int)fComplete);
             if(fComplete >= dicCost["time"])
             {
                 ChangeState(eBuildingState.Standby);
                 model.enabled = true;
                 constModel.enabled = false;
+                Target.MyBar.InProgress();
                 yield break;
             }
             yield return null;
@@ -268,8 +283,10 @@ public class BuildingCtrl : ObjectCtrl
                 case eBuildingState.Construction:
                     break;
                 case eBuildingState.Standby:
+                    StopCoroutine("Standby");
                     break;
                 case eBuildingState.Work:
+                    StopCoroutine("Work");
                     break;
                 case eBuildingState.Sleep:
                     break;
@@ -281,13 +298,22 @@ public class BuildingCtrl : ObjectCtrl
                 case eBuildingState.Construction:
                     break;
                 case eBuildingState.Standby:
+                    StartCoroutine("Standby");
                     break;
                 case eBuildingState.Work:
-
+                    StartCoroutine("Work");
                     break;
                 case eBuildingState.Sleep:
                     break;
             }
+        }
+    }
+
+    public List<UnitCtrl> RegUnits
+    {
+        get
+        {
+            return regUnits;
         }
     }
 }

@@ -223,6 +223,8 @@ public class InputMng : MonoBehaviour
                     {
 
                         GameMng.Instance.buildingMng.CreateBuilding(GameMng.Instance.playerMng.CtrlPlayer,GameMng.Instance.playerMng.CtrlPlayer.selectableObject[0] as UnitCtrl, BuildingInfoMng.Instance.Building(GameMng.Instance.playerMng.CtrlPlayer.selectBuild), peek.transform.localPosition);
+                        ChangeState(0);
+                        GameMng.Instance.interfaceMng.CreateInfoInterface.UnSelectCreate();
                     }
                 }
             }
